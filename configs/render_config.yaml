@@ -1,0 +1,77 @@
+# render_config.yaml
+
+# Настройки рендеринга
+
+render:
+  # Настройки PDF
+  pdf:
+    compression: true
+    embed_fonts: true
+    metadata:
+      creator: "PolyDocBench"
+      producer: "PolyDocBench v1.0"
+      title: "Сгенерированный документ"
+      author: "PolyDocBench Generator"
+      subject: "Синтетический бенчмарк для OCR"
+      keywords: "OCR, document analysis, ground truth"
+  
+  # Шрифты
+  fonts:
+
+    dejavu:
+      family: "DejaVuSans"
+      path: "C:/Users/user/Desktop/PolyDocBench/DejaVu Sans/DejaVuSans.ttf"
+      bold_path: "C:/Users/user/Desktop/PolyDocBench/DejaVu Sans/DejaVuSans-Bold.ttf"
+      italic_path: "C:/Users/user/Desktop/PolyDocBench/DejaVu Sans/DejaVuSans-Oblique.ttf"
+      embedded: true
+
+    helvetica:
+      family: "Helvetica"
+      bold: "Helvetica-Bold"
+      italic: "Helvetica-Oblique"
+      bold_italic: "Helvetica-BoldOblique"
+      embedded: false
+    
+    
+    times:
+      family: "Times-Roman"
+      bold: "Times-Bold"
+      italic: "Times-Italic"
+      bold_italic: "Times-BoldItalic"
+      embedded: false
+  
+  # Цвета
+  colors:
+    text: "#000000"
+    background: "#FFFFFF"
+    debug:
+      text_bbox: "#FF0000"
+      image_bbox: "#00FF00"
+      table_bbox: "#0000FF"
+      container: "#FF00FF"
+
+
+  # Настройки рендеринга по умолчанию
+  default_font: "dejavu"
+  default_font_size: 10
+  
+  # Отладочные настройки
+  debug:
+    show_bboxes: true
+    bbox_alpha: 0.3
+    show_baselines: false
+    show_margins: false
+    show_grid: false
+  
+  # Качество
+  quality:
+    image_dpi: 150
+    antialias: true
+    interpolation: "lanczos"
+  
+  # Экспорт
+  export:
+    ground_truth_formats: ["json", "coco", "page_xml"]
+    include_char_level: true
+    include_word_level: true
+    include_line_level: true

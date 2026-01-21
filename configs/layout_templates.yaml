@@ -1,0 +1,151 @@
+# layout_templates.yaml
+
+# Конфигурация шаблонов документов
+
+# Базовые настройки
+base_settings:
+  page_size: "A4"
+  page_width: 595.0  # points
+  page_height: 842.0
+  units: "points"  # points, mm, inches
+  dpi: 72  # точек на дюйм
+
+# Шаблоны макетов
+templates:
+  
+  # Одноколоночный шаблон (простая статья)
+  simple_article:
+    name: "Простая статья"
+    description: "Одноколоночный макет для статей и блогов"
+    layout_type: "single_column"
+    
+    # Поля страницы (в points)
+    margins:
+      top: 50
+      bottom: 50
+      left: 50
+      right: 50
+    
+    # Типографика
+    typography:
+      font_family: "DejaVuSans"
+      heading_sizes:
+        h1: 16
+        h2: 14
+        h3: 12
+        h4: 11
+      body_size: 10
+      line_height: 1.2
+      first_line_indent: 25
+      paragraph_spacing: 8
+    
+    # Правила размещения
+    rules:
+      - name: "heading_placement"
+        condition: "element.type == 'heading'"
+        actions:
+          - "set_font_size: typography.heading_sizes['h' + element.level]"
+          - "set_bold: true"
+          - "add_spacing_before: 20"
+          - "add_spacing_after: 10"
+      
+      - name: "image_centering"
+        condition: "element.type == 'image'"
+        actions:
+          - "center_horizontally: true"
+          - "add_spacing_before: 15"
+          - "add_spacing_after: 15"
+    
+    # Поддерживаемые типы элементов
+    allowed_elements: ["heading", "paragraph", "image", "formula", "table"]
+  
+  # Двухколоночный шаблон (научная статья)
+  scientific_paper:
+    name: "Научная статья"
+    description: "Двухколоночный макет для научных статей"
+    layout_type: "two_column"
+    
+    margins:
+      top: 60
+      bottom: 60
+      left: 40
+      right: 40
+    
+    columns:
+      count: 2
+      gutter: 20  # Расстояние между колонками
+      balance: true  # Балансировка колонок
+    
+    # Распределение элементов по колонкам
+    column_rules:
+      - name: "formulas_in_left"
+        condition: "element.type == 'formula'"
+        target_column: "left"
+      
+      - name: "images_in_right"
+        condition: "element.type == 'image'"
+        target_column: "right"
+      
+      - name: "text_alternating"
+        condition: "element.type in ['paragraph', 'heading']"
+        target_column: "alternating"  # Чередование колонок
+    
+    typography:
+      font_family: "DejaVuSans"
+      heading_sizes:
+        h1: 14
+        h2: 12
+        h3: 11
+        h4: 10
+      body_size: 9
+      line_height: 1.3
+      paragraph_spacing: 10
+    
+    rules:
+      - name: "abstract_special"
+        condition: "element.metadata.get('is_abstract') == true"
+        actions:
+          - "span_columns: 2"  # Растягиваем на обе колонки
+          - "set_italic: true"
+          - "add_spacing_before: 30"
+          - "add_spacing_after: 20"
+    
+    allowed_elements: ["heading", "paragraph", "image", "formula", "table", "abstract", "references"]
+  
+  # Трехколоночный шаблон (газета/журнал)
+  magazine_layout:
+    name: "Журнальный макет"
+    description: "Трехколоночный макет для журналов и газет"
+    layout_type: "three_column"
+    
+    margins:
+      top: 40
+      bottom: 40
+      left: 30
+      right: 30
+    
+    columns:
+      count: 3
+      gutter: 15
+      balance: false
+    
+    typography:
+      font_family: "DejaVuSans"
+      heading_sizes:
+        h1: 18
+        h2: 14
+        h3: 12
+        h4: 11
+      body_size: 9
+      line_height: 1.1
+      paragraph_spacing: 8
+    
+    allowed_elements: ["heading", "paragraph", "image", "pull_quote", "sidebar"]
+
+# Конфигурация по умолчанию
+defaults:
+  template: "simple_article"
+  language: "ru"
+  output_format: "pdf"
+  generate_ground_truth: true
+  debug_mode: false

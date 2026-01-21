@@ -1,0 +1,22 @@
+render/
+├── core/
+│   ├── __init__.py
+│   ├── renderer.py           # Json → PDF (уже есть)
+│   ├── layout_engine.py      # движок верстки
+│   ├── primitives.py         # базовые элементы (Bbox, DocumentElement и т.д.)
+│   └── containers.py         # контейнеры и страницы
+├── utils/
+│   ├── __init__.py
+│   ├── wiki_parser.py        # парсер для статей Wikipedia
+│   └── bbox_calculator.py    # расчет bounding boxes
+├── examples/		      # Примеры json
+│   ├── wiki_ru.json
+│   └── wiki_eng.json
+├── configs/
+│   ├── render_config.yaml    # конфигурации: язык, шрифты, DPI, стиль
+│   └── layout_templates.yaml # шаблоны макетов
+├── output/                   # папка для результатов
+│   ├── pdfs/                 # сгенерированные PDF
+│   └── ground_truth/         # JSON с координатами
+├── run_render.py             # точка входа
+└── requirements.txt          # зависимости

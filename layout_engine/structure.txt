@@ -1,0 +1,9 @@
+layout_engine/
+├── __init__.py
+├── layout_result.py       # LayoutResult и связанные классы
+├── template_manager.py    # Загрузка и управление шаблонами
+├── content_loader.py      # Загрузка контента из разных источников
+├── column_strategy.py     # Стратегии распределения по колонкам
+├── placement_engine.py    # Размещение элементов
+├── ground_truth_builder.py # Сборка ground truth
+└── layout_engine.py       # Основной координатор
