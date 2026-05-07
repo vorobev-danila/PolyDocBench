@@ -21,19 +21,35 @@ degradation = [
 ocr = [
     "pytesseract>=0.3.10",
 ]
+formula = [
+    "svglib>=1.5.1",
+]
 dev = [
+    "httpx>=0.28.0",
     "pytest>=8.0.0",
+]
+api = [
+    "fastapi>=0.110.0",
+    "svglib>=1.5.1",
+    "uvicorn[standard]>=0.29.0",
 ]
 all = [
     "opencv-python>=4.9.0",
     "pymupdf>=1.24.0",
     "pytesseract>=0.3.10",
+    "httpx>=0.28.0",
     "pytest>=8.0.0",
+    "fastapi>=0.110.0",
+    "uvicorn[standard]>=0.29.0",
 ]
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]
 pythonpath = ["."]
 
+[tool.setuptools.packages.find]
+include = ["polydocbench*"]
+
 [project.scripts]
 polydocbench = "polydocbench.cli:main"
+polydocbench-api = "polydocbench.api.app:run"

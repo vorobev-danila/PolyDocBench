@@ -78,11 +78,7 @@ class LayoutEngine:
                 content=element_data.get("content", ""),
                 bbox=placement_result.paragraph_bbox,
                 dimensions=dimensions,
-                metadata={
-                    "role": "block",
-                    "source_index": index,
-                    "source_type": element_type,
-                },
+                metadata=self._build_metadata(element_data, element_type, index),
             )
             self.layout_result.add_element(main_element)
 
@@ -140,6 +136,18 @@ class LayoutEngine:
             ]
 
         return dimensions
+
+    @staticmethod
+    def _build_metadata(element_data: dict[str, Any], element_type: str, source_index: int) -> dict[str, Any]:
+        metadata = {
+            "role": "block",
+            "source_index": source_index,
+            "source_type": element_type,
+        }
+        for key in ("src", "path", "url", "image_src", "caption", "alt", "alt_text", "alttext", "latex", "mathml", "formula_type"):
+            if key in element_data:
+                metadata[key] = element_data[key]
+        return metadata
 
     def _add_element_to_container(self, placed_line: PlacedLine, element: DocumentElement) -> None:
         for page in self.layout_result.pages:

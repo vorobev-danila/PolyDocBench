@@ -12,7 +12,7 @@ from reportlab.pdfgen import canvas
 from polydocbench.gt import GroundTruthExporter
 from polydocbench.render.config import RenderConfig
 from polydocbench.render.debug import DebugRenderer
-from polydocbench.render.elements import HeadingRenderer, TextRenderer
+from polydocbench.render.elements import FormulaRenderer, HeadingRenderer, ImageRenderer, TextRenderer
 from polydocbench.render.font_manager import FontManager
 
 
@@ -34,6 +34,8 @@ class PDFRenderer:
             "heading4": HeadingRenderer,
             "heading5": HeadingRenderer,
             "heading6": HeadingRenderer,
+            "image": ImageRenderer,
+            "formula": FormulaRenderer,
         }
         self.current_page = 1
         self.debug_renderer: DebugRenderer | None = None
@@ -115,4 +117,3 @@ class PDFRenderer:
 
 def render_layout_result(layout_result: Any, output_pdf: str | Path = "output/output.pdf", debug: bool = True) -> dict[str, Any]:
     return PDFRenderer(debug=debug).render(layout_result, output_pdf=output_pdf)
-

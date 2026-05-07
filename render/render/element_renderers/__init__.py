@@ -1,6 +1,5 @@
 """Compatibility exports for legacy imports."""
 
-from polydocbench.render.elements import BaseElementRenderer, HeadingRenderer, TextRenderer
+from polydocbench.render.elements import BaseElementRenderer, FormulaRenderer, HeadingRenderer, ImageRenderer, TextRenderer
 
-__all__ = ["BaseElementRenderer", "HeadingRenderer", "TextRenderer"]
-
+__all__ = ["BaseElementRenderer", "FormulaRenderer", "HeadingRenderer", "ImageRenderer", "TextRenderer"]

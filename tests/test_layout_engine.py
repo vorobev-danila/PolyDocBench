@@ -84,3 +84,33 @@ def test_layout_engine_exports_stable_ids_and_reading_order():
     first_line = next(element for element in gt["elements"] if element["metadata"].get("role") == "line")
     assert first_line["id"].startswith("paragraph_0001_line_")
     assert first_line["metadata"]["parent_id"] == "paragraph_0001"
+
+
+def test_layout_engine_preserves_formula_image_metadata():
+    input_path = Path("outputs/test_runs/layout_engine_formula_source.json")
+    input_path.parent.mkdir(parents=True, exist_ok=True)
+    input_path.write_text(
+        json.dumps(
+            {
+                "title": "Formula article",
+                "url": "https://example.test/formula",
+                "content": [
+                    {
+                        "type": "formula",
+                        "image_src": "outputs/test_runs/formula.png",
+                        "latex": "a+b",
+                        "formula_type": "display",
+                    }
+                ],
+            },
+            ensure_ascii=False,
+        ),
+        encoding="utf-8",
+    )
+
+    result = LayoutEngine(font_path="DejaVu Sans/DejaVuSans.ttf").layout_document(input_path)
+    formula = next(element for element in result.ground_truth["elements"] if element["type"] == "formula")
+
+    assert formula["metadata"]["image_src"] == "outputs/test_runs/formula.png"
+    assert formula["metadata"]["latex"] == "a+b"
+    assert formula["metadata"]["formula_type"] == "display"
