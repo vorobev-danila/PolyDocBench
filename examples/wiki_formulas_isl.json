@@ -1,0 +1,140 @@
+{
+  "title": "Línuleg vörpun",
+  "url": "https://is.wikipedia.org/wiki/L%C3%ADnuleg_v%C3%B6rpun",
+  "content": [
+    {
+      "type": "paragraph",
+      "text": "Línuleg vörpun[1][2]eðalínuleg færsla[1][2]ersammótunmilli vigurrúma, það er vörpun sem varðveitir bæði vigursamlagningu og tölumargföldun, formlega:"
+    },
+    {
+      "type": "paragraph",
+      "text": "Ef aðVogWeruvigurrúmyfir gefið sviðK, þá erT:V→W{\\displaystyle T:V\\rightarrow W}línuleg ef eftirfarandi gildir:"
+    },
+    {
+      "type": "list",
+      "list_type": "ordered",
+      "items": [
+        {
+          "text": "∀v∈V,∀u∈V:T(u+v)=T(u)+T(v){\\displaystyle \\forall v\\in V,\\;\\forall u\\in V:T(u+v)=T(u)+T(v)}"
+        },
+        {
+          "text": "∀v∈V,∀c∈K:T(cu)=cT(u){\\displaystyle \\forall v\\in V,\\;\\forall c\\in K:T(cu)=cT(u)}"
+        }
+      ]
+    },
+    {
+      "type": "paragraph",
+      "text": "Það er að segja, að vörpun summu tveggjavigraer jöfn summu varpanna sömu tveggja vigra, og jafnframt er margfeldi vörpunar af vigri jöfn vörpun af margfeldinu af sama vigri.Línuleg algebrafjallar um línulegavirkjaog línulegarjöfnur."
+    },
+    {
+      "type": "heading",
+      "level": 2,
+      "text": "Venjuleg fylki",
+      "id": "Venjuleg_fylki",
+      "content": [
+        {
+          "type": "paragraph",
+          "text": "SéT:Rn→Rm{\\displaystyle T:\\mathbb {R} ^{n}\\rightarrow \\mathbb {R} ^{m}}línuleg vörpun, ogEn={e1,...,en}{\\displaystyle {\\mathcal {E}}_{n}=\\{e_{1},...,e_{n}\\}}venjulegur grunnurfyrirRn{\\displaystyle \\mathbb {R} ^{n}}ogEm={e1,...,em}{\\displaystyle {\\mathcal {E}}_{m}=\\{e_{1},...,e_{m}\\}}venjulegur grunnur fyrirRm{\\displaystyle \\mathbb {R} ^{m}}gildir að til sém×n{\\displaystyle m\\times n}fylki,A, þannig að"
+        },
+        {
+          "type": "formula",
+          "formula_type": "inline",
+          "mathml": "<math alttext=\"{\\displaystyle A=\\left[{\\begin{matrix}{\\big |}&amp;{\\big |}&amp;&amp;{\\big |}\\\\T(e_{1})&amp;T(e_{2})&amp;\\cdots &amp;T(e_{n})\\\\{\\big |}&amp;{\\big |}&amp;&amp;{\\big |}\\\\\\end{matrix}}\\right]}\" xmlns=\"http://www.w3.org/1998/Math/MathML\"><semantics><mrow class=\"MJX-TeXAtom-ORD\"><mstyle displaystyle=\"true\" scriptlevel=\"0\"><mi>A</mi><mo>=</mo><mrow><mo>[</mo><mrow class=\"MJX-TeXAtom-ORD\"><mtable columnspacing=\"1em\" rowspacing=\"4pt\"><mtr><mtd><mrow class=\"MJX-TeXAtom-ORD\"><mrow class=\"MJX-TeXAtom-ORD\"><mo maxsize=\"1.2em\" minsize=\"1.2em\">|</mo></mrow></mrow></mtd><mtd><mrow class=\"MJX-TeXAtom-ORD\"><mrow class=\"MJX-TeXAtom-ORD\"><mo maxsize=\"1.2em\" minsize=\"1.2em\">|</mo></mrow></mrow></mtd><mtd></mtd><mtd><mrow class=\"MJX-TeXAtom-ORD\"><mrow class=\"MJX-TeXAtom-ORD\"><mo maxsize=\"1.2em\" minsize=\"1.2em\">|</mo></mrow></mrow></mtd></mtr><mtr><mtd><mi>T</mi><mo stretchy=\"false\">(</mo><msub><mi>e</mi><mrow class=\"MJX-TeXAtom-ORD\"><mn>1</mn></mrow></msub><mo stretchy=\"false\">)</mo></mtd><mtd><mi>T</mi><mo stretchy=\"false\">(</mo><msub><mi>e</mi><mrow class=\"MJX-TeXAtom-ORD\"><mn>2</mn></mrow></msub><mo stretchy=\"false\">)</mo></mtd><mtd><mo>⋯<!-- ⋯ --></mo></mtd><mtd><mi>T</mi><mo stretchy=\"false\">(</mo><msub><mi>e</mi><mrow class=\"MJX-TeXAtom-ORD\"><mi>n</mi></mrow></msub><mo stretchy=\"false\">)</mo></mtd></mtr><mtr><mtd><mrow class=\"MJX-TeXAtom-ORD\"><mrow class=\"MJX-TeXAtom-ORD\"><mo maxsize=\"1.2em\" minsize=\"1.2em\">|</mo></mrow></mrow></mtd><mtd><mrow class=\"MJX-TeXAtom-ORD\"><mrow class=\"MJX-TeXAtom-ORD\"><mo maxsize=\"1.2em\" minsize=\"1.2em\">|</mo></mrow></mrow></mtd><mtd></mtd><mtd><mrow class=\"MJX-TeXAtom-ORD\"><mrow class=\"MJX-TeXAtom-ORD\"><mo maxsize=\"1.2em\" minsize=\"1.2em\">|</mo></mrow></mrow></mtd></mtr></mtable></mrow><mo>]</mo></mrow></mstyle></mrow><annotation encoding=\"application/x-tex\">{\\displaystyle A=\\left[{\\begin{matrix}{\\big |}&amp;{\\big |}&amp;&amp;{\\big |}\\\\T(e_{1})&amp;T(e_{2})&amp;\\cdots &amp;T(e_{n})\\\\{\\big |}&amp;{\\big |}&amp;&amp;{\\big |}\\\\\\end{matrix}}\\right]}</annotation></semantics></math>",
+          "latex": "A=\\left[{\\begin{matrix}{\\big |}&{\\big |}&&{\\big |}\\\\T(e_{1})&T(e_{2})&\\cdots &T(e_{n})\\\\{\\big |}&{\\big |}&&{\\big |}\\\\\\end{matrix}}\\right]",
+          "image_src": "https://wikimedia.org/api/rest_v1/media/math/render/svg/3e6dfd0ec7dc56bbb2520263e5d2fd993c364a9b",
+          "alt_text": "{\\displaystyle A=\\left[{\\begin{matrix}{\\big |}&{\\big |}&&{\\big |}\\\\T(e_{1})&T(e_{2})&\\cdots &T(e_{n})\\\\{\\big |}&{\\big |}&&{\\big |}\\\\\\end{matrix}}\\right]}",
+          "alttext": "{\\displaystyle A=\\left[{\\begin{matrix}{\\big |}&{\\big |}&&{\\big |}\\\\T(e_{1})&T(e_{2})&\\cdots &T(e_{n})\\\\{\\big |}&{\\big |}&&{\\big |}\\\\\\end{matrix}}\\right]}"
+        },
+        {
+          "type": "paragraph",
+          "text": "Þar sem aðT(ei){\\displaystyle T(e_{i})}eri-ti dálkvigur þess, ritað meðvenjulegum hnitummeð tilliti tilEm{\\displaystyle {\\mathcal {E}}_{m}}. Það fylki er kallaðvenjulega fylkiðfyrirT, og vörpuninTerT=μA{\\displaystyle T=\\mu _{A}}."
+        }
+      ]
+    },
+    {
+      "type": "heading",
+      "level": 2,
+      "text": "Kjarni og myndrúm",
+      "id": "Kjarni_og_myndrúm",
+      "content": [
+        {
+          "type": "paragraph",
+          "text": "Kjarnilínulegrar vörpunar er jöfnnúllrúmivenjulega fylkisins fyrir vörpunina.Myndrúmhennar er jöfn dálkrúmi venjulega fylkisins."
+        }
+      ]
+    },
+    {
+      "type": "heading",
+      "level": 2,
+      "text": "Tilvísanir",
+      "id": "Tilvísanir",
+      "content": [
+        {
+          "type": "list",
+          "list_type": "ordered",
+          "items": [
+            {
+              "text": "12Orðið „línuleg vörpun“áOrðabanka íslenskrar málstöðvaríslenska: „línuleg vörpun“, „línuleg færsla“"
+            },
+            {
+              "text": "12linear transformation1. línuleg færsla, línuleg vörpuná Orðaskrá Íslenska stærðfræðafélagsins]"
+            }
+          ]
+        },
+        {
+          "type": "paragraph",
+          "text": "íslenska: „línuleg vörpun“, „línuleg færsla“"
+        }
+      ]
+    },
+    {
+      "type": "heading",
+      "level": 2,
+      "text": "Tengt efni",
+      "id": "Tengt_efni",
+      "content": [
+        {
+          "type": "list",
+          "list_type": "unordered",
+          "items": [
+            {
+              "text": "Marglínuleg vörpun"
+            }
+          ]
+        },
+        {
+          "type": "table",
+          "rows": [
+            [
+              {
+                "text": "srbEfni sem tengistlínulegri algebru",
+                "is_header": true
+              }
+            ],
+            [
+              {
+                "text": "Scalar·Vigur (Vektor)·Vigurrúm·Vector resolute·Lína·Fylki·Plan·Háplan·Innfeldisrúm·Línuleg spönn·Línuleg vörpun·Línuleg jöfnuhneppi(Einfaldar línuaðgerðir,Stuðlafylki)·Línulegt óhæði·Línuleg samantekt·Línulegur grunnur·Metorð·Dálkarúm·Raðarúm·Þverlægni·Eigingildi·Eiginvigur·Eiginrúm·Kennimargliða·Útfeldi·Krossfeldi·Innfeldi·Ákveður·Bylta·Fylkjaliðun(LU-þáttun,QR-þáttun)·Hornalínugeranleiki·Hjáþættir·Gauss-eyðing·Gauss-Jordan eyðing·Gram-Schmidt reikniritið·Regla Cramers·Rófsetningin",
+                "is_header": false
+              }
+            ]
+          ]
+        },
+        {
+          "type": "list",
+          "list_type": "unordered",
+          "items": [
+            {
+              "text": "s"
+            },
+            {
+              "text": "r"
+            },
+            {
+              "text": "b"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

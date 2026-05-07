@@ -1,0 +1,17 @@
+.ipynb_checkpoints/
+.pytest_cache/
+pytest-cache-files-*/
+__pycache__/
+*.py[cod]
+test.py
+
+.venv/
+.env
+
+output/
+outputs/
+out_scans/
+
+document_*.pdf
+document_*_gt.json
+*_scan_*.jpg

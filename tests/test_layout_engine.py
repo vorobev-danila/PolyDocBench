@@ -1,0 +1,86 @@
+import json
+from pathlib import Path
+
+from polydocbench.layout import LayoutEngine
+from polydocbench.layout.templates import list_template_names
+
+
+def test_layout_engine_layouts_parsed_source_json():
+    input_path = Path("outputs/test_runs/layout_engine_source.json")
+    input_path.parent.mkdir(parents=True, exist_ok=True)
+    input_path.write_text(
+        json.dumps(
+            {
+                "title": "Tiny article",
+                "url": "https://example.test/article",
+                "content": [
+                    {"type": "paragraph", "text": "This is a short paragraph for layout."},
+                    {"type": "heading", "level": 2, "text": "Section", "id": "Section", "content": []},
+                    {"type": "paragraph", "text": "Another paragraph after a heading."},
+                ],
+            },
+            ensure_ascii=False,
+        ),
+        encoding="utf-8",
+    )
+
+    result = LayoutEngine(font_path="DejaVu Sans/DejaVuSans.ttf").layout_document(input_path)
+
+    assert len(result.pages) == 1
+    assert any(element.type == "text_line" for element in result.elements)
+    assert result.ground_truth["metadata"]["page_count"] == 1
+
+
+def test_layout_template_loader_accepts_legacy_config_path():
+    assert "simple_article" in list_template_names("render/configs/layout_templates.yaml")
+
+
+def test_layout_engine_uses_graphic_element_dimensions():
+    input_path = Path("outputs/test_runs/layout_engine_graphic_source.json")
+    input_path.parent.mkdir(parents=True, exist_ok=True)
+    input_path.write_text(
+        json.dumps(
+            {
+                "title": "Graphic article",
+                "url": "https://example.test/graphic",
+                "content": [{"type": "image", "width": 180, "height": 90}],
+            },
+            ensure_ascii=False,
+        ),
+        encoding="utf-8",
+    )
+
+    result = LayoutEngine(font_path="DejaVu Sans/DejaVuSans.ttf").layout_document(input_path)
+    image = next(element for element in result.elements if element.type == "image")
+
+    assert image.bbox.width == 180
+    assert image.bbox.height == 90
+
+
+def test_layout_engine_exports_stable_ids_and_reading_order():
+    input_path = Path("outputs/test_runs/layout_engine_reading_order_source.json")
+    input_path.parent.mkdir(parents=True, exist_ok=True)
+    input_path.write_text(
+        json.dumps(
+            {
+                "title": "Reading order article",
+                "url": "https://example.test/reading-order",
+                "content": [
+                    {"type": "paragraph", "text": "First paragraph."},
+                    {"type": "paragraph", "text": "Second paragraph."},
+                ],
+            },
+            ensure_ascii=False,
+        ),
+        encoding="utf-8",
+    )
+
+    result = LayoutEngine(font_path="DejaVu Sans/DejaVuSans.ttf").layout_document(input_path)
+    gt = result.ground_truth
+
+    assert gt["reading_order"]["blocks"] == ["paragraph_0001", "paragraph_0002"]
+    assert gt["elements"][0]["id"] == "paragraph_0001"
+    assert gt["elements"][0]["metadata"]["role"] == "block"
+    first_line = next(element for element in gt["elements"] if element["metadata"].get("role") == "line")
+    assert first_line["id"].startswith("paragraph_0001_line_")
+    assert first_line["metadata"]["parent_id"] == "paragraph_0001"

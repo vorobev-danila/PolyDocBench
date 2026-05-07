@@ -1,0 +1,914 @@
+{
+  "title": "Regressão linear",
+  "url": "https://pt.wikipedia.org/wiki/Regress%C3%A3o_linear",
+  "content": [
+    {
+      "type": "table",
+      "rows": [
+        [
+          {
+            "text": "Esta páginacita fontes, mas quenão cobremtodo o conteúdo.Ajude ainserir referências(Encontre fontes:Google(N•L•A•I•WP refs)  •ABW•CAPES).",
+            "is_header": false
+          }
+        ]
+      ]
+    },
+    {
+      "type": "paragraph",
+      "text": "Emestatísticaoueconometria,regressão linearé uma equação para se estimar a condicional (valor esperado) de uma variávely, dados os valores de algumas outras variáveisx.[1][2]"
+    },
+    {
+      "type": "image",
+      "src": "https://upload.wikimedia.org/wikipedia/commons/thumb/4/41/LinearRegression.svg/330px-LinearRegression.svg.png",
+      "caption": "Exemplo de regressão linear.",
+      "alt": ""
+    },
+    {
+      "type": "paragraph",
+      "text": "Aregressão, em geral, tem como objetivo tratar de um valor que não se consegue estimar inicialmente."
+    },
+    {
+      "type": "paragraph",
+      "text": "A regressão linear é chamada \"linear\" porque se considera que a relação da resposta às variáveis é umafunção linearde alguns parâmetros. Os modelos de regressão que não são uma função linear dos parâmetros se chamam modelos deregressão não-linear. Sendo uma das primeiras formas de análiseregressivaa ser estudada rigorosamente, é usada extensamente em aplicações práticas. Isso acontece porque modelos que dependem de forma linear dos seus parâmetros desconhecidos, são mais fáceis de ajustar que os modelos não-lineares aos seus parâmetros, e porque as propriedades estatísticas dos estimadores resultantes são fáceis de determinar.[3]"
+    },
+    {
+      "type": "paragraph",
+      "text": "Modelos de regressão linear são frequentemente ajustados usando a abordagem dos mínimos quadrados, mas que também pode ser montada de outras maneiras, tal como minimizando a \"falta de ajuste\" em alguma outra norma (com menos desvios absolutos de regressão), ou através da minimização de uma penalização da versão dos mínimos quadrados. Por outro lado, a abordagem de mínimos quadrados pode ser utilizado para ajustar a modelos que não são modelos lineares. Assim, embora os termos \"mínimos quadrados\" e \"modelo linear\" estejam intimamente ligados, eles não são sinônimos.[carece de fontes?]"
+    },
+    {
+      "type": "heading",
+      "level": 2,
+      "text": "Equação da Regressão Linear",
+      "id": "Equação_da_Regressão_Linear",
+      "content": [
+        {
+          "type": "paragraph",
+          "text": "Para se estimar o valor esperado, usa-se de uma equação, que determina a relação entre ambas as variáveis."
+        },
+        {
+          "type": "paragraph",
+          "text": "yi=α+βXi+εi{\\displaystyle y_{i}=\\alpha +\\beta \\,X_{i}+\\varepsilon _{i}}"
+        },
+        {
+          "type": "paragraph",
+          "text": ", onde:"
+        },
+        {
+          "type": "paragraph",
+          "text": "yi{\\displaystyle y_{i}}: Variável explicada (dependente); representa o que o modelo tentará prever"
+        },
+        {
+          "type": "paragraph",
+          "text": "α{\\displaystyle \\alpha }: É uma constante, que representa a interceptação daretacom o eixo vertical;"
+        },
+        {
+          "type": "paragraph",
+          "text": "β{\\displaystyle \\beta }: Representa a inclinação (coeficiente angular) em relação à variável explicativa;"
+        },
+        {
+          "type": "paragraph",
+          "text": "Xi{\\displaystyle X_{i}}: Variável explicativa (independente);"
+        },
+        {
+          "type": "paragraph",
+          "text": "εi{\\displaystyle \\varepsilon _{i}}: Representa todos os factores residuais mais os possíveis erros de medição. O seu comportamento é aleatório, devido à natureza dos factores que encerra. Para que essa fórmula possa ser aplicada, os erros devem satisfazer determinadas hipóteses, que são: teremdistribuição normal, com a mesma variânciaσ2{\\displaystyle \\sigma ^{2}\\,}, independentes e independentes da variável explicativa X, ou seja, i.i.d. (independentes e identicamente distribuídas)."
+        },
+        {
+          "type": "heading",
+          "level": 3,
+          "text": "Notação Matricial",
+          "id": "Notação_Matricial",
+          "content": [
+            {
+              "type": "paragraph",
+              "text": "A equação acima pode ser reescrita em forma dematriz:"
+            },
+            {
+              "type": "paragraph",
+              "text": "y=Xβ+ε{\\displaystyle \\mathbf {y} =\\mathbf {X} {\\boldsymbol {\\beta }}+{\\boldsymbol {\\varepsilon }}}"
+            },
+            {
+              "type": "paragraph",
+              "text": "Ondey{\\displaystyle \\mathbf {y} }é uma matriz den×1{\\displaystyle n\\times 1}observações,X{\\displaystyle \\mathbf {X} }é uma matriz de tamanhon×p+1{\\displaystyle n\\times p+1}(sendo a primeira coluna com valores sempre = 1, representando a constanteα{\\displaystyle \\alpha }, ep{\\displaystyle p}é a quantidade de variáveis explicativas),β{\\displaystyle {\\boldsymbol {\\beta }}}é uma matriz dep+1×1{\\displaystyle p+1\\times 1}variáveis explicativas (sendo queβ0{\\displaystyle \\beta _{0}}representa a constanteα{\\displaystyle \\alpha }) eε{\\displaystyle {\\boldsymbol {\\varepsilon }}}é uma matriz den×1{\\displaystyle n\\times 1}de resíduos."
+            },
+            {
+              "type": "formula",
+              "formula_type": "inline",
+              "mathml": "<math alttext=\"{\\displaystyle \\mathbf {y} ={\\begin{bmatrix}y_{1}\\\\y_{2}\\\\\\vdots \\\\y_{n}\\end{bmatrix}},\\qquad \\mathbf {X} ={\\begin{bmatrix}1&amp;X_{11}&amp;X_{12}&amp;\\cdots &amp;X_{1p}\\\\1&amp;X_{21}&amp;X_{22}&amp;\\cdots &amp;X_{2p}\\\\\\vdots &amp;\\vdots &amp;\\ddots &amp;\\vdots \\\\1&amp;X_{n1}&amp;X_{n2}&amp;\\cdots &amp;X_{np}\\end{bmatrix}},\\qquad {\\boldsymbol {\\beta }}={\\begin{bmatrix}\\beta _{0}\\\\\\beta _{1}\\\\\\beta _{2}\\\\\\vdots \\\\\\beta _{p}\\end{bmatrix}},\\qquad {\\boldsymbol {\\varepsilon }}={\\begin{bmatrix}\\varepsilon _{1}\\\\\\varepsilon _{2}\\\\\\vdots \\\\\\varepsilon _{n}\\end{bmatrix}}}\" xmlns=\"http://www.w3.org/1998/Math/MathML\"><semantics><mrow class=\"MJX-TeXAtom-ORD\"><mstyle displaystyle=\"true\" scriptlevel=\"0\"><mrow class=\"MJX-TeXAtom-ORD\"><mi mathvariant=\"bold\">y</mi></mrow><mo>=</mo><mrow class=\"MJX-TeXAtom-ORD\"><mrow><mo>[</mo><mtable columnspacing=\"1em\" rowspacing=\"4pt\"><mtr><mtd><msub><mi>y</mi><mrow class=\"MJX-TeXAtom-ORD\"><mn>1</mn></mrow></msub></mtd></mtr><mtr><mtd><msub><mi>y</mi><mrow class=\"MJX-TeXAtom-ORD\"><mn>2</mn></mrow></msub></mtd></mtr><mtr><mtd><mo>⋮<!-- ⋮ --></mo></mtd></mtr><mtr><mtd><msub><mi>y</mi><mrow class=\"MJX-TeXAtom-ORD\"><mi>n</mi></mrow></msub></mtd></mtr></mtable><mo>]</mo></mrow></mrow><mo>,</mo><mspace width=\"2em\"></mspace><mrow class=\"MJX-TeXAtom-ORD\"><mi mathvariant=\"bold\">X</mi></mrow><mo>=</mo><mrow class=\"MJX-TeXAtom-ORD\"><mrow><mo>[</mo><mtable columnspacing=\"1em\" rowspacing=\"4pt\"><mtr><mtd><mn>1</mn></mtd><mtd><msub><mi>X</mi><mrow class=\"MJX-TeXAtom-ORD\"><mn>11</mn></mrow></msub></mtd><mtd><msub><mi>X</mi><mrow class=\"MJX-TeXAtom-ORD\"><mn>12</mn></mrow></msub></mtd><mtd><mo>⋯<!-- ⋯ --></mo></mtd><mtd><msub><mi>X</mi><mrow class=\"MJX-TeXAtom-ORD\"><mn>1</mn><mi>p</mi></mrow></msub></mtd></mtr><mtr><mtd><mn>1</mn></mtd><mtd><msub><mi>X</mi><mrow class=\"MJX-TeXAtom-ORD\"><mn>21</mn></mrow></msub></mtd><mtd><msub><mi>X</mi><mrow class=\"MJX-TeXAtom-ORD\"><mn>22</mn></mrow></msub></mtd><mtd><mo>⋯<!-- ⋯ --></mo></mtd><mtd><msub><mi>X</mi><mrow class=\"MJX-TeXAtom-ORD\"><mn>2</mn><mi>p</mi></mrow></msub></mtd></mtr><mtr><mtd><mo>⋮<!-- ⋮ --></mo></mtd><mtd><mo>⋮<!-- ⋮ --></mo></mtd><mtd><mo>⋱<!-- ⋱ --></mo></mtd><mtd><mo>⋮<!-- ⋮ --></mo></mtd></mtr><mtr><mtd><mn>1</mn></mtd><mtd><msub><mi>X</mi><mrow class=\"MJX-TeXAtom-ORD\"><mi>n</mi><mn>1</mn></mrow></msub></mtd><mtd><msub><mi>X</mi><mrow class=\"MJX-TeXAtom-ORD\"><mi>n</mi><mn>2</mn></mrow></msub></mtd><mtd><mo>⋯<!-- ⋯ --></mo></mtd><mtd><msub><mi>X</mi><mrow class=\"MJX-TeXAtom-ORD\"><mi>n</mi><mi>p</mi></mrow></msub></mtd></mtr></mtable><mo>]</mo></mrow></mrow><mo>,</mo><mspace width=\"2em\"></mspace><mrow class=\"MJX-TeXAtom-ORD\"><mi mathvariant=\"bold-italic\">β<!-- β --></mi></mrow><mo>=</mo><mrow class=\"MJX-TeXAtom-ORD\"><mrow><mo>[</mo><mtable columnspacing=\"1em\" rowspacing=\"4pt\"><mtr><mtd><msub><mi>β<!-- β --></mi><mrow class=\"MJX-TeXAtom-ORD\"><mn>0</mn></mrow></msub></mtd></mtr><mtr><mtd><msub><mi>β<!-- β --></mi><mrow class=\"MJX-TeXAtom-ORD\"><mn>1</mn></mrow></msub></mtd></mtr><mtr><mtd><msub><mi>β<!-- β --></mi><mrow class=\"MJX-TeXAtom-ORD\"><mn>2</mn></mrow></msub></mtd></mtr><mtr><mtd><mo>⋮<!-- ⋮ --></mo></mtd></mtr><mtr><mtd><msub><mi>β<!-- β --></mi><mrow class=\"MJX-TeXAtom-ORD\"><mi>p</mi></mrow></msub></mtd></mtr></mtable><mo>]</mo></mrow></mrow><mo>,</mo><mspace width=\"2em\"></mspace><mrow class=\"MJX-TeXAtom-ORD\"><mi mathvariant=\"bold-italic\">ε<!-- ε --></mi></mrow><mo>=</mo><mrow class=\"MJX-TeXAtom-ORD\"><mrow><mo>[</mo><mtable columnspacing=\"1em\" rowspacing=\"4pt\"><mtr><mtd><msub><mi>ε<!-- ε --></mi><mrow class=\"MJX-TeXAtom-ORD\"><mn>1</mn></mrow></msub></mtd></mtr><mtr><mtd><msub><mi>ε<!-- ε --></mi><mrow class=\"MJX-TeXAtom-ORD\"><mn>2</mn></mrow></msub></mtd></mtr><mtr><mtd><mo>⋮<!-- ⋮ --></mo></mtd></mtr><mtr><mtd><msub><mi>ε<!-- ε --></mi><mrow class=\"MJX-TeXAtom-ORD\"><mi>n</mi></mrow></msub></mtd></mtr></mtable><mo>]</mo></mrow></mrow></mstyle></mrow><annotation encoding=\"application/x-tex\">{\\displaystyle \\mathbf {y} ={\\begin{bmatrix}y_{1}\\\\y_{2}\\\\\\vdots \\\\y_{n}\\end{bmatrix}},\\qquad \\mathbf {X} ={\\begin{bmatrix}1&amp;X_{11}&amp;X_{12}&amp;\\cdots &amp;X_{1p}\\\\1&amp;X_{21}&amp;X_{22}&amp;\\cdots &amp;X_{2p}\\\\\\vdots &amp;\\vdots &amp;\\ddots &amp;\\vdots \\\\1&amp;X_{n1}&amp;X_{n2}&amp;\\cdots &amp;X_{np}\\end{bmatrix}},\\qquad {\\boldsymbol {\\beta }}={\\begin{bmatrix}\\beta _{0}\\\\\\beta _{1}\\\\\\beta _{2}\\\\\\vdots \\\\\\beta _{p}\\end{bmatrix}},\\qquad {\\boldsymbol {\\varepsilon }}={\\begin{bmatrix}\\varepsilon _{1}\\\\\\varepsilon _{2}\\\\\\vdots \\\\\\varepsilon _{n}\\end{bmatrix}}}</annotation></semantics></math>",
+              "latex": "\\mathbf {y} ={\\begin{bmatrix}y_{1}\\\\y_{2}\\\\\\vdots \\\\y_{n}\\end{bmatrix}},\\qquad \\mathbf {X} ={\\begin{bmatrix}1&X_{11}&X_{12}&\\cdots &X_{1p}\\\\1&X_{21}&X_{22}&\\cdots &X_{2p}\\\\\\vdots &\\vdots &\\ddots &\\vdots \\\\1&X_{n1}&X_{n2}&\\cdots &X_{np}\\end{bmatrix}},\\qquad {\\boldsymbol {\\beta }}={\\begin{bmatrix}\\beta _{0}\\\\\\beta _{1}\\\\\\beta _{2}\\\\\\vdots \\\\\\beta _{p}\\end{bmatrix}},\\qquad {\\boldsymbol {\\varepsilon }}={\\begin{bmatrix}\\varepsilon _{1}\\\\\\varepsilon _{2}\\\\\\vdots \\\\\\varepsilon _{n}\\end{bmatrix}}",
+              "image_src": "https://wikimedia.org/api/rest_v1/media/math/render/svg/a653cce97f4a0176abe180f4f97ed926d84cb7d8",
+              "alt_text": "{\\displaystyle \\mathbf {y} ={\\begin{bmatrix}y_{1}\\\\y_{2}\\\\\\vdots \\\\y_{n}\\end{bmatrix}},\\qquad \\mathbf {X} ={\\begin{bmatrix}1&X_{11}&X_{12}&\\cdots &X_{1p}\\\\1&X_{21}&X_{22}&\\cdots &X_{2p}\\\\\\vdots &\\vdots &\\ddots &\\vdots \\\\1&X_{n1}&X_{n2}&\\cdots &X_{np}\\end{bmatrix}},\\qquad {\\boldsymbol {\\beta }}={\\begin{bmatrix}\\beta _{0}\\\\\\beta _{1}\\\\\\beta _{2}\\\\\\vdots \\\\\\beta _{p}\\end{bmatrix}},\\qquad {\\boldsymbol {\\varepsilon }}={\\begin{bmatrix}\\varepsilon _{1}\\\\\\varepsilon _{2}\\\\\\vdots \\\\\\varepsilon _{n}\\end{bmatrix}}}",
+              "alttext": "{\\displaystyle \\mathbf {y} ={\\begin{bmatrix}y_{1}\\\\y_{2}\\\\\\vdots \\\\y_{n}\\end{bmatrix}},\\qquad \\mathbf {X} ={\\begin{bmatrix}1&X_{11}&X_{12}&\\cdots &X_{1p}\\\\1&X_{21}&X_{22}&\\cdots &X_{2p}\\\\\\vdots &\\vdots &\\ddots &\\vdots \\\\1&X_{n1}&X_{n2}&\\cdots &X_{np}\\end{bmatrix}},\\qquad {\\boldsymbol {\\beta }}={\\begin{bmatrix}\\beta _{0}\\\\\\beta _{1}\\\\\\beta _{2}\\\\\\vdots \\\\\\beta _{p}\\end{bmatrix}},\\qquad {\\boldsymbol {\\varepsilon }}={\\begin{bmatrix}\\varepsilon _{1}\\\\\\varepsilon _{2}\\\\\\vdots \\\\\\varepsilon _{n}\\end{bmatrix}}}"
+            }
+          ]
+        },
+        {
+          "type": "heading",
+          "level": 3,
+          "text": "Estimativa dos fatoresα{\\displaystyle \\alpha }eβ{\\displaystyle \\beta }",
+          "id": "Estimativa_dos_fatores_'\"`UNIQ--postMath-00000016-QINU`\"'_e_'\"`UNIQ--postMath-00000017-QINU`\"'",
+          "content": [
+            {
+              "type": "paragraph",
+              "text": "A técnica mais usual para estimativa dos parâmetrosα{\\displaystyle \\alpha }eβ{\\displaystyle \\beta }é oMétodo dos mínimos quadrados, mas também podem ser usados:"
+            },
+            {
+              "type": "list",
+              "list_type": "unordered",
+              "items": [
+                {
+                  "text": "Mínimos Quadrados Ponderados"
+                },
+                {
+                  "text": "Mínimos quadrados generalizados"
+                },
+                {
+                  "text": "Máxima verossimilhança"
+                },
+                {
+                  "text": "Regularização de Tikhonov"
+                },
+                {
+                  "text": "Mínimo Desvio absoluto"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "heading",
+          "level": 3,
+          "text": "Interpretação dos parâmetros do modelo",
+          "id": "Interpretação_dos_parâmetros_do_modelo",
+          "content": [
+            {
+              "type": "paragraph",
+              "text": "O chamado intercepto ou coeficiente linear (β0{\\displaystyle \\beta _{0}}) é utilizado para representar o ponto em que a reta da regressão corta o eixo Y  quando X = 0. Já o parâmetro  representa a inclinação da reta (β1{\\displaystyle \\beta _{1}}) é denominado como coeficiente  de regressão ou coeficiente angular. A interpretação geométrica dos coeficientes podem ser vistos na imagem abaixo."
+            },
+            {
+              "type": "image",
+              "src": "https://upload.wikimedia.org/wikipedia/commons/thumb/9/9e/Reta_Regressora.jpg/500px-Reta_Regressora.jpg",
+              "caption": "Uma desvantagem é que o modelo de regressão linear simples não acomoda impactos de erros experimentais (variação de matéria prima), de erros de medida, entre outras inúmeras fontes de variabilidade",
+              "alt": ""
+            },
+            {
+              "type": "paragraph",
+              "text": "Com base no modelo representado na imagem assim, é possível identificar que :"
+            },
+            {
+              "type": "list",
+              "list_type": "unordered",
+              "items": [
+                {
+                  "text": "A relação matemática entre Y e X é linear"
+                },
+                {
+                  "text": "Os valores de x são fixos (ou controlados), isto é, x não é uma variável aleatória"
+                },
+                {
+                  "text": "A média do erro é nula, ou sejaE(εi)=0{\\displaystyle E(\\varepsilon _{i})=0}."
+                }
+              ]
+            },
+            {
+              "type": "paragraph",
+              "text": "E(Yi)=E(β0+β1xi+ϵi)=β0+β1xi+E(ϵi)=β0+β1xi{\\displaystyle E(Y_{i})=E(\\beta _{0}+\\beta _{1}x_{i}+\\epsilon _{i})=\\beta _{0}+\\beta _{1}x_{i}+E(\\epsilon _{i})=\\beta _{0}+\\beta _{1}x_{i}}"
+            },
+            {
+              "type": "paragraph",
+              "text": "Dado isto, temos que a regressão do modelo acima e dado por:"
+            },
+            {
+              "type": "paragraph",
+              "text": "E[Y|x]=β0+β1x{\\displaystyle E[Y|x]=\\beta _{0}+\\beta _{1}x}"
+            },
+            {
+              "type": "list",
+              "list_type": "unordered",
+              "items": [
+                {
+                  "text": "Sabendo que para cada valor de X, a variação deεi{\\displaystyle \\varepsilon _{i}}será sempreσ2{\\displaystyle \\sigma ^{2}}, teremos que:"
+                }
+              ]
+            },
+            {
+              "type": "paragraph",
+              "text": "Var(ϵi)=E(ϵi2)−[E(ϵi)2]=E(ϵi2)=σ2{\\displaystyle Var(\\epsilon _{i})=E(\\epsilon _{i}^{2})-[E(\\epsilon _{i})^{2}]=E(\\epsilon _{i}^{2})=\\sigma ^{2}}Assim temos que :"
+            },
+            {
+              "type": "paragraph",
+              "text": "Var(Yi)=E[Yi−E(Yi|xi)2]=E(ϵi2)=σ2{\\displaystyle Var(Y_{i})=E[Y_{i}-E(Y_{i}|x_{i})^{2}]=E(\\epsilon _{i}^{2})=\\sigma ^{2}}"
+            },
+            {
+              "type": "paragraph",
+              "text": "Quando deparamos com casos como este, dizemos que o erro é homocedástico, ou seja, avariânciaé constante."
+            },
+            {
+              "type": "list",
+              "list_type": "unordered",
+              "items": [
+                {
+                  "text": "Em casos como esse, esta  hipótese não implica que os erros sejam independentes. Se a distribuição dos erros for normal,  esta hipótese é equivalente a independência dos erros."
+                }
+              ]
+            },
+            {
+              "type": "paragraph",
+              "text": "Cov(ϵi,ϵj)=E(ϵiϵj)−E(ϵi)E(ϵj)=E(ϵi,ϵj)=0{\\displaystyle Cov(\\epsilon _{i},\\epsilon _{j})=E(\\epsilon _{i}\\epsilon _{j})-E(\\epsilon _{i})E(\\epsilon _{j})=E(\\epsilon _{i},\\epsilon _{j})=0}i≠j{\\displaystyle i\\neq j}"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "heading",
+      "level": 2,
+      "text": "Ver também",
+      "id": "Ver_também",
+      "content": [
+        {
+          "type": "list",
+          "list_type": "unordered",
+          "items": [
+            {
+              "text": "Método dos mínimos quadrados"
+            },
+            {
+              "text": "Regressão não linear"
+            },
+            {
+              "text": "Regressão"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "heading",
+      "level": 2,
+      "text": "Ligações externas",
+      "id": "Ligações_externas",
+      "content": [
+        {
+          "type": "list",
+          "list_type": "unordered",
+          "items": [
+            {
+              "text": "SysLinea 0.1.2: Programa de código aberto com regressão linear e não linear."
+            },
+            {
+              "text": "Manual da Regressão Linear"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "heading",
+      "level": 2,
+      "text": "Referências",
+      "id": "Referências",
+      "content": [
+        {
+          "type": "list",
+          "list_type": "ordered",
+          "items": [
+            {
+              "text": "↑«Linear regression»(PDF)(em inglês). Stanford.edu. Consultado em 10 de julho de 2019"
+            },
+            {
+              "text": "↑«Chapter 9 - Simple linear regression»(PDF)(em inglês). Carnegie Mellon University - Statistics & Data Science. Consultado em 10 de julho de 2019"
+            },
+            {
+              "text": "↑http://www.fisica.ufs.br/egsantana/cinematica/regresion/regresion.htmRegressão linear com experimêntos físicos[ligação inativa]"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "heading",
+      "level": 2,
+      "text": "Bibliografia",
+      "id": "Bibliografia",
+      "content": [
+        {
+          "type": "list",
+          "list_type": "unordered",
+          "items": [
+            {
+              "text": "REIS, E.,Estatistica Descritiva(2ª ed.). Lisboa: Edições Sílabo, 1994"
+            }
+          ]
+        },
+        {
+          "type": "table",
+          "rows": [
+            [
+              {
+                "text": "vdeEconometria",
+                "is_header": true
+              }
+            ],
+            [
+              {
+                "text": "Regressão linear",
+                "is_header": true
+              },
+              {
+                "text": "Método dos mínimos quadrados·R²·Teste t·Teste F·Valor-p",
+                "is_header": false
+              }
+            ],
+            [
+              {
+                "text": "Regressão não-linear",
+                "is_header": true
+              },
+              {
+                "text": "Modelo linear generalizado·Máxima verossimilhança·Método dos momentos generalizados",
+                "is_header": false
+              }
+            ],
+            [
+              {
+                "text": "Ajustes nos modelos",
+                "is_header": true
+              },
+              {
+                "text": "Correlação serial·Endogeneidade·Heteroscedasticidade·Mínimos quadrados de dois estágios·Multicolinearidade·Variável dummy·Variáveis instrumentais·Regressão quantílica·Teste de especificação de Hausman",
+                "is_header": false
+              }
+            ],
+            [
+              {
+                "text": "Variável dependente limitada",
+                "is_header": true
+              },
+              {
+                "text": "Modelo probit·Regressão logística·Regressão de Poisson",
+                "is_header": false
+              }
+            ],
+            [
+              {
+                "text": "Série temporal",
+                "is_header": true
+              },
+              {
+                "text": "Autocorrelação·Ruído branco·Operador de defasagem·ARMA·ARIMA·GARCH·Dados em painel·Teste de Chow·Teste de Dickey-Fuller aumentado",
+                "is_header": false
+              }
+            ],
+            [
+              {
+                "text": "Softwares",
+                "is_header": true
+              },
+              {
+                "text": "EViews·Gretl·LIMDEP & NLOGIT·IGEst·MATLAB·R·Shazam software·Stata·Octave·JMulTi·PSPP",
+                "is_header": false
+              }
+            ],
+            [
+              {
+                "text": "Pessoas",
+                "is_header": true
+              },
+              {
+                "text": "Adrien-Marie Legendre·Carl Friedrich Gauss·David Dickey·George Box·Gwilym Jenkins·George Chow·Lars Peter Hansen·Ronald Fisher·Wayne Fuller",
+                "is_header": false
+              }
+            ]
+          ]
+        },
+        {
+          "type": "list",
+          "list_type": "unordered",
+          "items": [
+            {
+              "text": "v"
+            },
+            {
+              "text": "d"
+            },
+            {
+              "text": "e"
+            }
+          ]
+        },
+        {
+          "type": "table",
+          "rows": [
+            [
+              {
+                "text": "vdeEstatística",
+                "is_header": true
+              }
+            ],
+            [
+              {
+                "text": "Estatística descritiva",
+                "is_header": true
+              },
+              {
+                "text": "Gráficos estatísticosBiplotCarta de controloDiagrama de caixaDiagrama de ramos e folhasGráfico em lequeForest plotFunção correlogramaGráfico de barrasGráfico de dispersãoGráfico de linhaGráfico de setoresGráfico Q-QMédiaAritméticaGeométricaHarmônicaPonderadaMedianaModaVariânciaDesvio padrãoCoeficiente de variação",
+                "is_header": false
+              },
+              {
+                "text": "Gráficos estatísticos",
+                "is_header": true
+              },
+              {
+                "text": "BiplotCarta de controloDiagrama de caixaDiagrama de ramos e folhasGráfico em lequeForest plotFunção correlogramaGráfico de barrasGráfico de dispersãoGráfico de linhaGráfico de setoresGráfico Q-Q",
+                "is_header": false
+              }
+            ],
+            [
+              {
+                "text": "Gráficos estatísticos",
+                "is_header": true
+              },
+              {
+                "text": "BiplotCarta de controloDiagrama de caixaDiagrama de ramos e folhasGráfico em lequeForest plotFunção correlogramaGráfico de barrasGráfico de dispersãoGráfico de linhaGráfico de setoresGráfico Q-Q",
+                "is_header": false
+              }
+            ],
+            [
+              {
+                "text": "Inferência estatística",
+                "is_header": true
+              },
+              {
+                "text": "Análise de variânciaCópula gaussianaAnálise multivariada da variânciaDistribuição t de StudentErro do tipo IErro do tipo IIHipotése nula/Hipótese alternativaMétodo de Neyman–PearsonNormalização de dadosPotênciaSignificânciaTeste TTeste ZTestes de hipótesesValor-p",
+                "is_header": false
+              }
+            ],
+            [
+              {
+                "text": "Estatística não-paramétrica",
+                "is_header": true
+              },
+              {
+                "text": "Teste binomialTeste chi-quadrado de Pearsonuma amostraduas amostras independentesk amostras independentesTeste Kolmogorov-Smirnovuma amostraduas amostras independentesTeste de McNemarTeste dos sinaisTeste de WilcoxonTeste de WalshTeste exato de FisherTeste Q de CochranTeste de Kruskal-WallisTeste de Friedman",
+                "is_header": false
+              }
+            ],
+            [
+              {
+                "text": "Análise de sobrevivência",
+                "is_header": true
+              },
+              {
+                "text": "Função de sobrevivênciaKaplan-MeierTeste log-rankTaxa de falhaProportional hazards models",
+                "is_header": false
+              }
+            ],
+            [
+              {
+                "text": "Amostragem",
+                "is_header": true
+              },
+              {
+                "text": "AmostraAmostragem aleatória simplesAmostragem estratificadaAmostragem por conglomeradosAmostragem sistemática",
+                "is_header": false
+              }
+            ],
+            [
+              {
+                "text": "Distribuição de probabilidade",
+                "is_header": true
+              },
+              {
+                "text": "NormalDe ParetoDe PoissonDe BernoulliHipergeométricaBinomialBinomial negativaGamaBetat de StudentF de Fisher-SnedecorWeibullChi-quadrado",
+                "is_header": false
+              }
+            ],
+            [
+              {
+                "text": "Correlação",
+                "is_header": true
+              },
+              {
+                "text": "Variável de confusãoCoeficiente de correlação de PearsonCoeficiente de correlação de postos de SpearmanCoeficiente de correlação tau de Kendall",
+                "is_header": false
+              }
+            ],
+            [
+              {
+                "text": "Regressão",
+                "is_header": true
+              },
+              {
+                "text": "Regressão linearRegressão não linearRegressão logísticaMétodo dos mínimos quadradosModelos lineares generalizadosModelos para dados longitudinais",
+                "is_header": false
+              }
+            ],
+            [
+              {
+                "text": "Análise multivariada",
+                "is_header": true
+              },
+              {
+                "text": "Distribuição normal multivariadaAnálise de componentes principaisAnálise fatorialAnálise discriminanteAnálise de \"Cluster\" (análise de agrupamento)Análise de correspondência",
+                "is_header": false
+              }
+            ],
+            [
+              {
+                "text": "Séries temporais",
+                "is_header": true
+              },
+              {
+                "text": "Modelos para séries temporaisTendência e sazonalidadeModelos de suavização exponencialARIMAModelos sazonais",
+                "is_header": false
+              }
+            ]
+          ]
+        },
+        {
+          "type": "list",
+          "list_type": "unordered",
+          "items": [
+            {
+              "text": "v"
+            },
+            {
+              "text": "d"
+            },
+            {
+              "text": "e"
+            }
+          ]
+        },
+        {
+          "type": "table",
+          "rows": [
+            [
+              {
+                "text": "Gráficos estatísticos",
+                "is_header": true
+              },
+              {
+                "text": "BiplotCarta de controloDiagrama de caixaDiagrama de ramos e folhasGráfico em lequeForest plotFunção correlogramaGráfico de barrasGráfico de dispersãoGráfico de linhaGráfico de setoresGráfico Q-Q",
+                "is_header": false
+              }
+            ]
+          ]
+        },
+        {
+          "type": "list",
+          "list_type": "unordered",
+          "items": [
+            {
+              "text": "Biplot"
+            },
+            {
+              "text": "Carta de controlo"
+            },
+            {
+              "text": "Diagrama de caixa"
+            },
+            {
+              "text": "Diagrama de ramos e folhas"
+            },
+            {
+              "text": "Gráfico em leque"
+            },
+            {
+              "text": "Forest plot"
+            },
+            {
+              "text": "Função correlograma"
+            },
+            {
+              "text": "Gráfico de barras"
+            },
+            {
+              "text": "Gráfico de dispersão"
+            },
+            {
+              "text": "Gráfico de linha"
+            },
+            {
+              "text": "Gráfico de setores"
+            },
+            {
+              "text": "Gráfico Q-Q"
+            }
+          ]
+        },
+        {
+          "type": "list",
+          "list_type": "unordered",
+          "items": [
+            {
+              "text": "MédiaAritméticaGeométricaHarmônicaPonderada"
+            },
+            {
+              "text": "Mediana"
+            },
+            {
+              "text": "Moda"
+            },
+            {
+              "text": "Variância"
+            },
+            {
+              "text": "Desvio padrão"
+            },
+            {
+              "text": "Coeficiente de variação"
+            }
+          ]
+        },
+        {
+          "type": "list",
+          "list_type": "unordered",
+          "items": [
+            {
+              "text": "Aritmética"
+            },
+            {
+              "text": "Geométrica"
+            },
+            {
+              "text": "Harmônica"
+            },
+            {
+              "text": "Ponderada"
+            }
+          ]
+        },
+        {
+          "type": "list",
+          "list_type": "unordered",
+          "items": [
+            {
+              "text": "Teste binomial"
+            },
+            {
+              "text": "Teste chi-quadrado de Pearsonuma amostraduas amostras independentesk amostras independentes"
+            },
+            {
+              "text": "Teste Kolmogorov-Smirnovuma amostraduas amostras independentes"
+            },
+            {
+              "text": "Teste de McNemar"
+            },
+            {
+              "text": "Teste dos sinais"
+            },
+            {
+              "text": "Teste de Wilcoxon"
+            },
+            {
+              "text": "Teste de Walsh"
+            },
+            {
+              "text": "Teste exato de Fisher"
+            },
+            {
+              "text": "Teste Q de Cochran"
+            },
+            {
+              "text": "Teste de Kruskal-Wallis"
+            },
+            {
+              "text": "Teste de Friedman"
+            }
+          ]
+        },
+        {
+          "type": "list",
+          "list_type": "unordered",
+          "items": [
+            {
+              "text": "uma amostra"
+            },
+            {
+              "text": "duas amostras independentes"
+            },
+            {
+              "text": "k amostras independentes"
+            }
+          ]
+        },
+        {
+          "type": "list",
+          "list_type": "unordered",
+          "items": [
+            {
+              "text": "uma amostra"
+            },
+            {
+              "text": "duas amostras independentes"
+            }
+          ]
+        },
+        {
+          "type": "list",
+          "list_type": "unordered",
+          "items": [
+            {
+              "text": "Função de sobrevivência"
+            },
+            {
+              "text": "Kaplan-Meier"
+            },
+            {
+              "text": "Teste log-rank"
+            },
+            {
+              "text": "Taxa de falha"
+            },
+            {
+              "text": "Proportional hazards models"
+            }
+          ]
+        },
+        {
+          "type": "list",
+          "list_type": "unordered",
+          "items": [
+            {
+              "text": "Amostra"
+            },
+            {
+              "text": "Amostragem aleatória simples"
+            },
+            {
+              "text": "Amostragem estratificada"
+            },
+            {
+              "text": "Amostragem por conglomerados"
+            },
+            {
+              "text": "Amostragem sistemática"
+            }
+          ]
+        },
+        {
+          "type": "list",
+          "list_type": "unordered",
+          "items": [
+            {
+              "text": "Normal"
+            },
+            {
+              "text": "De Pareto"
+            },
+            {
+              "text": "De Poisson"
+            },
+            {
+              "text": "De Bernoulli"
+            },
+            {
+              "text": "Hipergeométrica"
+            },
+            {
+              "text": "Binomial"
+            },
+            {
+              "text": "Binomial negativa"
+            },
+            {
+              "text": "Gama"
+            },
+            {
+              "text": "Beta"
+            },
+            {
+              "text": "t de Student"
+            },
+            {
+              "text": "F de Fisher-Snedecor"
+            },
+            {
+              "text": "Weibull"
+            },
+            {
+              "text": "Chi-quadrado"
+            }
+          ]
+        },
+        {
+          "type": "list",
+          "list_type": "unordered",
+          "items": [
+            {
+              "text": "Variável de confusão"
+            },
+            {
+              "text": "Coeficiente de correlação de Pearson"
+            },
+            {
+              "text": "Coeficiente de correlação de postos de Spearman"
+            },
+            {
+              "text": "Coeficiente de correlação tau de Kendall"
+            }
+          ]
+        },
+        {
+          "type": "list",
+          "list_type": "unordered",
+          "items": [
+            {
+              "text": "Regressão linear"
+            },
+            {
+              "text": "Regressão não linear"
+            },
+            {
+              "text": "Regressão logística"
+            },
+            {
+              "text": "Método dos mínimos quadrados"
+            },
+            {
+              "text": "Modelos lineares generalizados"
+            },
+            {
+              "text": "Modelos para dados longitudinais"
+            }
+          ]
+        },
+        {
+          "type": "list",
+          "list_type": "unordered",
+          "items": [
+            {
+              "text": "Distribuição normal multivariada"
+            },
+            {
+              "text": "Análise de componentes principais"
+            },
+            {
+              "text": "Análise fatorial"
+            },
+            {
+              "text": "Análise discriminante"
+            }
+          ]
+        },
+        {
+          "type": "paragraph",
+          "text": "Análise de \"Cluster\" (análise de agrupamento)"
+        },
+        {
+          "type": "list",
+          "list_type": "unordered",
+          "items": [
+            {
+              "text": "Análise de correspondência"
+            }
+          ]
+        },
+        {
+          "type": "list",
+          "list_type": "unordered",
+          "items": [
+            {
+              "text": "Modelos para séries temporais"
+            },
+            {
+              "text": "Tendência e sazonalidade"
+            },
+            {
+              "text": "Modelos de suavização exponencial"
+            },
+            {
+              "text": "ARIMA"
+            },
+            {
+              "text": "Modelos sazonais"
+            }
+          ]
+        },
+        {
+          "type": "list",
+          "list_type": "unordered",
+          "items": [
+            {
+              "text": "Portal de economia e negócios"
+            },
+            {
+              "text": "Portal da matemática"
+            }
+          ]
+        },
+        {
+          "type": "list",
+          "list_type": "unordered",
+          "items": [
+            {
+              "text": "Portal de probabilidade e estatística"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

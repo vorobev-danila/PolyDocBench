@@ -1,0 +1,2257 @@
+{
+  "title": "Математический анализ",
+  "url": "https://ru.wikipedia.org/wiki/%D0%9C%D0%B0%D1%82%D0%B5%D0%BC%D0%B0%D1%82%D0%B8%D1%87%D0%B5%D1%81%D0%BA%D0%B8%D0%B9_%D0%B0%D0%BD%D0%B0%D0%BB%D0%B8%D0%B7",
+  "content": [
+    {
+      "type": "hatnote",
+      "text": "Эта статья — о математическом анализе в классическ."
+    },
+    {
+      "type": "paragraph",
+      "text": "Математи́ческий ана́лиз(классический математический анализ) — совокупность."
+    },
+    {
+      "type": "paragraph",
+      "text": "На классическом математическом анализе ."
+    },
+    {
+      "type": "heading",
+      "level": 2,
+      "text": "История",
+      "id": "История",
+      "content": [
+        {
+          "type": "hatnote",
+          "text": "См. также:Анализ бесконечно малых"
+        },
+        {
+          "type": "heading",
+          "level": 3,
+          "text": "Предыстория",
+          "id": "Предыстория",
+          "content": [
+            {
+              "type": "paragraph",
+              "text": "Предшественниками математического анализа."
+            },
+            {
+              "type": "paragraph",
+              "text": "К 1000 годуисламские математикиразработали."
+            },
+            {
+              "type": "paragraph",
+              "text": "В Европе алгебраический подход."
+            }
+          ]
+        },
+        {
+          "type": "heading",
+          "level": 3,
+          "text": "Лейбниц и его ученики",
+          "id": "Лейбниц_и_его_ученики",
+          "content": [
+            {
+              "type": "image",
+              "src": "https://upload.wikimedia.org/wikipedia/commons/thumb/6/6a/Gottfried_Wilhelm_von_Leibniz.jpg/250px-Gottfried_Wilhelm_von_Leibniz.jpg",
+              "caption": "Готфрид Вильгельм Лейбниц",
+              "alt": ""
+            },
+            {
+              "type": "paragraph",
+              "text": "В концеXVII векавокруг"
+            },
+            {
+              "type": "paragraph",
+              "text": "Бесконечно малая часть."
+            },
+            {
+              "type": "paragraph",
+              "text": "Эти определения поясняются"
+            },
+            {
+              "type": "paragraph",
+              "text": "Требуется, чтобы две величины."
+            },
+            {
+              "type": "paragraph",
+              "text": "Отсюда получаетсяx+dx=x{\\displaystyle x+dx=x}, далее"
+            },
+            {
+              "type": "paragraph",
+              "text": "dxy=(x+dx)(y+dy)−xy=xdy+ydx+dxdy=(x+dx)dy+ydx=xdy+ydx{\\displaystyle dxy=(x+dx)(y+dy)-xy=xdy+ydx+dxdy=(x+dx)dy+ydx=xdy+ydx}и проч.правила дифференцирования."
+            },
+            {
+              "type": "image",
+              "src": "https://upload.wikimedia.org/wikipedia/commons/thumb/0/0f/Tangent_to_a_curve.svg/250px-Tangent_to_a_curve.svg.png",
+              "caption": "Касательная к кривой",
+              "alt": ""
+            },
+            {
+              "type": "paragraph",
+              "text": "Второе требование гласит:"
+            },
+            {
+              "type": "paragraph",
+              "text": "Требуется, чтобы можно было рассматривать кривую линию как совокупность бесконечного множества бесконечно малых прямых линий[9]."
+            },
+            {
+              "type": "paragraph",
+              "text": "Продолжение каждой такой линии называетсякасательнойк кривой[10]. Исследуя касательную, проходящую через точкуM=(x,y){\\displaystyle M=(x,y)}, Лопиталь придаёт большое значение величине"
+            },
+            {
+              "type": "paragraph",
+              "text": "достигающей экстремальных значений вточках перегибакривой, отношению жеdy{\\displaystyle dy}кdx{\\displaystyle dx}не придаётся никакого особого значения."
+            },
+            {
+              "type": "paragraph",
+              "text": "Примечательно нахождение точекэкстремума. Если при непрерывном увеличении абсциссыx{\\displaystyle x}ординатаy{\\displaystyle y}сначала возрастает, а затем убывает, то дифференциалdy{\\displaystyle dy}сначала положителен по сравнению сdx{\\displaystyle dx}, а потом отрицателен."
+            },
+            {
+              "type": "paragraph",
+              "text": "Но всякая непрерывно возрастающая или убывающая величина не может превратиться из положительной в отрицательную, не проходя через бесконечность или нуль… Отсюда следует, что дифференциал наибольшей и наименьшей величины должен равняться нулю или бесконечности[11]."
+            },
+            {
+              "type": "paragraph",
+              "text": "Вероятно, эта формулировка небезупречна, если вспомнить о первом требовании: пусть, скажем,y=x2{\\displaystyle y=x^{2}}, тогда в силу первого требования"
+            },
+            {
+              "type": "paragraph",
+              "text": "в нуле правая часть равна нулю, а левая нет. Видимо следовало сказать, чтоdy{\\displaystyle dy}можно преобразовать в соответствии с первым требованием так, чтобы в точке максимумаdy=0{\\displaystyle dy=0}[12]. В примерах всё само собой понятно, и лишь в теории точек перегиба Лопиталь пишет, чтоdy{\\displaystyle dy}равен нулю в точке максимума, будучи разделён наdx{\\displaystyle dx}[11]."
+            },
+            {
+              "type": "paragraph",
+              "text": "Далее, при помощи одних дифференциалов формулируются условия экстремума и рассмотрено большое число сложных задач, относящихся в основном кдифференциальной геометриина плоскости. В конце книги, в гл. 10, изложено то, что теперь называютправилом Лопиталя, хотя и в не совсем обычной форме. Пусть величина ординатыy{\\displaystyle y}кривой выражена дробью, числитель и знаменатель которой обращаются в нуль приx=a{\\displaystyle x=a}. Тогда точка кривой сx=a{\\displaystyle x=a}имеет ординатуy{\\displaystyle y}, равную отношению дифференциала числителя к дифференциалу знаменателя, взятому приx=a{\\displaystyle x=a}."
+            },
+            {
+              "type": "paragraph",
+              "text": "По замыслу Лопиталя написанное им составляло первую часть Анализа, вторая же должна была содержать интегральное исчисление, то есть способ отыскания связи переменных по известной связи их дифференциалов. Первое его изложение даноИоганном Бернуллив егоМатематических лекциях о методе интеграла[13]. Здесь дан способ взятия большинства элементарных интегралов и указаны методы решения многих дифференциальных уравнений первого порядка."
+            },
+            {
+              "type": "paragraph",
+              "text": "Указывая на практическую полезность и простоту нового метода Лейбниц писал:"
+            },
+            {
+              "type": "paragraph",
+              "text": "То, что человек, сведущий в этом исчислении, может получить прямо в трёх строках, другие учёнейшие мужи принуждены были искать, следуя сложными обходными путями."
+            }
+          ]
+        },
+        {
+          "type": "heading",
+          "level": 3,
+          "text": "Эйлер",
+          "id": "Эйлер",
+          "content": [
+            {
+              "type": "image",
+              "src": "https://upload.wikimedia.org/wikipedia/commons/thumb/6/60/Leonhard_Euler_2.jpg/250px-Leonhard_Euler_2.jpg",
+              "caption": "Леонард Эйлер",
+              "alt": ""
+            },
+            {
+              "type": "paragraph",
+              "text": "Перемены, произошедшие за последующие полвека, отражены в обширном трактатеЭйлера. Изложение анализа открывает двухтомное «Введение», где собраны изыскания о различных представлениях элементарных функций. Термин «функция» впервые появляется лишь в1692уЛейбница[14], однако на первые роли его выдвинул именно Эйлер. Изначальная трактовка понятияфункциисостояла в том, что функция — это выражение для счёта (нем.Rechnungsausdrϋck) илианалитическое выражение[15]."
+            },
+            {
+              "type": "paragraph",
+              "text": "Функция переменного количества есть аналитическое выражение, составленное каким-либо образом из этого переменного количества и чисел или постоянных количеств[16]."
+            },
+            {
+              "type": "paragraph",
+              "text": "Подчёркивая, что «основное различие функций лежит в способе составления их из переменного и постоянных», Эйлер перечисляет действия, «посредством которых количества могут друг с другом\nсочетаться и перемешиваться; действиями этими являются: сложение и вычитание, умножение и деление, возведение в степень и извлечение корней; сюда же следует отнести также решение [алгебраических] уравнений. Кроме этих действий, называемых алгебраическими, существует много других, трансцендентных, как то: показательные, логарифмические и бесчисленные другие, доставляемые интегральным исчислением»[17].\nТакая трактовка позволяла без труда обращаться с многозначными функциями и не требовала пояснения, над каким полем рассматривается функция: выражение для счёта определено для комплексных значений переменных даже тогда, когда для рассматриваемой задачи это не нужно."
+            },
+            {
+              "type": "paragraph",
+              "text": "Операции в выражении допускались лишь в конечном числе, а трансцендентное проникало при помощи бесконечно большого числа∞{\\displaystyle \\infty }[18]. В выражениях это число используется наряду с натуральными числами. Например, считается допустимым такое выражение для экспоненты"
+            },
+            {
+              "type": "formula",
+              "formula_type": "inline",
+              "mathml": "<math alttext=\"{\\displaystyle e^{x}=\\left(1+{\\frac {x}{\\infty }}\\right)^{\\infty }}\" xmlns=\"http://www.w3.org/1998/Math/MathML\"><semantics><mrow class=\"MJX-TeXAtom-ORD\"><mstyle displaystyle=\"true\" scriptlevel=\"0\"><msup><mi>e</mi><mrow class=\"MJX-TeXAtom-ORD\"><mi>x</mi></mrow></msup><mo>=</mo><msup><mrow><mo>(</mo><mrow><mn>1</mn><mo>+</mo><mrow class=\"MJX-TeXAtom-ORD\"><mfrac><mi>x</mi><mi mathvariant=\"normal\">∞<!-- ∞ --></mi></mfrac></mrow></mrow><mo>)</mo></mrow><mrow class=\"MJX-TeXAtom-ORD\"><mi mathvariant=\"normal\">∞<!-- ∞ --></mi></mrow></msup></mstyle></mrow><annotation encoding=\"application/x-tex\">{\\displaystyle e^{x}=\\left(1+{\\frac {x}{\\infty }}\\right)^{\\infty }}</annotation></semantics></math>",
+              "latex": "e^{x}=\\left(1+{\\frac {x}{\\infty }}\\right)^{\\infty }",
+              "image_src": "https://wikimedia.org/api/rest_v1/media/math/render/svg/d5f1a5ab33c0e03282e73d67e13e090420d1eeb5",
+              "alt_text": "{\\displaystyle e^{x}=\\left(1+{\\frac {x}{\\infty }}\\right)^{\\infty }}",
+              "alttext": "{\\displaystyle e^{x}=\\left(1+{\\frac {x}{\\infty }}\\right)^{\\infty }}"
+            },
+            {
+              "type": "paragraph",
+              "text": "в котором лишь поздние авторы видели предельный переход. С аналитическими выражениями производились разнообразные преобразования, позволившие Эйлеру найти представления для элементарных функций в виде рядов, бесконечных произведений и т. д. Эйлер преобразует выражения для счёта так, как это делают в алгебре, не обращая внимания на возможность вычислить значение функции в точке по каждой из написанных формул."
+            },
+            {
+              "type": "paragraph",
+              "text": "В отличие от Лопиталя Эйлер подробно рассматривает трансцендентные функции и в особенности два наиболее изученных их класса — показательные и тригонометрические. Он обнаруживает, что все элементарные функции могут быть выражены при помощи арифметических действий и двух операций — взятия логарифма и экспоненты[19]."
+            },
+            {
+              "type": "paragraph",
+              "text": "Сам ход доказательства прекрасно демонстрирует технику использования бесконечно большого. Определив синус и косинус при помощи тригонометрического круга, Эйлер выводит из формул сложения следующее:"
+            },
+            {
+              "type": "formula",
+              "formula_type": "inline",
+              "mathml": "<math alttext=\"{\\displaystyle (\\cos x+{\\sqrt {-1}}\\sin x)(\\cos y+{\\sqrt {-1}}\\sin y)=\\cos {(x+y)}+{\\sqrt {-1}}\\sin {(x+y)},}\" xmlns=\"http://www.w3.org/1998/Math/MathML\"><semantics><mrow class=\"MJX-TeXAtom-ORD\"><mstyle displaystyle=\"true\" scriptlevel=\"0\"><mo stretchy=\"false\">(</mo><mi>cos</mi><mo>⁡<!-- ⁡ --></mo><mi>x</mi><mo>+</mo><mrow class=\"MJX-TeXAtom-ORD\"><msqrt><mo>−<!-- − --></mo><mn>1</mn></msqrt></mrow><mi>sin</mi><mo>⁡<!-- ⁡ --></mo><mi>x</mi><mo stretchy=\"false\">)</mo><mo stretchy=\"false\">(</mo><mi>cos</mi><mo>⁡<!-- ⁡ --></mo><mi>y</mi><mo>+</mo><mrow class=\"MJX-TeXAtom-ORD\"><msqrt><mo>−<!-- − --></mo><mn>1</mn></msqrt></mrow><mi>sin</mi><mo>⁡<!-- ⁡ --></mo><mi>y</mi><mo stretchy=\"false\">)</mo><mo>=</mo><mi>cos</mi><mo>⁡<!-- ⁡ --></mo><mrow class=\"MJX-TeXAtom-ORD\"><mo stretchy=\"false\">(</mo><mi>x</mi><mo>+</mo><mi>y</mi><mo stretchy=\"false\">)</mo></mrow><mo>+</mo><mrow class=\"MJX-TeXAtom-ORD\"><msqrt><mo>−<!-- − --></mo><mn>1</mn></msqrt></mrow><mi>sin</mi><mo>⁡<!-- ⁡ --></mo><mrow class=\"MJX-TeXAtom-ORD\"><mo stretchy=\"false\">(</mo><mi>x</mi><mo>+</mo><mi>y</mi><mo stretchy=\"false\">)</mo></mrow><mo>,</mo></mstyle></mrow><annotation encoding=\"application/x-tex\">{\\displaystyle (\\cos x+{\\sqrt {-1}}\\sin x)(\\cos y+{\\sqrt {-1}}\\sin y)=\\cos {(x+y)}+{\\sqrt {-1}}\\sin {(x+y)},}</annotation></semantics></math>",
+              "latex": "(\\cos x+{\\sqrt {-1}}\\sin x)(\\cos y+{\\sqrt {-1}}\\sin y)=\\cos {(x+y)}+{\\sqrt {-1}}\\sin {(x+y)},",
+              "image_src": "https://wikimedia.org/api/rest_v1/media/math/render/svg/629aa065a18211d8f4d120f5403bf955360f43a0",
+              "alt_text": "{\\displaystyle (\\cos x+{\\sqrt {-1}}\\sin x)(\\cos y+{\\sqrt {-1}}\\sin y)=\\cos {(x+y)}+{\\sqrt {-1}}\\sin {(x+y)},}",
+              "alttext": "{\\displaystyle (\\cos x+{\\sqrt {-1}}\\sin x)(\\cos y+{\\sqrt {-1}}\\sin y)=\\cos {(x+y)}+{\\sqrt {-1}}\\sin {(x+y)},}"
+            },
+            {
+              "type": "paragraph",
+              "text": "а отсюда"
+            },
+            {
+              "type": "formula",
+              "formula_type": "inline",
+              "mathml": "<math alttext=\"{\\displaystyle 2\\cos nx=(\\cos x+{\\sqrt {-1}}\\sin x)^{n}+(\\cos x-{\\sqrt {-1}}\\sin x)^{n}}\" xmlns=\"http://www.w3.org/1998/Math/MathML\"><semantics><mrow class=\"MJX-TeXAtom-ORD\"><mstyle displaystyle=\"true\" scriptlevel=\"0\"><mn>2</mn><mi>cos</mi><mo>⁡<!-- ⁡ --></mo><mi>n</mi><mi>x</mi><mo>=</mo><mo stretchy=\"false\">(</mo><mi>cos</mi><mo>⁡<!-- ⁡ --></mo><mi>x</mi><mo>+</mo><mrow class=\"MJX-TeXAtom-ORD\"><msqrt><mo>−<!-- − --></mo><mn>1</mn></msqrt></mrow><mi>sin</mi><mo>⁡<!-- ⁡ --></mo><mi>x</mi><msup><mo stretchy=\"false\">)</mo><mrow class=\"MJX-TeXAtom-ORD\"><mi>n</mi></mrow></msup><mo>+</mo><mo stretchy=\"false\">(</mo><mi>cos</mi><mo>⁡<!-- ⁡ --></mo><mi>x</mi><mo>−<!-- − --></mo><mrow class=\"MJX-TeXAtom-ORD\"><msqrt><mo>−<!-- − --></mo><mn>1</mn></msqrt></mrow><mi>sin</mi><mo>⁡<!-- ⁡ --></mo><mi>x</mi><msup><mo stretchy=\"false\">)</mo><mrow class=\"MJX-TeXAtom-ORD\"><mi>n</mi></mrow></msup></mstyle></mrow><annotation encoding=\"application/x-tex\">{\\displaystyle 2\\cos nx=(\\cos x+{\\sqrt {-1}}\\sin x)^{n}+(\\cos x-{\\sqrt {-1}}\\sin x)^{n}}</annotation></semantics></math>",
+              "latex": "2\\cos nx=(\\cos x+{\\sqrt {-1}}\\sin x)^{n}+(\\cos x-{\\sqrt {-1}}\\sin x)^{n}",
+              "image_src": "https://wikimedia.org/api/rest_v1/media/math/render/svg/45f0c709edad57955d198842eddd64e518b5f5e5",
+              "alt_text": "{\\displaystyle 2\\cos nx=(\\cos x+{\\sqrt {-1}}\\sin x)^{n}+(\\cos x-{\\sqrt {-1}}\\sin x)^{n}}",
+              "alttext": "{\\displaystyle 2\\cos nx=(\\cos x+{\\sqrt {-1}}\\sin x)^{n}+(\\cos x-{\\sqrt {-1}}\\sin x)^{n}}"
+            },
+            {
+              "type": "paragraph",
+              "text": "Полагаяn=∞{\\displaystyle n=\\infty }иz=nx{\\displaystyle z=nx}, он получает"
+            },
+            {
+              "type": "formula",
+              "formula_type": "inline",
+              "mathml": "<math alttext=\"{\\displaystyle 2\\cos z=\\left(1+{\\frac {{\\sqrt {-1}}z}{\\infty }}\\right)^{\\infty }+\\left(1-{\\frac {{\\sqrt {-1}}z}{\\infty }}\\right)^{\\infty }=e^{{\\sqrt {-1}}z}+e^{-{\\sqrt {-1}}z}}\" xmlns=\"http://www.w3.org/1998/Math/MathML\"><semantics><mrow class=\"MJX-TeXAtom-ORD\"><mstyle displaystyle=\"true\" scriptlevel=\"0\"><mn>2</mn><mi>cos</mi><mo>⁡<!-- ⁡ --></mo><mi>z</mi><mo>=</mo><msup><mrow><mo>(</mo><mrow><mn>1</mn><mo>+</mo><mrow class=\"MJX-TeXAtom-ORD\"><mfrac><mrow><mrow class=\"MJX-TeXAtom-ORD\"><msqrt><mo>−<!-- − --></mo><mn>1</mn></msqrt></mrow><mi>z</mi></mrow><mi mathvariant=\"normal\">∞<!-- ∞ --></mi></mfrac></mrow></mrow><mo>)</mo></mrow><mrow class=\"MJX-TeXAtom-ORD\"><mi mathvariant=\"normal\">∞<!-- ∞ --></mi></mrow></msup><mo>+</mo><msup><mrow><mo>(</mo><mrow><mn>1</mn><mo>−<!-- − --></mo><mrow class=\"MJX-TeXAtom-ORD\"><mfrac><mrow><mrow class=\"MJX-TeXAtom-ORD\"><msqrt><mo>−<!-- − --></mo><mn>1</mn></msqrt></mrow><mi>z</mi></mrow><mi mathvariant=\"normal\">∞<!-- ∞ --></mi></mfrac></mrow></mrow><mo>)</mo></mrow><mrow class=\"MJX-TeXAtom-ORD\"><mi mathvariant=\"normal\">∞<!-- ∞ --></mi></mrow></msup><mo>=</mo><msup><mi>e</mi><mrow class=\"MJX-TeXAtom-ORD\"><mrow class=\"MJX-TeXAtom-ORD\"><msqrt><mo>−<!-- − --></mo><mn>1</mn></msqrt></mrow><mi>z</mi></mrow></msup><mo>+</mo><msup><mi>e</mi><mrow class=\"MJX-TeXAtom-ORD\"><mo>−<!-- − --></mo><mrow class=\"MJX-TeXAtom-ORD\"><msqrt><mo>−<!-- − --></mo><mn>1</mn></msqrt></mrow><mi>z</mi></mrow></msup></mstyle></mrow><annotation encoding=\"application/x-tex\">{\\displaystyle 2\\cos z=\\left(1+{\\frac {{\\sqrt {-1}}z}{\\infty }}\\right)^{\\infty }+\\left(1-{\\frac {{\\sqrt {-1}}z}{\\infty }}\\right)^{\\infty }=e^{{\\sqrt {-1}}z}+e^{-{\\sqrt {-1}}z}}</annotation></semantics></math>",
+              "latex": "2\\cos z=\\left(1+{\\frac {{\\sqrt {-1}}z}{\\infty }}\\right)^{\\infty }+\\left(1-{\\frac {{\\sqrt {-1}}z}{\\infty }}\\right)^{\\infty }=e^{{\\sqrt {-1}}z}+e^{-{\\sqrt {-1}}z}",
+              "image_src": "https://wikimedia.org/api/rest_v1/media/math/render/svg/664dc909aeb02ef2f8d648d3ab3c736cd5578fe0",
+              "alt_text": "{\\displaystyle 2\\cos z=\\left(1+{\\frac {{\\sqrt {-1}}z}{\\infty }}\\right)^{\\infty }+\\left(1-{\\frac {{\\sqrt {-1}}z}{\\infty }}\\right)^{\\infty }=e^{{\\sqrt {-1}}z}+e^{-{\\sqrt {-1}}z}}",
+              "alttext": "{\\displaystyle 2\\cos z=\\left(1+{\\frac {{\\sqrt {-1}}z}{\\infty }}\\right)^{\\infty }+\\left(1-{\\frac {{\\sqrt {-1}}z}{\\infty }}\\right)^{\\infty }=e^{{\\sqrt {-1}}z}+e^{-{\\sqrt {-1}}z}}"
+            },
+            {
+              "type": "paragraph",
+              "text": "отбрасывая бесконечно малые величины большего порядка. Используя это и аналогичное выражение, Эйлер получает и свою знаменитую формулу"
+            },
+            {
+              "type": "formula",
+              "formula_type": "inline",
+              "mathml": "<math alttext=\"{\\displaystyle e^{{\\sqrt {-1}}x}=\\cos {x}+{\\sqrt {-1}}\\sin {x}}\" xmlns=\"http://www.w3.org/1998/Math/MathML\"><semantics><mrow class=\"MJX-TeXAtom-ORD\"><mstyle displaystyle=\"true\" scriptlevel=\"0\"><msup><mi>e</mi><mrow class=\"MJX-TeXAtom-ORD\"><mrow class=\"MJX-TeXAtom-ORD\"><msqrt><mo>−<!-- − --></mo><mn>1</mn></msqrt></mrow><mi>x</mi></mrow></msup><mo>=</mo><mi>cos</mi><mo>⁡<!-- ⁡ --></mo><mrow class=\"MJX-TeXAtom-ORD\"><mi>x</mi></mrow><mo>+</mo><mrow class=\"MJX-TeXAtom-ORD\"><msqrt><mo>−<!-- − --></mo><mn>1</mn></msqrt></mrow><mi>sin</mi><mo>⁡<!-- ⁡ --></mo><mrow class=\"MJX-TeXAtom-ORD\"><mi>x</mi></mrow></mstyle></mrow><annotation encoding=\"application/x-tex\">{\\displaystyle e^{{\\sqrt {-1}}x}=\\cos {x}+{\\sqrt {-1}}\\sin {x}}</annotation></semantics></math>",
+              "latex": "e^{{\\sqrt {-1}}x}=\\cos {x}+{\\sqrt {-1}}\\sin {x}",
+              "image_src": "https://wikimedia.org/api/rest_v1/media/math/render/svg/c70804d6d9eed6a1be27129597bfdc0c0abe22d6",
+              "alt_text": "{\\displaystyle e^{{\\sqrt {-1}}x}=\\cos {x}+{\\sqrt {-1}}\\sin {x}}",
+              "alttext": "{\\displaystyle e^{{\\sqrt {-1}}x}=\\cos {x}+{\\sqrt {-1}}\\sin {x}}"
+            },
+            {
+              "type": "paragraph",
+              "text": "Указав различные выражения для функций, которые теперь называют элементарными, Эйлер переходит к рассмотрению кривых на плоскости, начертанным свободным движением руки. По его мнению, не для всякой такой кривой можно отыскать единое аналитическое выражение (см. такжеСпор о струне)[20]. В XIX веке с подачи Казорати[21]это утверждение считалось ошибочным: по теореме Вейерштрасса всякая непрерывная в современном смысле кривая может быть приближённо описана полиномами. На самом деле Эйлера это едва ли убедило, ведь нужно ещё переписать предельный переход при помощи символа∞{\\displaystyle \\infty }."
+            },
+            {
+              "type": "paragraph",
+              "text": "Изложение дифференциального исчисления Эйлер начинает с теории конечных разностей, за ним в третьей главе следует философское разъяснение о том, что «бесконечно малое количество есть точно нуль», более всего не устроившее современников Эйлера. Затем из конечных разностей при бесконечно малом приращении образуются дифференциалы, а изинтерполяционной формулы Ньютона—формула Тейлора. Этот метод в существенном восходит к работам Тейлора (1715 г.). При этом у Эйлера появляется устойчивое отношениеdkydxk{\\displaystyle {\\frac {d^{k}y}{dx^{k}}}},\nкоторое, однако, рассматривается как отношение двух бесконечно малых. Последние главы посвящены приближённому вычислению при помощи рядов."
+            },
+            {
+              "type": "paragraph",
+              "text": "В трёхтомном интегральном исчислении Эйлер вводит понятие интеграла так:"
+            },
+            {
+              "type": "paragraph",
+              "text": "Та функция, дифференциал которой=Xdx{\\displaystyle =Xdx}, называется его интегралом и обозначается знакомS{\\displaystyle S}, поставленным спереди[22]."
+            },
+            {
+              "type": "paragraph",
+              "text": "В целом же эта часть трактата Эйлера посвящена более общей с современной точки зрения задаче об интегрировании дифференциальных уравнений. При этом Эйлер находит ряд интегралов и дифференциальных уравнений, которые приводят к новым функциям, например,Γ{\\displaystyle \\Gamma }-функции, эллиптические функции и т. д. Строгое доказательство их неэлементарности было дано в 1830-х годахЯкобидляэллиптических функцийиЛиувиллем(см.элементарные функции)."
+            }
+          ]
+        },
+        {
+          "type": "heading",
+          "level": 3,
+          "text": "Лагранж",
+          "id": "Лагранж",
+          "content": [
+            {
+              "type": "image",
+              "src": "https://upload.wikimedia.org/wikipedia/commons/thumb/6/69/Joseph_Louis_Lagrange2.jpg/250px-Joseph_Louis_Lagrange2.jpg",
+              "caption": "Жозеф Луи Лагранж",
+              "alt": ""
+            },
+            {
+              "type": "paragraph",
+              "text": "Следующим крупным произведением, сыгравшим значительную роль в развитии концепции анализа, явиласьТеория аналитических функций[23]Лагранжаи обширный пересказ работ Лагранжа, выполненныйЛакруа[24]в несколько эклектической манере."
+            },
+            {
+              "type": "paragraph",
+              "text": "Желая избавиться от бесконечно малого вовсе, Лагранж обратил связь между производными и рядом Тейлора. Под аналитической функцией Лагранж понимал произвольную функцию, исследуемую методами анализа. Саму функцию он обозначил какf(x){\\displaystyle f(x)}, дав графический способ записи зависимости — ранее же Эйлер обходился одними переменными. Для применения методов анализа по мнению Лагранжа необходимо, чтобы функция разлагалась в ряд"
+            },
+            {
+              "type": "formula",
+              "formula_type": "inline",
+              "mathml": "<math alttext=\"{\\displaystyle f(x+h)=f(x)+ph+qh^{2}+\\dots }\" xmlns=\"http://www.w3.org/1998/Math/MathML\"><semantics><mrow class=\"MJX-TeXAtom-ORD\"><mstyle displaystyle=\"true\" scriptlevel=\"0\"><mi>f</mi><mo stretchy=\"false\">(</mo><mi>x</mi><mo>+</mo><mi>h</mi><mo stretchy=\"false\">)</mo><mo>=</mo><mi>f</mi><mo stretchy=\"false\">(</mo><mi>x</mi><mo stretchy=\"false\">)</mo><mo>+</mo><mi>p</mi><mi>h</mi><mo>+</mo><mi>q</mi><msup><mi>h</mi><mrow class=\"MJX-TeXAtom-ORD\"><mn>2</mn></mrow></msup><mo>+</mo><mo>…<!-- … --></mo></mstyle></mrow><annotation encoding=\"application/x-tex\">{\\displaystyle f(x+h)=f(x)+ph+qh^{2}+\\dots }</annotation></semantics></math>",
+              "latex": "f(x+h)=f(x)+ph+qh^{2}+\\dots",
+              "image_src": "https://wikimedia.org/api/rest_v1/media/math/render/svg/84eb12a470382feb2be1da9aa62a242a80f8963f",
+              "alt_text": "{\\displaystyle f(x+h)=f(x)+ph+qh^{2}+\\dots }",
+              "alttext": "{\\displaystyle f(x+h)=f(x)+ph+qh^{2}+\\dots }"
+            },
+            {
+              "type": "paragraph",
+              "text": "коэффициенты которого будут новыми функциямиx{\\displaystyle x}. Остаётся назватьp{\\displaystyle p}производной (дифференциальным коэффициентом) и обозначить его какf′(x){\\displaystyle f'(x)}. Таким образом, понятие производной вводится на второй странице трактата и без помощи бесконечно малых. Остаётся заметить, что"
+            },
+            {
+              "type": "formula",
+              "formula_type": "inline",
+              "mathml": "<math alttext=\"{\\displaystyle f'(x+h)=p+2qh+\\dots }\" xmlns=\"http://www.w3.org/1998/Math/MathML\"><semantics><mrow class=\"MJX-TeXAtom-ORD\"><mstyle displaystyle=\"true\" scriptlevel=\"0\"><msup><mi>f</mi><mo>′</mo></msup><mo stretchy=\"false\">(</mo><mi>x</mi><mo>+</mo><mi>h</mi><mo stretchy=\"false\">)</mo><mo>=</mo><mi>p</mi><mo>+</mo><mn>2</mn><mi>q</mi><mi>h</mi><mo>+</mo><mo>…<!-- … --></mo></mstyle></mrow><annotation encoding=\"application/x-tex\">{\\displaystyle f'(x+h)=p+2qh+\\dots }</annotation></semantics></math>",
+              "latex": "f'(x+h)=p+2qh+\\dots",
+              "image_src": "https://wikimedia.org/api/rest_v1/media/math/render/svg/c2aa8ac8a180b4c34811fe26f9b246d4222c3642",
+              "alt_text": "{\\displaystyle f'(x+h)=p+2qh+\\dots }",
+              "alttext": "{\\displaystyle f'(x+h)=p+2qh+\\dots }"
+            },
+            {
+              "type": "paragraph",
+              "text": "поэтому коэффициентq{\\displaystyle q}является удвоенной производной производнойf(x){\\displaystyle f(x)}, то есть"
+            },
+            {
+              "type": "formula",
+              "formula_type": "inline",
+              "mathml": "<math alttext=\"{\\displaystyle q={\\frac {1}{2!}}f''(x)}\" xmlns=\"http://www.w3.org/1998/Math/MathML\"><semantics><mrow class=\"MJX-TeXAtom-ORD\"><mstyle displaystyle=\"true\" scriptlevel=\"0\"><mi>q</mi><mo>=</mo><mrow class=\"MJX-TeXAtom-ORD\"><mfrac><mn>1</mn><mrow><mn>2</mn><mo>!</mo></mrow></mfrac></mrow><msup><mi>f</mi><mo>″</mo></msup><mo stretchy=\"false\">(</mo><mi>x</mi><mo stretchy=\"false\">)</mo></mstyle></mrow><annotation encoding=\"application/x-tex\">{\\displaystyle q={\\frac {1}{2!}}f''(x)}</annotation></semantics></math>",
+              "latex": "q={\\frac {1}{2!}}f''(x)",
+              "image_src": "https://wikimedia.org/api/rest_v1/media/math/render/svg/29ff1f4d4acb2efb207206a69bacda8036de43e0",
+              "alt_text": "{\\displaystyle q={\\frac {1}{2!}}f''(x)}",
+              "alttext": "{\\displaystyle q={\\frac {1}{2!}}f''(x)}"
+            },
+            {
+              "type": "paragraph",
+              "text": "Такой подход к трактовке понятия производной используется в современной алгебре и послужил основой для создания теории аналитических функцийВейерштрасса."
+            },
+            {
+              "type": "paragraph",
+              "text": "Лагранж оперировал такими рядами как формальными и получил ряд замечательных теорем. В частности, впервые и вполне строго доказал разрешимостьначальной задачидля обыкновенных дифференциальных уравнений в формальных степенных рядах[26]."
+            },
+            {
+              "type": "paragraph",
+              "text": "Вопрос об оценке точности приближений, доставляемых частными суммами ряда Тейлора, впервые был поставлен именно Лагранжем: в концеТеории аналитических функцийон вывел то, что теперь называют формулой Тейлора с остаточным членом в форме Лагранжа[27]. Однако, в противоположность современным авторам, Лагранж не видел нужды в употреблении этого результата для обоснования сходимости ряда Тейлора."
+            },
+            {
+              "type": "paragraph",
+              "text": "Вопрос о том, действительно ли функции, употребимые в анализе, могут быть разложены в степенной ряд, впоследствии стал предметом дискуссии. Конечно, Лагранжу было известно, что в некоторых точках элементарные функции могут не разлагаться в степенной ряд, однако в этих точках они и недифференцируемы ни в каком смысле.Кошив своёмАлгебраическом анализепривёл в качестве контрпримера функцию"
+            },
+            {
+              "type": "formula",
+              "formula_type": "inline",
+              "mathml": "<math alttext=\"{\\displaystyle f(x)=e^{-1/x^{2}},}\" xmlns=\"http://www.w3.org/1998/Math/MathML\"><semantics><mrow class=\"MJX-TeXAtom-ORD\"><mstyle displaystyle=\"true\" scriptlevel=\"0\"><mi>f</mi><mo stretchy=\"false\">(</mo><mi>x</mi><mo stretchy=\"false\">)</mo><mo>=</mo><msup><mi>e</mi><mrow class=\"MJX-TeXAtom-ORD\"><mo>−<!-- − --></mo><mn>1</mn><mrow class=\"MJX-TeXAtom-ORD\"><mo>/</mo></mrow><msup><mi>x</mi><mrow class=\"MJX-TeXAtom-ORD\"><mn>2</mn></mrow></msup></mrow></msup><mo>,</mo></mstyle></mrow><annotation encoding=\"application/x-tex\">{\\displaystyle f(x)=e^{-1/x^{2}},}</annotation></semantics></math>",
+              "latex": "f(x)=e^{-1/x^{2}},",
+              "image_src": "https://wikimedia.org/api/rest_v1/media/math/render/svg/09484166b7b975ed43e001c594caf966ded49964",
+              "alt_text": "{\\displaystyle f(x)=e^{-1/x^{2}},}",
+              "alttext": "{\\displaystyle f(x)=e^{-1/x^{2}},}"
+            },
+            {
+              "type": "paragraph",
+              "text": "доопределённую нулём в нуле. Эта функция всюду гладкая на вещественной оси и в нуле имеет нулевой ряд Маклорена, который, следовательно, не сходится к значениюf(x){\\displaystyle f(x)}. Против этого примераПуассонвозразил, что Лагранж определял функцию как единое аналитическое выражение, в примере Коши же функция задана по-разному в нуле, и приx≠0{\\displaystyle x\\not =0}. Лишь в конце XIX векаПрингсхайм[28]доказал, что существует бесконечно дифференцируемая функция, заданная единым выражением, ряд Маклорена для которой расходится. Пример такой функции представляет выражение"
+            },
+            {
+              "type": "formula",
+              "formula_type": "inline",
+              "mathml": "<math alttext=\"{\\displaystyle \\Psi (x)=\\sum \\limits _{k=0}^{\\infty }{\\frac {\\cos {(3^{k}x)}}{k!}}}\" xmlns=\"http://www.w3.org/1998/Math/MathML\"><semantics><mrow class=\"MJX-TeXAtom-ORD\"><mstyle displaystyle=\"true\" scriptlevel=\"0\"><mi mathvariant=\"normal\">Ψ<!-- Ψ --></mi><mo stretchy=\"false\">(</mo><mi>x</mi><mo stretchy=\"false\">)</mo><mo>=</mo><munderover><mo movablelimits=\"false\">∑<!-- ∑ --></mo><mrow class=\"MJX-TeXAtom-ORD\"><mi>k</mi><mo>=</mo><mn>0</mn></mrow><mrow class=\"MJX-TeXAtom-ORD\"><mi mathvariant=\"normal\">∞<!-- ∞ --></mi></mrow></munderover><mrow class=\"MJX-TeXAtom-ORD\"><mfrac><mrow><mi>cos</mi><mo>⁡<!-- ⁡ --></mo><mrow class=\"MJX-TeXAtom-ORD\"><mo stretchy=\"false\">(</mo><msup><mn>3</mn><mrow class=\"MJX-TeXAtom-ORD\"><mi>k</mi></mrow></msup><mi>x</mi><mo stretchy=\"false\">)</mo></mrow></mrow><mrow><mi>k</mi><mo>!</mo></mrow></mfrac></mrow></mstyle></mrow><annotation encoding=\"application/x-tex\">{\\displaystyle \\Psi (x)=\\sum \\limits _{k=0}^{\\infty }{\\frac {\\cos {(3^{k}x)}}{k!}}}</annotation></semantics></math>",
+              "latex": "\\Psi (x)=\\sum \\limits _{k=0}^{\\infty }{\\frac {\\cos {(3^{k}x)}}{k!}}",
+              "image_src": "https://wikimedia.org/api/rest_v1/media/math/render/svg/08c4a403f1269f738cfebf6acf265c4377ff9ac7",
+              "alt_text": "{\\displaystyle \\Psi (x)=\\sum \\limits _{k=0}^{\\infty }{\\frac {\\cos {(3^{k}x)}}{k!}}}",
+              "alttext": "{\\displaystyle \\Psi (x)=\\sum \\limits _{k=0}^{\\infty }{\\frac {\\cos {(3^{k}x)}}{k!}}}"
+            }
+          ]
+        },
+        {
+          "type": "heading",
+          "level": 3,
+          "text": "Дальнейшее развитие",
+          "id": "Дальнейшее_развитие",
+          "content": [
+            {
+              "type": "hatnote",
+              "text": "См. также:Анализ (раздел математики) § История"
+            },
+            {
+              "type": "paragraph",
+              "text": "ВXVIII векебыли на основе классического анализа разработаны и практически применены такие новые ветви, каквариационное исчисление,обыкновенные дифференциальные уравненияидифференциальные уравнения в частных производных,преобразования Фурьеипроизводящие функции. На фундаменте анализа возникламатематическая физика, аналитические методы глубоко проникли в геометрию и даже втеорию чисел."
+            },
+            {
+              "type": "paragraph",
+              "text": "ВXIX векеКошипервым дал анализу твёрдое логическое обоснование, введя понятиепредела последовательности, он же открыл новую страницукомплексного анализа.Пуассон,Лиувилль,Фурьеи другие изучали дифференциальные уравнения в частных производных игармонический анализ."
+            },
+            {
+              "type": "paragraph",
+              "text": "В последней третиXIX векаВейерштрасспроизвёл арифметизацию анализа, полагая геометрическое обоснование недостаточным, и предложил классическое определениепределачерез(ε,δ){\\displaystyle (\\varepsilon ,\\delta )}-язык. Он же создал первую строгую теориюмножествавещественных чисел. В это же время попытки усовершенствованиятеоремыобинтегрируемости по Риманупривели к созданию классификацииразрывностивещественных функций. Также были открыты «патологические» примеры (нигде не дифференцируемыенепрерывные функции, заполняющие пространствокривые). В связи с этимЖорданразработалтеорию меры, аКантор—теорию множеств, и в началеXX векаматематический анализ был формализован с их помощью. Другим важным событием XX века стала разработкаРобинсономнестандартного анализа— альтернативного подхода к обоснованию анализа; притом средствами нестандартного анализа обнаружены несколько новых результатов, которые не были известны в классическом анализе, но принципиально могли бы быть получены и классическими средствами[29]."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "heading",
+      "level": 2,
+      "text": "Дифференциальное исчисление",
+      "id": "Дифференциальное_исчисление",
+      "content": [
+        {
+          "type": "hatnote",
+          "text": "Основная статья:Дифференциальное исчисление"
+        },
+        {
+          "type": "image",
+          "src": "https://upload.wikimedia.org/wikipedia/commons/thumb/c/cc/Tangent_derivative_calculusdia-ru.svg/330px-Tangent_derivative_calculusdia-ru.svg.png",
+          "caption": "Касательная в точке (x,f(x)). Производнаяf′(x) кривой в точке равна угловому коэффициенту касательной к этой кривой в данной точке.",
+          "alt": ""
+        },
+        {
+          "type": "paragraph",
+          "text": "Дифференциальное исчисление изучает определение, свойства и применениепроизводных функций. Процесс нахождения производной называетсядифференцированием. Для заданной функции и точки из области её определения производная в этой точке является способом кодирования мелкомасштабного поведения этой функции вблизи этой точки. Найдя производную функции в каждой точке в области определения, можно определить новую функцию, называемуюпроизводной функциейили простопроизводнойот исходной функции. На математическом языке производная являетсялинейным отображением, на входе которого одна функция, а на выходе другая. Это понятие является более абстрактным, чем большинство процессов, изучаемых в элементарной алгебре, где функции обычно имеют на входе одно число, а на выходе другое. Например, если для функции удвоения задать на входе три, на выходе будет шесть; если для квадратичной функции задать на входе три, на выходе будет девять. Производная же может иметь квадратичную функцию в качестве входа. Это означает, что производная берёт всю информацию о функции возведения в квадрат, то есть: при входе два, она даёт на выходе четыре, три преобразует в девять, четыре — в шестнадцать и так далее, и использует эту информацию для получения другой функции. (Производной квадратичной функции является как раз функция удвоения.)"
+        },
+        {
+          "type": "paragraph",
+          "text": "Наиболее распространённым символом для обозначения производной является апострофоподобный знак, называемыйштрихом. Таким образом, производная функцииfестьf′, произносится «f штрих». Например, еслиf(x) =x2является функцией возведения в квадрат, тоf′(x) = 2xявляется её производной, это функция удвоения."
+        },
+        {
+          "type": "paragraph",
+          "text": "Если входом функции является время, то производная представляет собой изменение по времени. Например, еслиfявляется функцией, зависящей от времени, и она даёт на выходе положение мяча во времени, то производнаяfопределяет изменение положения мяча по времени, то есть скорость мяча."
+        },
+        {
+          "type": "paragraph",
+          "text": "Если функция являетсялинейной(то есть, еслиграфиком функцииявляется прямая линия), то функцию можно записать в видеy=mx+b, гдеx— независимая переменная,y— зависимая переменная, аb— этоy-отсечка, при этом:"
+        },
+        {
+          "type": "formula",
+          "formula_type": "inline",
+          "mathml": "<math alttext=\"{\\displaystyle m={\\frac {\\text{rise}}{\\text{run}}}={\\frac {{\\text{change in }}y}{{\\text{change in }}x}}={\\frac {\\Delta y}{\\Delta x}}.}\" xmlns=\"http://www.w3.org/1998/Math/MathML\"><semantics><mrow class=\"MJX-TeXAtom-ORD\"><mstyle displaystyle=\"true\" scriptlevel=\"0\"><mi>m</mi><mo>=</mo><mrow class=\"MJX-TeXAtom-ORD\"><mfrac><mtext>rise</mtext><mtext>run</mtext></mfrac></mrow><mo>=</mo><mrow class=\"MJX-TeXAtom-ORD\"><mfrac><mrow><mrow class=\"MJX-TeXAtom-ORD\"><mtext>change in </mtext></mrow><mi>y</mi></mrow><mrow><mrow class=\"MJX-TeXAtom-ORD\"><mtext>change in </mtext></mrow><mi>x</mi></mrow></mfrac></mrow><mo>=</mo><mrow class=\"MJX-TeXAtom-ORD\"><mfrac><mrow><mi mathvariant=\"normal\">Δ<!-- Δ --></mi><mi>y</mi></mrow><mrow><mi mathvariant=\"normal\">Δ<!-- Δ --></mi><mi>x</mi></mrow></mfrac></mrow><mo>.</mo></mstyle></mrow><annotation encoding=\"application/x-tex\">{\\displaystyle m={\\frac {\\text{rise}}{\\text{run}}}={\\frac {{\\text{change in }}y}{{\\text{change in }}x}}={\\frac {\\Delta y}{\\Delta x}}.}</annotation></semantics></math>",
+          "latex": "m={\\frac {\\text{rise}}{\\text{run}}}={\\frac {{\\text{change in }}y}{{\\text{change in }}x}}={\\frac {\\Delta y}{\\Delta x}}.",
+          "image_src": "https://wikimedia.org/api/rest_v1/media/math/render/svg/313c6a18c1b2ec00c8ae723e70d431b0037382aa",
+          "alt_text": "{\\displaystyle m={\\frac {\\text{rise}}{\\text{run}}}={\\frac {{\\text{change in }}y}{{\\text{change in }}x}}={\\frac {\\Delta y}{\\Delta x}}.}",
+          "alttext": "{\\displaystyle m={\\frac {\\text{rise}}{\\text{run}}}={\\frac {{\\text{change in }}y}{{\\text{change in }}x}}={\\frac {\\Delta y}{\\Delta x}}.}"
+        },
+        {
+          "type": "paragraph",
+          "text": "Это выражение даёт точное значение угла наклона прямой линии. Если график функции не является прямой линией, то изменениеyделённое на изменениеxменяется от точки к точке. Производная даёт точный смысл понятия изменения выходного значения по отношению к изменению входа. Чтобы быть конкретным, пустьfесть функция, и мы фиксируем точкуaв области определенияf. (a,f(a)) является точкой на графике функции. Еслиh— близкое к нулю число, тоa+hявляется числом, близким кa. Поэтому точка (a+h,f(a+h)) близка к точке (a,f(a)). Угол наклона между этими двумя точками равен:"
+        },
+        {
+          "type": "formula",
+          "formula_type": "inline",
+          "mathml": "<math alttext=\"{\\displaystyle m={\\frac {f(a+h)-f(a)}{(a+h)-a}}={\\frac {f(a+h)-f(a)}{h}}.}\" xmlns=\"http://www.w3.org/1998/Math/MathML\"><semantics><mrow class=\"MJX-TeXAtom-ORD\"><mstyle displaystyle=\"true\" scriptlevel=\"0\"><mi>m</mi><mo>=</mo><mrow class=\"MJX-TeXAtom-ORD\"><mfrac><mrow><mi>f</mi><mo stretchy=\"false\">(</mo><mi>a</mi><mo>+</mo><mi>h</mi><mo stretchy=\"false\">)</mo><mo>−<!-- − --></mo><mi>f</mi><mo stretchy=\"false\">(</mo><mi>a</mi><mo stretchy=\"false\">)</mo></mrow><mrow><mo stretchy=\"false\">(</mo><mi>a</mi><mo>+</mo><mi>h</mi><mo stretchy=\"false\">)</mo><mo>−<!-- − --></mo><mi>a</mi></mrow></mfrac></mrow><mo>=</mo><mrow class=\"MJX-TeXAtom-ORD\"><mfrac><mrow><mi>f</mi><mo stretchy=\"false\">(</mo><mi>a</mi><mo>+</mo><mi>h</mi><mo stretchy=\"false\">)</mo><mo>−<!-- − --></mo><mi>f</mi><mo stretchy=\"false\">(</mo><mi>a</mi><mo stretchy=\"false\">)</mo></mrow><mi>h</mi></mfrac></mrow><mo>.</mo></mstyle></mrow><annotation encoding=\"application/x-tex\">{\\displaystyle m={\\frac {f(a+h)-f(a)}{(a+h)-a}}={\\frac {f(a+h)-f(a)}{h}}.}</annotation></semantics></math>",
+          "latex": "m={\\frac {f(a+h)-f(a)}{(a+h)-a}}={\\frac {f(a+h)-f(a)}{h}}.",
+          "image_src": "https://wikimedia.org/api/rest_v1/media/math/render/svg/e2017cd12adcbfa0f07bcc1090006133781fff8f",
+          "alt_text": "{\\displaystyle m={\\frac {f(a+h)-f(a)}{(a+h)-a}}={\\frac {f(a+h)-f(a)}{h}}.}",
+          "alttext": "{\\displaystyle m={\\frac {f(a+h)-f(a)}{(a+h)-a}}={\\frac {f(a+h)-f(a)}{h}}.}"
+        },
+        {
+          "type": "paragraph",
+          "text": "Это выражение называетсяразностным соотношением. Линия, проходящая через две точки на кривой, называетсясекущей линией, поэтомуmявляется углом наклона секущей линии между (a,f(a)) и (a+h,f(a+h)). Секущая является лишь приближением к поведению функции в точке, поскольку она не учитывает поведение функции между точкамиaи (a+h,f(a+h)). Определить это поведении, установивhравным нулю, невозможно, поскольку потребовалось бы делить на ноль, что исключено. Производная определяется путём перехода к пределу приhстремящемся к нулю, что означает, что он рассматривает поведениеfдля всех малых значенияхhи выделяет приемлемое значение для случая, когдаhравно нулю:"
+        },
+        {
+          "type": "formula",
+          "formula_type": "inline",
+          "mathml": "<math alttext=\"{\\displaystyle \\lim _{h\\to 0}{f(a+h)-f(a) \\over {h}}.}\" xmlns=\"http://www.w3.org/1998/Math/MathML\"><semantics><mrow class=\"MJX-TeXAtom-ORD\"><mstyle displaystyle=\"true\" scriptlevel=\"0\"><munder><mo form=\"prefix\" movablelimits=\"true\">lim</mo><mrow class=\"MJX-TeXAtom-ORD\"><mi>h</mi><mo stretchy=\"false\">→<!-- → --></mo><mn>0</mn></mrow></munder><mrow class=\"MJX-TeXAtom-ORD\"><mfrac><mrow><mi>f</mi><mo stretchy=\"false\">(</mo><mi>a</mi><mo>+</mo><mi>h</mi><mo stretchy=\"false\">)</mo><mo>−<!-- − --></mo><mi>f</mi><mo stretchy=\"false\">(</mo><mi>a</mi><mo stretchy=\"false\">)</mo></mrow><mrow class=\"MJX-TeXAtom-ORD\"><mi>h</mi></mrow></mfrac></mrow><mo>.</mo></mstyle></mrow><annotation encoding=\"application/x-tex\">{\\displaystyle \\lim _{h\\to 0}{f(a+h)-f(a) \\over {h}}.}</annotation></semantics></math>",
+          "latex": "\\lim _{h\\to 0}{f(a+h)-f(a) \\over {h}}.",
+          "image_src": "https://wikimedia.org/api/rest_v1/media/math/render/svg/3b3d79e9ff8acf531bb7596a6e0687fbb8027ffb",
+          "alt_text": "{\\displaystyle \\lim _{h\\to 0}{f(a+h)-f(a) \\over {h}}.}",
+          "alttext": "{\\displaystyle \\lim _{h\\to 0}{f(a+h)-f(a) \\over {h}}.}"
+        },
+        {
+          "type": "paragraph",
+          "text": "Геометрически производная равна углу наклонакасательнойк графику функцииfв точкеa. Касательная является пределом секущих линий, так же как производная является пределом разностных соотношений. По этой причине производную иногда называют наклоном функцииf."
+        },
+        {
+          "type": "paragraph",
+          "text": "Вот конкретный пример, производная функция возведения в квадрат в точке 3. Пустьf(x) =x2является квадратичной функцией."
+        },
+        {
+          "type": "image",
+          "src": "https://upload.wikimedia.org/wikipedia/commons/thumb/3/34/Sec2tan.gif/330px-Sec2tan.gif",
+          "caption": "Производнаяf′(x) кривой в точке есть наклон касательной к этой кривой в данной точке. Этот наклон определяется путём нахождения предельной величины наклона секущих. Здесь используется функцияf(x) =x3−x(изображена красным цветом). Касательная (зелёный цвет), которая проходит через точку (-3/2, −15/8), имеет наклон 23/4. Обратите внимание, что вертикальный и горизонтальный масштаб в этом изображении разные.",
+          "alt": ""
+        },
+        {
+          "type": "formula",
+          "formula_type": "inline",
+          "mathml": "<math alttext=\"{\\displaystyle {\\begin{aligned}f'(3)&amp;=\\lim _{h\\to 0}{(3+h)^{2}-3^{2} \\over {h}}\\\\&amp;=\\lim _{h\\to 0}{9+6h+h^{2}-9 \\over {h}}\\\\&amp;=\\lim _{h\\to 0}{6h+h^{2} \\over {h}}\\\\&amp;=\\lim _{h\\to 0}(6+h)\\\\&amp;=6.\\end{aligned}}}\" xmlns=\"http://www.w3.org/1998/Math/MathML\"><semantics><mrow class=\"MJX-TeXAtom-ORD\"><mstyle displaystyle=\"true\" scriptlevel=\"0\"><mrow class=\"MJX-TeXAtom-ORD\"><mtable columnalign=\"right left right left right left right left right left right left\" columnspacing=\"0em 2em 0em 2em 0em 2em 0em 2em 0em 2em 0em\" displaystyle=\"true\" rowspacing=\"3pt\"><mtr><mtd><msup><mi>f</mi><mo>′</mo></msup><mo stretchy=\"false\">(</mo><mn>3</mn><mo stretchy=\"false\">)</mo></mtd><mtd><mi></mi><mo>=</mo><munder><mo form=\"prefix\" movablelimits=\"true\">lim</mo><mrow class=\"MJX-TeXAtom-ORD\"><mi>h</mi><mo stretchy=\"false\">→<!-- → --></mo><mn>0</mn></mrow></munder><mrow class=\"MJX-TeXAtom-ORD\"><mfrac><mrow><mo stretchy=\"false\">(</mo><mn>3</mn><mo>+</mo><mi>h</mi><msup><mo stretchy=\"false\">)</mo><mrow class=\"MJX-TeXAtom-ORD\"><mn>2</mn></mrow></msup><mo>−<!-- − --></mo><msup><mn>3</mn><mrow class=\"MJX-TeXAtom-ORD\"><mn>2</mn></mrow></msup></mrow><mrow class=\"MJX-TeXAtom-ORD\"><mi>h</mi></mrow></mfrac></mrow></mtd></mtr><mtr><mtd></mtd><mtd><mi></mi><mo>=</mo><munder><mo form=\"prefix\" movablelimits=\"true\">lim</mo><mrow class=\"MJX-TeXAtom-ORD\"><mi>h</mi><mo stretchy=\"false\">→<!-- → --></mo><mn>0</mn></mrow></munder><mrow class=\"MJX-TeXAtom-ORD\"><mfrac><mrow><mn>9</mn><mo>+</mo><mn>6</mn><mi>h</mi><mo>+</mo><msup><mi>h</mi><mrow class=\"MJX-TeXAtom-ORD\"><mn>2</mn></mrow></msup><mo>−<!-- − --></mo><mn>9</mn></mrow><mrow class=\"MJX-TeXAtom-ORD\"><mi>h</mi></mrow></mfrac></mrow></mtd></mtr><mtr><mtd></mtd><mtd><mi></mi><mo>=</mo><munder><mo form=\"prefix\" movablelimits=\"true\">lim</mo><mrow class=\"MJX-TeXAtom-ORD\"><mi>h</mi><mo stretchy=\"false\">→<!-- → --></mo><mn>0</mn></mrow></munder><mrow class=\"MJX-TeXAtom-ORD\"><mfrac><mrow><mn>6</mn><mi>h</mi><mo>+</mo><msup><mi>h</mi><mrow class=\"MJX-TeXAtom-ORD\"><mn>2</mn></mrow></msup></mrow><mrow class=\"MJX-TeXAtom-ORD\"><mi>h</mi></mrow></mfrac></mrow></mtd></mtr><mtr><mtd></mtd><mtd><mi></mi><mo>=</mo><munder><mo form=\"prefix\" movablelimits=\"true\">lim</mo><mrow class=\"MJX-TeXAtom-ORD\"><mi>h</mi><mo stretchy=\"false\">→<!-- → --></mo><mn>0</mn></mrow></munder><mo stretchy=\"false\">(</mo><mn>6</mn><mo>+</mo><mi>h</mi><mo stretchy=\"false\">)</mo></mtd></mtr><mtr><mtd></mtd><mtd><mi></mi><mo>=</mo><mn>6.</mn></mtd></mtr></mtable></mrow></mstyle></mrow><annotation encoding=\"application/x-tex\">{\\displaystyle {\\begin{aligned}f'(3)&amp;=\\lim _{h\\to 0}{(3+h)^{2}-3^{2} \\over {h}}\\\\&amp;=\\lim _{h\\to 0}{9+6h+h^{2}-9 \\over {h}}\\\\&amp;=\\lim _{h\\to 0}{6h+h^{2} \\over {h}}\\\\&amp;=\\lim _{h\\to 0}(6+h)\\\\&amp;=6.\\end{aligned}}}</annotation></semantics></math>",
+          "latex": "{\\begin{aligned}f'(3)&=\\lim _{h\\to 0}{(3+h)^{2}-3^{2} \\over {h}}\\\\&=\\lim _{h\\to 0}{9+6h+h^{2}-9 \\over {h}}\\\\&=\\lim _{h\\to 0}{6h+h^{2} \\over {h}}\\\\&=\\lim _{h\\to 0}(6+h)\\\\&=6.\\end{aligned}}",
+          "image_src": "https://wikimedia.org/api/rest_v1/media/math/render/svg/9b8de93549049c76ba074db59c69fab6f856e9da",
+          "alt_text": "{\\displaystyle {\\begin{aligned}f'(3)&=\\lim _{h\\to 0}{(3+h)^{2}-3^{2} \\over {h}}\\\\&=\\lim _{h\\to 0}{9+6h+h^{2}-9 \\over {h}}\\\\&=\\lim _{h\\to 0}{6h+h^{2} \\over {h}}\\\\&=\\lim _{h\\to 0}(6+h)\\\\&=6.\\end{aligned}}}",
+          "alttext": "{\\displaystyle {\\begin{aligned}f'(3)&=\\lim _{h\\to 0}{(3+h)^{2}-3^{2} \\over {h}}\\\\&=\\lim _{h\\to 0}{9+6h+h^{2}-9 \\over {h}}\\\\&=\\lim _{h\\to 0}{6h+h^{2} \\over {h}}\\\\&=\\lim _{h\\to 0}(6+h)\\\\&=6.\\end{aligned}}}"
+        },
+        {
+          "type": "paragraph",
+          "text": "Наклон касательной к квадратичной функции в точке (3;9) равно 6, то есть она растёт вверх в шесть раз быстрее, чем отклоняется право. Вычисление предела, описанное выше, можно выполнить для любой точки в области определения квадратичной функции. Это определяетпроизводную функциюили просто для краткостипроизводнуюот функции возведения в квадрат. Проведённые расчёты показывают что производная квадратичной функции есть функция удвоения."
+        }
+      ]
+    },
+    {
+      "type": "heading",
+      "level": 2,
+      "text": "Интегральное исчисление",
+      "id": "Интегральное_исчисление",
+      "content": [
+        {
+          "type": "hatnote",
+          "text": "Основная статья:Интеграл"
+        },
+        {
+          "type": "paragraph",
+          "text": "Интегральное исчисление— это изучение определения, свойств и применения двух взаимосвязанных понятий:неопределённого интегралаиопределённого интеграла. Процесс поиска значения интеграла называется интегрированием. В технических терминах интегральное исчисление является исследованием двух связанныхлинейных операторов."
+        },
+        {
+          "type": "paragraph",
+          "text": "Неопределённый интегралявляетсяпервообразной, то есть операцией, обратной к производной.Fявляется неопределённым интегралом отfв том случае, когдаfявляетсяпроизводнойотF. (Это использование прописных и строчных букв для функции и её неопределённого интеграла распространено в исчислении)."
+        },
+        {
+          "type": "paragraph",
+          "text": "Определённый интегралвходной функции и выходных значений есть число, которое равно площади поверхности, ограниченнойграфиком функции, осью абсцисс и двумя отрезками прямых линий от графика функции до оси абсцисс в точках выходных значений. В технических терминах определённый интеграл естьпределсуммы площадей прямоугольников, называемойсуммой Римана."
+        },
+        {
+          "type": "paragraph",
+          "text": "Примером из физики является вычисление пройденного расстояния при ходьбе в любой момент времени."
+        },
+        {
+          "type": "formula",
+          "formula_type": "inline",
+          "mathml": "<math alttext=\"{\\displaystyle \\mathrm {Distance} =\\mathrm {Speed} \\cdot \\mathrm {Time} }\" xmlns=\"http://www.w3.org/1998/Math/MathML\"><semantics><mrow class=\"MJX-TeXAtom-ORD\"><mstyle displaystyle=\"true\" scriptlevel=\"0\"><mrow class=\"MJX-TeXAtom-ORD\"><mi mathvariant=\"normal\">D</mi><mi mathvariant=\"normal\">i</mi><mi mathvariant=\"normal\">s</mi><mi mathvariant=\"normal\">t</mi><mi mathvariant=\"normal\">a</mi><mi mathvariant=\"normal\">n</mi><mi mathvariant=\"normal\">c</mi><mi mathvariant=\"normal\">e</mi></mrow><mo>=</mo><mrow class=\"MJX-TeXAtom-ORD\"><mi mathvariant=\"normal\">S</mi><mi mathvariant=\"normal\">p</mi><mi mathvariant=\"normal\">e</mi><mi mathvariant=\"normal\">e</mi><mi mathvariant=\"normal\">d</mi></mrow><mo>⋅<!-- ⋅ --></mo><mrow class=\"MJX-TeXAtom-ORD\"><mi mathvariant=\"normal\">T</mi><mi mathvariant=\"normal\">i</mi><mi mathvariant=\"normal\">m</mi><mi mathvariant=\"normal\">e</mi></mrow></mstyle></mrow><annotation encoding=\"application/x-tex\">{\\displaystyle \\mathrm {Distance} =\\mathrm {Speed} \\cdot \\mathrm {Time} }</annotation></semantics></math>",
+          "latex": "\\mathrm {Distance} =\\mathrm {Speed} \\cdot \\mathrm {Time}",
+          "image_src": "https://wikimedia.org/api/rest_v1/media/math/render/svg/6a2a54be44a458fc96b0fe0083ed6dc1a4f7da48",
+          "alt_text": "{\\displaystyle \\mathrm {Distance} =\\mathrm {Speed} \\cdot \\mathrm {Time} }",
+          "alttext": "{\\displaystyle \\mathrm {Distance} =\\mathrm {Speed} \\cdot \\mathrm {Time} }"
+        },
+        {
+          "type": "paragraph",
+          "text": "Если скорость постоянна, достаточно операции умножения, но если скорость меняется, то мы должны применить более мощный метод вычисления расстояния. Одним из таких методов является приблизительное вычисление путёмразбивки времени на отдельные короткие промежутки. Умножая затем время в каждом интервале на какую-либо одну из скоростей в этом интервале и затем суммируя все приблизительные расстояния (сумма Римана), пройденные в каждом интервале, мы получим полное пройденное расстояние. Основная идея состоит в том, что если использовать очень короткие интервалы, то скорость на каждом из них будет оставаться более или менее постоянной. Тем не менее, сумма Римана даёт только приблизительное расстояние. Чтобы найти точное расстояние, мы должны найтипределвсех таких сумм Римана."
+        },
+        {
+          "type": "image",
+          "src": "https://upload.wikimedia.org/wikipedia/commons/thumb/f/f2/Integral_as_region_under_curve.svg/330px-Integral_as_region_under_curve.svg.png",
+          "caption": "Интегрирование можно рассматривать как вычисление площади под кривой, определённой уравнениемf(x), между двумя точками (здесьaиb).",
+          "alt": ""
+        },
+        {
+          "type": "paragraph",
+          "text": "Еслиf(x)на диаграмме слева представляет изменение скорости с течением времени, то пройденное расстояние (между моментамиaиb) есть площадь заштрихованной областиs."
+        },
+        {
+          "type": "paragraph",
+          "text": "Для приближённой оценки этой площади возможен интуитивный метод, состоящий в разделении расстояния междуaиbна некоторое число равных отрезков (сегментов) длинойΔx. Для каждого сегмента мы можем выбрать одно значение функцииf(x). Назовём это значениеh. Тогда площадь прямоугольника с основаниемΔxи высотойhдаёт расстояние (времяΔxумноженной на скоростьh), пройденное в этом сегменте. С каждым сегментом связывается среднее значение функции на нёмf(x)=h. Сумма всех таких прямоугольников даёт приближение площади под кривой, которая является оценкой общего пройденного расстояния. УменьшениеΔxдаст большее количество прямоугольников и в большинстве случаев будет лучшим приближением, но для получения точного ответа мы должны вычислить предел приΔxстремящемся к нулю."
+        },
+        {
+          "type": "paragraph",
+          "text": "Символом интегрирования является∫{\\displaystyle \\int }, удлинённая букваS(первая буква латинского слова «summa»). Определённый интеграл записывается в виде:"
+        },
+        {
+          "type": "formula",
+          "formula_type": "inline",
+          "mathml": "<math alttext=\"{\\displaystyle \\int _{a}^{b}f(x)\\,dx.}\" xmlns=\"http://www.w3.org/1998/Math/MathML\"><semantics><mrow class=\"MJX-TeXAtom-ORD\"><mstyle displaystyle=\"true\" scriptlevel=\"0\"><msubsup><mo>∫<!-- ∫ --></mo><mrow class=\"MJX-TeXAtom-ORD\"><mi>a</mi></mrow><mrow class=\"MJX-TeXAtom-ORD\"><mi>b</mi></mrow></msubsup><mi>f</mi><mo stretchy=\"false\">(</mo><mi>x</mi><mo stretchy=\"false\">)</mo><mspace width=\"thinmathspace\"></mspace><mi>d</mi><mi>x</mi><mo>.</mo></mstyle></mrow><annotation encoding=\"application/x-tex\">{\\displaystyle \\int _{a}^{b}f(x)\\,dx.}</annotation></semantics></math>",
+          "latex": "\\int _{a}^{b}f(x)\\,dx.",
+          "image_src": "https://wikimedia.org/api/rest_v1/media/math/render/svg/249ee3fdbced31dfc328ff357f67bb134ca66b8d",
+          "alt_text": "{\\displaystyle \\int _{a}^{b}f(x)\\,dx.}",
+          "alttext": "{\\displaystyle \\int _{a}^{b}f(x)\\,dx.}"
+        },
+        {
+          "type": "paragraph",
+          "text": "и читается: «интеграл отaдоbфункцииfотxпоx». ПредложенноеЛейбницемобозначениеdxпредназначено для разделения площади под кривой на бесконечное число прямоугольников, таких, что их ширинаΔxявляется бесконечно малой величинойdx. В формулировке исчисления, основанного на пределах, обозначение"
+        },
+        {
+          "type": "formula",
+          "formula_type": "inline",
+          "mathml": "<math alttext=\"{\\displaystyle \\int _{a}^{b}\\ldots \\,dx}\" xmlns=\"http://www.w3.org/1998/Math/MathML\"><semantics><mrow class=\"MJX-TeXAtom-ORD\"><mstyle displaystyle=\"true\" scriptlevel=\"0\"><msubsup><mo>∫<!-- ∫ --></mo><mrow class=\"MJX-TeXAtom-ORD\"><mi>a</mi></mrow><mrow class=\"MJX-TeXAtom-ORD\"><mi>b</mi></mrow></msubsup><mo>…<!-- … --></mo><mspace width=\"thinmathspace\"></mspace><mi>d</mi><mi>x</mi></mstyle></mrow><annotation encoding=\"application/x-tex\">{\\displaystyle \\int _{a}^{b}\\ldots \\,dx}</annotation></semantics></math>",
+          "latex": "\\int _{a}^{b}\\ldots \\,dx",
+          "image_src": "https://wikimedia.org/api/rest_v1/media/math/render/svg/9e41cea49effbf86467094d4adae20d9e433ea8c",
+          "alt_text": "{\\displaystyle \\int _{a}^{b}\\ldots \\,dx}",
+          "alttext": "{\\displaystyle \\int _{a}^{b}\\ldots \\,dx}"
+        },
+        {
+          "type": "paragraph",
+          "text": "является сокращением от определенияинтеграла Риманаlimd→0∑i=0Nf(λi)Δxi{\\displaystyle \\lim _{d\\to 0}\\sum _{i=0}^{N}f(\\lambda _{i})\\Delta x_{i}}, a и b обозначают концы отрезка на котором определено разбиение. И вместоlim∑{\\displaystyle \\lim \\sum }вводится обозначение∫{\\displaystyle \\int }. А записьюdx{\\displaystyle dx}подчеркивают стремление к нулюΔxi{\\displaystyle \\Delta x_{i}}приd→0{\\displaystyle d\\rightarrow 0}."
+        },
+        {
+          "type": "paragraph",
+          "text": "Неопределённый интеграл, или первообразная, записывается в виде:"
+        },
+        {
+          "type": "formula",
+          "formula_type": "inline",
+          "mathml": "<math alttext=\"{\\displaystyle \\int f(x)\\,dx.}\" xmlns=\"http://www.w3.org/1998/Math/MathML\"><semantics><mrow class=\"MJX-TeXAtom-ORD\"><mstyle displaystyle=\"true\" scriptlevel=\"0\"><mo>∫<!-- ∫ --></mo><mi>f</mi><mo stretchy=\"false\">(</mo><mi>x</mi><mo stretchy=\"false\">)</mo><mspace width=\"thinmathspace\"></mspace><mi>d</mi><mi>x</mi><mo>.</mo></mstyle></mrow><annotation encoding=\"application/x-tex\">{\\displaystyle \\int f(x)\\,dx.}</annotation></semantics></math>",
+          "latex": "\\int f(x)\\,dx.",
+          "image_src": "https://wikimedia.org/api/rest_v1/media/math/render/svg/fbbae4f208c1a8c2f6ed7a0cee104f8710e39dee",
+          "alt_text": "{\\displaystyle \\int f(x)\\,dx.}",
+          "alttext": "{\\displaystyle \\int f(x)\\,dx.}"
+        },
+        {
+          "type": "paragraph",
+          "text": "Функции, отличающиеся на константу, имеют те же производные, и, следовательно, первообразная данной функции на самом деле является семейством функций, отличающиеся только константой. Поскольку производная функцииy=x² +C, гдеC— любая константа, равнаy′= 2x, то первообразная последней определяется по формуле:"
+        },
+        {
+          "type": "formula",
+          "formula_type": "inline",
+          "mathml": "<math alttext=\"{\\displaystyle \\int 2x\\,dx=x^{2}+C.}\" xmlns=\"http://www.w3.org/1998/Math/MathML\"><semantics><mrow class=\"MJX-TeXAtom-ORD\"><mstyle displaystyle=\"true\" scriptlevel=\"0\"><mo>∫<!-- ∫ --></mo><mn>2</mn><mi>x</mi><mspace width=\"thinmathspace\"></mspace><mi>d</mi><mi>x</mi><mo>=</mo><msup><mi>x</mi><mrow class=\"MJX-TeXAtom-ORD\"><mn>2</mn></mrow></msup><mo>+</mo><mi>C</mi><mo>.</mo></mstyle></mrow><annotation encoding=\"application/x-tex\">{\\displaystyle \\int 2x\\,dx=x^{2}+C.}</annotation></semantics></math>",
+          "latex": "\\int 2x\\,dx=x^{2}+C.",
+          "image_src": "https://wikimedia.org/api/rest_v1/media/math/render/svg/20b5d8e0b09ed96af70a130b188f2058c9f0324a",
+          "alt_text": "{\\displaystyle \\int 2x\\,dx=x^{2}+C.}",
+          "alttext": "{\\displaystyle \\int 2x\\,dx=x^{2}+C.}"
+        },
+        {
+          "type": "paragraph",
+          "text": "Неопределённая константа типаCв первообразной известна какпостоянная интегрирования."
+        },
+        {
+          "type": "heading",
+          "level": 3,
+          "text": "Теорема Ньютона — Лейбница",
+          "id": "Теорема_Ньютона_—_Лейбница",
+          "content": [
+            {
+              "type": "hatnote",
+              "text": "Основная статья:Теорема Ньютона — Лейбница"
+            },
+            {
+              "type": "paragraph",
+              "text": "Теорема Ньютона — Лейбница, которую также называютосновной теоремой анализаутверждает, чтодифференцированиеиинтегрированиеявляются взаимно обратными операциями. Точнее, это касается значения первообразных дляопределённых интегралов. Поскольку, как правило, легче вычислитьпервообразную, чем применять формулу определённого интеграла, теорема даёт практический способ вычисления определённых интегралов. Она также может быть интерпретирована как точное утверждение о том, что дифференцирование является обратной операцией интегрирования."
+            },
+            {
+              "type": "paragraph",
+              "text": "Теорема гласит: если функцияfнепрерывна на отрезке [a,b] и еслиFесть функция, производная которой равнаfна интервале (a,b), то:"
+            },
+            {
+              "type": "formula",
+              "formula_type": "inline",
+              "mathml": "<math alttext=\"{\\displaystyle \\int _{a}^{b}f(x)\\,dx=F(b)-F(a).}\" xmlns=\"http://www.w3.org/1998/Math/MathML\"><semantics><mrow class=\"MJX-TeXAtom-ORD\"><mstyle displaystyle=\"true\" scriptlevel=\"0\"><msubsup><mo>∫<!-- ∫ --></mo><mrow class=\"MJX-TeXAtom-ORD\"><mi>a</mi></mrow><mrow class=\"MJX-TeXAtom-ORD\"><mi>b</mi></mrow></msubsup><mi>f</mi><mo stretchy=\"false\">(</mo><mi>x</mi><mo stretchy=\"false\">)</mo><mspace width=\"thinmathspace\"></mspace><mi>d</mi><mi>x</mi><mo>=</mo><mi>F</mi><mo stretchy=\"false\">(</mo><mi>b</mi><mo stretchy=\"false\">)</mo><mo>−<!-- − --></mo><mi>F</mi><mo stretchy=\"false\">(</mo><mi>a</mi><mo stretchy=\"false\">)</mo><mo>.</mo></mstyle></mrow><annotation encoding=\"application/x-tex\">{\\displaystyle \\int _{a}^{b}f(x)\\,dx=F(b)-F(a).}</annotation></semantics></math>",
+              "latex": "\\int _{a}^{b}f(x)\\,dx=F(b)-F(a).",
+              "image_src": "https://wikimedia.org/api/rest_v1/media/math/render/svg/4f470e7743fda04c3d353a4dee2f441ae454f528",
+              "alt_text": "{\\displaystyle \\int _{a}^{b}f(x)\\,dx=F(b)-F(a).}",
+              "alttext": "{\\displaystyle \\int _{a}^{b}f(x)\\,dx=F(b)-F(a).}"
+            },
+            {
+              "type": "paragraph",
+              "text": "Кроме того, для любогоxиз интервала (a,b)"
+            },
+            {
+              "type": "formula",
+              "formula_type": "inline",
+              "mathml": "<math alttext=\"{\\displaystyle {\\frac {d}{dx}}\\int _{a}^{x}f(t)\\,dt=f(x).}\" xmlns=\"http://www.w3.org/1998/Math/MathML\"><semantics><mrow class=\"MJX-TeXAtom-ORD\"><mstyle displaystyle=\"true\" scriptlevel=\"0\"><mrow class=\"MJX-TeXAtom-ORD\"><mfrac><mi>d</mi><mrow><mi>d</mi><mi>x</mi></mrow></mfrac></mrow><msubsup><mo>∫<!-- ∫ --></mo><mrow class=\"MJX-TeXAtom-ORD\"><mi>a</mi></mrow><mrow class=\"MJX-TeXAtom-ORD\"><mi>x</mi></mrow></msubsup><mi>f</mi><mo stretchy=\"false\">(</mo><mi>t</mi><mo stretchy=\"false\">)</mo><mspace width=\"thinmathspace\"></mspace><mi>d</mi><mi>t</mi><mo>=</mo><mi>f</mi><mo stretchy=\"false\">(</mo><mi>x</mi><mo stretchy=\"false\">)</mo><mo>.</mo></mstyle></mrow><annotation encoding=\"application/x-tex\">{\\displaystyle {\\frac {d}{dx}}\\int _{a}^{x}f(t)\\,dt=f(x).}</annotation></semantics></math>",
+              "latex": "{\\frac {d}{dx}}\\int _{a}^{x}f(t)\\,dt=f(x).",
+              "image_src": "https://wikimedia.org/api/rest_v1/media/math/render/svg/bf4f64cc882e88a4d7b634c37b7c1684630c3687",
+              "alt_text": "{\\displaystyle {\\frac {d}{dx}}\\int _{a}^{x}f(t)\\,dt=f(x).}",
+              "alttext": "{\\displaystyle {\\frac {d}{dx}}\\int _{a}^{x}f(t)\\,dt=f(x).}"
+            },
+            {
+              "type": "paragraph",
+              "text": "Это понимание, сделанное какНьютоном, так иЛейбницем, которые основывали свои результаты на более ранних трудахИсаака Барроу, было ключом к быстрому распространению аналитических результатов после того, как их работы стали известны. Фундаментальная теорема даёт алгебраический метод вычисления многих определённых интегралов без ограничения процессов, путём нахождения формулыпервообразной. Кроме того, возник прототип для решениядифференциальных уравнений. Дифференциальные уравнения связывают неизвестные функции с их производными, они применяются повсеместно во многих науках."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "heading",
+      "level": 2,
+      "text": "Приложения",
+      "id": "Приложения",
+      "content": [
+        {
+          "type": "paragraph",
+          "text": "Математический анализ широко применяется вфизике,информатике,статистике,технике,экономике,бизнесе,финансах,медицине,демографиии других областях, в которых для решения проблемы может быть построенаматематическая модель, и необходимо найти еёоптимальное решение."
+        },
+        {
+          "type": "paragraph",
+          "text": "В частности, практически все понятия вклассической механикеиэлектромагнетизменеразрывно связаны между собой именно средствами классического математического анализа. Например, при известном распределенииплотностиобъекта егомасса,моменты инерции, а также полная энергия в потенциальном поле могут быть найдены с помощью дифференциального исчисления. Другой яркий пример применения математического анализа в механике —второй закон Ньютона: исторически сложилось так, что в нём напрямую используется термин «скорость изменения» в формулировке «Сила = масса × ускорение», так какускорение— производная по времени отскоростиили вторая производная по времени оттраекторииили пространственного положения."
+        },
+        {
+          "type": "paragraph",
+          "text": "ТеорияэлектромагнетизмаМаксвеллаиобщая теория относительностиЭйнштейнатакже выражаются языкомдифференциального исчисления. В химии исчисление используется при определении скорости реакций и скоростирадиоактивного распада. В биологии с помощью исчисления делается расчёт динамикипопуляций, учитывающей данные по воспроизводству и смертности вида."
+        },
+        {
+          "type": "paragraph",
+          "text": "Математический анализ может использоваться в сочетании с другими математическими дисциплинами. Например, оно может использоваться совместно слинейной алгеброй, чтобы найти «наилучшую»линейную аппроксимациюдля множества точек в области определения. Или его можно использовать втеории вероятностейдля определения вероятности непрерывнойслучайной величиныв зависимости отплотности распределения. Ваналитической геометриипри изучении графиков функций исчисление используется для поиска точек максимума и минимума, наклона, кривизны иточек перегиба."
+        },
+        {
+          "type": "paragraph",
+          "text": "Теорема Грина, которая устанавливает соотношение междукриволинейным интеграломпо простой замкнутой кривой С и двойным интегралом по плоской области D, ограниченной этой кривой С, применяется в инструменте, известном какпланиметр, который используется для расчёта площади плоской поверхности на чертеже. Например, его можно использовать для расчёта площади фигуры неправильной формы: цветника или бассейна при проектировании своего участка."
+        },
+        {
+          "type": "paragraph",
+          "text": "Дискретная теорема Грина, устанавливающая соотношение между двойным интегралом функции по периметру прямоугольника и линейной комбинацией значенийпервообразнойпо угловым точкам прямоугольника, позволяет быстро вычислить сумму площадей прямоугольных областей. Например, она может использоваться для эффективного расчёта суммы прямоугольных областей на изображениях, для того чтобы быстро находить свойства и идентифицировать объекты."
+        },
+        {
+          "type": "paragraph",
+          "text": "В области медицины математический анализ применяется для нахождения оптимального угла ветвления кровеносных сосудов, максимизирующего поток. Зная закон затухания применительно к выводу какого-либо препарата из тела, исчисление используется для оценки уровня дозирования этих препаратов. В ядерной медицине исчисление используется для разработки моделей переноса излучения в целевой терапии опухолей."
+        },
+        {
+          "type": "paragraph",
+          "text": "В экономике средства математического анализа позволяют определить максимальную прибыль с использованием понятийпредельных издержекипредельного дохода."
+        },
+        {
+          "type": "paragraph",
+          "text": "Математический анализ используется также для нахождения приближённых решений уравнений. На практике это стандартный способ решениядифференциальных уравненийи нахождение корней в большинстве приложений. Примерами являютсяметод Ньютона,метод простой итерациии методлинейной аппроксимации. Например, при расчётах траектории космических аппаратов используется вариантметода Эйлерадля аппроксимации криволинейных курсов движения при отсутствии силы тяжести."
+        }
+      ]
+    },
+    {
+      "type": "heading",
+      "level": 2,
+      "text": "Библиография",
+      "id": "Библиография",
+      "content": [
+        {
+          "type": "heading",
+          "level": 3,
+          "text": "Энциклопедические статьи",
+          "id": "Энциклопедические_статьи",
+          "content": [
+            {
+              "type": "list",
+              "list_type": "unordered",
+              "items": [
+                {
+                  "text": "Анализ//Энциклопедический лексикон: В 17 т. —СПб.: Тип.А. Плюшара, 1835—1841."
+                },
+                {
+                  "text": "Анализ математический//Энциклопедический словарь Брокгауза и Ефрона: в 86 т. (82 т. и 4 доп.). —СПб., 1890—1907."
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "heading",
+          "level": 3,
+          "text": "Учебная литература",
+          "id": "Учебная_литература",
+          "content": [
+            {
+              "type": "table",
+              "rows": [
+                [
+                  {
+                    "text": "Имеетсявикиучебникпо теме«en:Calculus»",
+                    "is_header": false
+                  }
+                ]
+              ]
+            },
+            {
+              "type": "heading",
+              "level": 4,
+              "text": "Стандартные учебники",
+              "id": "Стандартные_учебники",
+              "content": [
+                {
+                  "type": "paragraph",
+                  "text": "На протяжении многих лет вСССР,СНГиРоссиипопулярны следующие учебники:"
+                },
+                {
+                  "type": "list",
+                  "list_type": "unordered",
+                  "items": [
+                    {
+                      "text": "Курант, Р.Курс дифференциального и интегрального исчисления (в двух томах). Главная методическая находка курса: сначала попросту излагаются основные идеи, а затем им даются строгие доказательства. Написан Курантом в его бытность профессором Геттингенского университета в 1920-х под влиянием идейКлейна, затем в 1930-х перенесён на американскую почву. Русский перевод 1934 г. и его переиздания даёт текст по немецкому изданию, перевод 1960-х годов (т. н.4-е издание) представляет собой компиляцию из немецкой и американской версии учебника и в связи с этим весьма многословен."
+                    },
+                    {
+                      "text": "Фихтенгольц Г. М.Курс дифференциального и интегрального исчисления (в трёх томах) и задачник."
+                    },
+                    {
+                      "text": "Демидович Б. П.Сборник задач и упражнений по математическому анализу."
+                    },
+                    {
+                      "text": "Ляшко И. И. и др.Справочное пособие по высшей математике, т. 1-5."
+                    }
+                  ]
+                },
+                {
+                  "type": "paragraph",
+                  "text": "Некоторые ВУЗы имеют собственные руководства по анализу:"
+                },
+                {
+                  "type": "list",
+                  "list_type": "unordered",
+                  "items": [
+                    {
+                      "text": "МГУ,МехМат:"
+                    }
+                  ]
+                },
+                {
+                  "type": "paragraph",
+                  "text": "Архипов Г. И.,Садовничий В. А.,Чубариков В. Н.Лекции по мат. анализу.Зорич В. А.Математический анализ. Часть I. М.: Наука, 1981. 544 с.Зорич В. А.Математический анализ. Часть II. М.: Наука, 1984. 640 с.Камынин Л. И.Курс математического анализа (в двух томах). М.:Издательство Московского университета, 2001."
+                },
+                {
+                  "type": "list",
+                  "list_type": "unordered",
+                  "items": [
+                    {
+                      "text": "Архипов Г. И.,Садовничий В. А.,Чубариков В. Н.Лекции по мат. анализу."
+                    },
+                    {
+                      "text": "Зорич В. А.Математический анализ. Часть I. М.: Наука, 1981. 544 с."
+                    },
+                    {
+                      "text": "Зорич В. А.Математический анализ. Часть II. М.: Наука, 1984. 640 с."
+                    },
+                    {
+                      "text": "Камынин Л. И.Курс математического анализа (в двух томах). М.:Издательство Московского университета, 2001."
+                    }
+                  ]
+                },
+                {
+                  "type": "list",
+                  "list_type": "unordered",
+                  "items": [
+                    {
+                      "text": "МГУ,ВМК:"
+                    }
+                  ]
+                },
+                {
+                  "type": "paragraph",
+                  "text": "В. А. Ильин,В. А. Садовничий,Бл. Х. Сендов.Математический анализ /Под ред.А. Н. Тихонова. —3-е изд., перераб. и доп. —М.: Проспект, 2006. —ISBN 5-482-00445-7."
+                },
+                {
+                  "type": "list",
+                  "list_type": "unordered",
+                  "items": [
+                    {
+                      "text": "В. А. Ильин,В. А. Садовничий,Бл. Х. Сендов.Математический анализ /Под ред.А. Н. Тихонова. —3-е изд., перераб. и доп. —М.: Проспект, 2006. —ISBN 5-482-00445-7."
+                    }
+                  ]
+                },
+                {
+                  "type": "list",
+                  "list_type": "unordered",
+                  "items": [
+                    {
+                      "text": "МГУ,физфак:"
+                    }
+                  ]
+                },
+                {
+                  "type": "paragraph",
+                  "text": "Ильин В. А.,Позняк Э. Г.Основы математического анализа (в двух частях). —М.:Физматлит, 2005. — 648 с. —ISBN 5-9221-0536-1.Бутузов В. Ф.и др.Мат. анализ в вопросах и задачах"
+                },
+                {
+                  "type": "list",
+                  "list_type": "unordered",
+                  "items": [
+                    {
+                      "text": "Ильин В. А.,Позняк Э. Г.Основы математического анализа (в двух частях). —М.:Физматлит, 2005. — 648 с. —ISBN 5-9221-0536-1."
+                    },
+                    {
+                      "text": "Бутузов В. Ф.и др.Мат. анализ в вопросах и задачах"
+                    }
+                  ]
+                },
+                {
+                  "type": "list",
+                  "list_type": "unordered",
+                  "items": [
+                    {
+                      "text": "МГТУ им. Н. Э. Баумана:"
+                    }
+                  ]
+                },
+                {
+                  "type": "paragraph",
+                  "text": "Математика в техническом университете. Сборник учебных пособий в 21 томе."
+                },
+                {
+                  "type": "list",
+                  "list_type": "unordered",
+                  "items": [
+                    {
+                      "text": "Математика в техническом университете. Сборник учебных пособий в 21 томе."
+                    }
+                  ]
+                },
+                {
+                  "type": "list",
+                  "list_type": "unordered",
+                  "items": [
+                    {
+                      "text": "СПбГУ,физфак:"
+                    }
+                  ]
+                },
+                {
+                  "type": "paragraph",
+                  "text": "Смирнов В. И.Курс высшей математики, в 5 томах. М.: Наука, 1981 (6-е издание), БХВ-Петербург, 2008 (24-е издание)."
+                },
+                {
+                  "type": "list",
+                  "list_type": "unordered",
+                  "items": [
+                    {
+                      "text": "Смирнов В. И.Курс высшей математики, в 5 томах. М.: Наука, 1981 (6-е издание), БХВ-Петербург, 2008 (24-е издание)."
+                    }
+                  ]
+                },
+                {
+                  "type": "list",
+                  "list_type": "unordered",
+                  "items": [
+                    {
+                      "text": "НГУ, мехмат:"
+                    }
+                  ]
+                },
+                {
+                  "type": "paragraph",
+                  "text": "Решетняк Ю. Г.Курс математического анализа. Часть I. Книга 1. Введение в математический анализ. Дифференциальное исчисление функций одной переменной. Новосибирск: Изд-во Ин-та математики, 1999. 454 сISBN 5-86134-066-8.Решетняк Ю. Г.Курс математического анализа. Часть I. Книга 2. Интегральное исчисление функций одной переменной. Дифференциальное исчисление функций многих переменных. Новосибирск: Изд-во Ин-та математики, 1999. 512 сISBN 5-86134-067-6.Решетняк Ю. Г.Курс математического анализа. Часть II. Книга 1. Основы гладкого анализа в многомерных пространствах. Теория рядов. Новосибирск: Изд-во Ин-та математики, 2000. 440 сISBN 5-86134-086-2.Решетняк Ю. Г.Курс математического анализа. Часть II. Книга 2. Интегральное исчисление функций многих переменных. Интегральное исчисление на многообразиях. Внешние дифференциальные формы. Новосибирск: Изд-во Ин-та математики, 2001. 444 сISBN 5-86134-089-7.Шведов И. А.Компактный курс математического анализа,2003:Часть 1. Функции одной переменной,Часть 2. Дифференциальное исчисление функций многих переменных."
+                },
+                {
+                  "type": "list",
+                  "list_type": "unordered",
+                  "items": [
+                    {
+                      "text": "Решетняк Ю. Г.Курс математического анализа. Часть I. Книга 1. Введение в математический анализ. Дифференциальное исчисление функций одной переменной. Новосибирск: Изд-во Ин-та математики, 1999. 454 сISBN 5-86134-066-8."
+                    },
+                    {
+                      "text": "Решетняк Ю. Г.Курс математического анализа. Часть I. Книга 2. Интегральное исчисление функций одной переменной. Дифференциальное исчисление функций многих переменных. Новосибирск: Изд-во Ин-та математики, 1999. 512 сISBN 5-86134-067-6."
+                    },
+                    {
+                      "text": "Решетняк Ю. Г.Курс математического анализа. Часть II. Книга 1. Основы гладкого анализа в многомерных пространствах. Теория рядов. Новосибирск: Изд-во Ин-та математики, 2000. 440 сISBN 5-86134-086-2."
+                    },
+                    {
+                      "text": "Решетняк Ю. Г.Курс математического анализа. Часть II. Книга 2. Интегральное исчисление функций многих переменных. Интегральное исчисление на многообразиях. Внешние дифференциальные формы. Новосибирск: Изд-во Ин-та математики, 2001. 444 сISBN 5-86134-089-7."
+                    },
+                    {
+                      "text": "Шведов И. А.Компактный курс математического анализа,2003:Часть 1. Функции одной переменной,Часть 2. Дифференциальное исчисление функций многих переменных."
+                    }
+                  ]
+                },
+                {
+                  "type": "list",
+                  "list_type": "unordered",
+                  "items": [
+                    {
+                      "text": "МФТИ, Москва"
+                    }
+                  ]
+                },
+                {
+                  "type": "paragraph",
+                  "text": "Кудрявцев Л. Д.Курс математического анализа (в трёх томах).Яковлев Г. Н.Лекции по математическому анализу : [в 3 ч.]. 2-е изд., перераб. и доп. — М. : Физматлит, 2004. — 3000 экз. (Ч. 1. 340 с.ISBN 5-94052-083-9, Ч. 2. 332 с.ISBN 5-94052-085-5. Ч. 3. 312 с.ISBN 5-94052-086-3)."
+                },
+                {
+                  "type": "list",
+                  "list_type": "unordered",
+                  "items": [
+                    {
+                      "text": "Кудрявцев Л. Д.Курс математического анализа (в трёх томах)."
+                    },
+                    {
+                      "text": "Яковлев Г. Н.Лекции по математическому анализу : [в 3 ч.]. 2-е изд., перераб. и доп. — М. : Физматлит, 2004. — 3000 экз. (Ч. 1. 340 с.ISBN 5-94052-083-9, Ч. 2. 332 с.ISBN 5-94052-085-5. Ч. 3. 312 с.ISBN 5-94052-086-3)."
+                    }
+                  ]
+                },
+                {
+                  "type": "list",
+                  "list_type": "unordered",
+                  "items": [
+                    {
+                      "text": "БГУ, ФПМИ:"
+                    }
+                  ]
+                },
+                {
+                  "type": "paragraph",
+                  "text": "Богданов Ю. С.Лекции по математическому анализу (в двух частях). — Минск: БГУ, 1974."
+                },
+                {
+                  "type": "list",
+                  "list_type": "unordered",
+                  "items": [
+                    {
+                      "text": "Богданов Ю. С.Лекции по математическому анализу (в двух частях). — Минск: БГУ, 1974."
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "heading",
+              "level": 4,
+              "text": "Учебники повышенной сложности",
+              "id": "Учебники_повышенной_сложности",
+              "content": [
+                {
+                  "type": "paragraph",
+                  "text": "Учебники:"
+                },
+                {
+                  "type": "list",
+                  "list_type": "unordered",
+                  "items": [
+                    {
+                      "text": "Натансон, И. П.Теория функций вещественной переменной. —М.: Наука, 1974. — 484 с."
+                    },
+                    {
+                      "text": "Рудин У.Основы математического анализа. М., 1976"
+                    }
+                  ]
+                },
+                {
+                  "type": "paragraph",
+                  "text": "Задачники повышенной сложности:"
+                },
+                {
+                  "type": "list",
+                  "list_type": "unordered",
+                  "items": [
+                    {
+                      "text": "Г. Полиа, Г. Сеге,Задачи и теоремы из анализа.Часть 1,Часть 2, 1978. (Большая часть материала относится к ТФКП)"
+                    },
+                    {
+                      "text": "Pascal, E.(Napoli). Esercizi, 1895; 2 ed., 1909 //Internet Archiv"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "heading",
+              "level": 4,
+              "text": "Учебники для гуманитарных специальностей",
+              "id": "Учебники_для_гуманитарных_специальностей",
+              "content": [
+                {
+                  "type": "list",
+                  "list_type": "unordered",
+                  "items": [
+                    {
+                      "text": "А. М. АхтямовМатематика для социологов и экономистов. — М. : Физматлит, 2004."
+                    },
+                    {
+                      "text": "Н. Ш. Кремер и др. Высшая математика для экономистов. Учебник. 3-е изд. — М. : Юнити, 2010"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "heading",
+              "level": 4,
+              "text": "Задачники",
+              "id": "Задачники",
+              "content": [
+                {
+                  "type": "list",
+                  "list_type": "unordered",
+                  "items": [
+                    {
+                      "text": "Г. Н. Берман. Сборник задач по курсу математического анализа: Учебное пособие для вузов. — 20-е изд. М.:Наука. Главная редакция физико-математической литературы, 1985. — 384 с."
+                    },
+                    {
+                      "text": "П. Е. Данко, А. Г. Попов, Т. Я. Кожевников. Высшая математика в упражнениях и задачах. (В 2-х частях)- М.: Высш.шк, 1986."
+                    },
+                    {
+                      "text": "Г. И. Запорожец Руководство к решению задач по математическому анализу. — М.: Высшая школа, 1966."
+                    },
+                    {
+                      "text": "И. А. Каплан. Практические занятия по высшей математике, в 5 частях.. — Харьков, Изд. Харьковского гос. ун-та, 1967, 1971, 1972."
+                    },
+                    {
+                      "text": "К. Н. Лунгу, В. П. Норин, Д. Т. Письменный, Ю.А Шевченко . Сборник задач по высшей математике. 1 курс. — 7-е изд. — М.: Айрис-пресс, 2008."
+                    },
+                    {
+                      "text": "И. А. Марон. Дифференциальное и интегральное исчисление в примерах и задачах (Функции одной переменной). — М., Физматлит, 1970."
+                    },
+                    {
+                      "text": "В. Д. Черненко. Высшая математика в примерах и задачах: Учебное пособие для вузов. В 3 т. — СПб.: Политехника, 2003."
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "heading",
+          "level": 3,
+          "text": "Классические произведения",
+          "id": "Классические_произведения",
+          "content": [
+            {
+              "type": "list",
+              "list_type": "unordered",
+              "items": [
+                {
+                  "text": "Лопиталь. Анализ бесконечно малых"
+                },
+                {
+                  "text": "Bernoulli, Johann. Die erste Integralrechnung / Leipzig-Berlin, 1914."
+                },
+                {
+                  "text": "Эйлер. Введение в анализ, Дифференциальное исчисление, Интегральное исчисление"
+                },
+                {
+                  "text": "Коши. Краткое изложение уроков по дифференциальному и интегральному исчислению"
+                },
+                {
+                  "text": "Штурм. Курс анализа. Т. 1, 2 — Классический курс парижской политехнической школы 1830-х годов."
+                },
+                {
+                  "text": "Гурса Э.Курс мат. анализа. T. 1.1, 1.2"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "heading",
+          "level": 3,
+          "text": "Сочинения по истории анализа",
+          "id": "Сочинения_по_истории_анализа",
+          "content": [
+            {
+              "type": "list",
+              "list_type": "unordered",
+              "items": [
+                {
+                  "text": "Кестнер, Авраам Готтгельф. Geschichte der Mathematik. 4 тома, Гёттинген, 1796—1800"
+                },
+                {
+                  "text": "Кантор, Мориц.Vorlesungen über Geschichte der MathematikLeipzig: B. G. Teubner,1894—1908.Bd. 1,Bd. 2,Bd. 3,Bd. 4"
+                },
+                {
+                  "text": "История математики под редакциейА. П. Юшкевича(в трёх томах):"
+                }
+              ]
+            },
+            {
+              "type": "paragraph",
+              "text": "Том 1 С древнейших времён до начала Нового времени. (1970)Том 2 Математика XVII столетия. (1970)Том 3 Математика XVIII столетия. (1972)"
+            },
+            {
+              "type": "list",
+              "list_type": "unordered",
+              "items": [
+                {
+                  "text": "Том 1 С древнейших времён до начала Нового времени. (1970)"
+                },
+                {
+                  "text": "Том 2 Математика XVII столетия. (1970)"
+                },
+                {
+                  "text": "Том 3 Математика XVIII столетия. (1972)"
+                }
+              ]
+            },
+            {
+              "type": "list",
+              "list_type": "unordered",
+              "items": [
+                {
+                  "text": "Маркушевич А. И.Очерки по истории теории аналитических функций. 1951"
+                },
+                {
+                  "text": "Вилейтнер Г. История математики от Декарта до середины XIX столетия. 1960"
+                },
+                {
+                  "text": "E. Hairer[англ.],G. Wanner[англ.]. Analysis by Its History. 2000"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "heading",
+      "level": 2,
+      "text": "Примечания",
+      "id": "Примечания",
+      "content": [
+        {
+          "type": "list",
+          "list_type": "ordered",
+          "items": [
+            {
+              "text": "↑Анализ математический //Большая советская энциклопедия:[в 30 т.]/ гл. ред.А. М. Прохоров. — 3-е изд. —М.: Советская энциклопедия, 1969—1978."
+            },
+            {
+              "text": "↑Katz, Victor J. (1995).Ideas of Calculus in Islam and India.Mathematics Magazine.68(3):163—74.doi:10.2307/2691411.JSTOR2691411."
+            },
+            {
+              "text": "↑Ньютон И.Математические работы. M, 1937."
+            },
+            {
+              "text": "↑Leibniz //Acta Eroditorum, 1684. L.M.S., т. V, c. 220—226. Рус. пер.: Успехи Мат. Наук, т. 3, в. 1 (23), с. 166—173."
+            },
+            {
+              "text": "↑Лопиталь.Анализ бесконечно малых. М.-Л.:ГТТИ, 1935. (Далее: Лопиталь) //Мат. анализ на EqWorldАрхивная копияот 4 июня 2018 наWayback Machine"
+            },
+            {
+              "text": "↑Лопиталь, гл. 1, опр. 2."
+            },
+            {
+              "text": "↑Лопиталь, гл. 4, опр. 1."
+            },
+            {
+              "text": "↑Лопиталь, гл. 1, требование 1."
+            },
+            {
+              "text": "↑Лопиталь, гл. 1, требование 2."
+            },
+            {
+              "text": "↑Лопиталь, гл. 2, опр."
+            },
+            {
+              "text": "↑12Лопиталь, § 46."
+            },
+            {
+              "text": "↑Лопиталь беспокоится о другом:dy{\\displaystyle dy}для него длина отрезка и нужно пояснить, что значит её отрицательность. Замечание, сделанное в § 8-10, можно даже понять так, что при убыванииy{\\displaystyle y}с ростомx{\\displaystyle x}следует писатьdxy=ydx−xdy{\\displaystyle dxy=ydx-xdy}, однако далее это не используется."
+            },
+            {
+              "text": "↑Bernoulli, Johann.Die erste Integralrechnung.Архивная копияот 29 ноября 2003 наWayback MachineLeipzig-Berlin, 1914."
+            },
+            {
+              "text": "↑См.: Успехи Мат. Наук, т. 3, в. 1 (23)"
+            },
+            {
+              "text": "↑См. Маркушевич А. И.Элементы теории аналитических функций, Учпедгиз, 1944. С. 21 и сл.; Koenig F.Kommentierender Anhang zu Funktionentheorie von F. Klein. Leipzig: Teubner, 1987; а такжеИсторический очерк в статье Функция"
+            },
+            {
+              "text": "↑Эйлер.Введение в анализ. Т. 1. Гл. 1, § 4"
+            },
+            {
+              "text": "↑Эйлер.Введение в анализ. Т. 1. Гл. 1, § 6"
+            },
+            {
+              "text": "↑Эйлер обозначает это число какi{\\displaystyle i}, что не может не путать современного читателя."
+            },
+            {
+              "text": "↑Введении в анализ, т. 1, гл. 8"
+            },
+            {
+              "text": "↑Некоторые исследователи (см., напр., История Математики, т. 2) хотят видеть в сказанном во втором томеВведения в анализростки новой трактовки понятия функции, но в тексте говорится лишь о том, что кривые, а вовсе не функции, могут не быть представимы в виде единого выражения для счёта, то есть одной функции."
+            },
+            {
+              "text": "↑Casorati F.Teorica delle funzioni di variabili complesse. Pavia, 1868. P. 191"
+            },
+            {
+              "text": "↑Эйлер.Интегральное исчисление. Т. 1, опр. 2"
+            },
+            {
+              "text": "↑Lagrange.OEvres. Vol. 9Архивная копияот 23 августа 2017 наWayback Machine"
+            },
+            {
+              "text": "↑Lacroix.Traite du calcul differentiel et du calcul integral. Vol. 1-3. 1 ed., 1798. (Большой Лакруа)//http://gallica.bnf.frАрхивная копияот 18 декабря 2016 наWayback Machine"
+            },
+            {
+              "text": "↑См. также: Маркушевич А. И.Элементы теории аналитических функций. М., 1944. C. 22-24"
+            },
+            {
+              "text": "↑Lacroix.Traite, vol. 2, § 594."
+            },
+            {
+              "text": "↑См. также:История математики, т. 3., с. 297—300"
+            },
+            {
+              "text": "↑Pringssheim A.// Math. Ann. Bd. 43 (1893); см. также: Маркушевич А. И.Элементы теории аналитических функций. М., 1944. C. 16-17."
+            },
+            {
+              "text": "↑Математический анализ— статья изМатематической энциклопедии.Драгалин А. Г.С помощью Н. а. был обнаружен ряд новых фактов. Многие классич. доказательства заметно выигрывают в наглядности при изложении их методами нестандартного анализа"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "heading",
+      "level": 2,
+      "text": "Ссылки",
+      "id": "Ссылки",
+      "content": [
+        {
+          "type": "list",
+          "list_type": "unordered",
+          "items": [
+            {
+              "text": "Анализ//Энциклопедический лексикон: В 17 т. —СПб.: Тип.А. Плюшара, 1835—1841."
+            },
+            {
+              "text": "Анализ математический//Энциклопедический словарь Брокгауза и Ефрона: в 86 т. (82 т. и 4 доп.). —СПб., 1890—1907."
+            }
+          ]
+        },
+        {
+          "type": "table",
+          "rows": [
+            [
+              {
+                "text": "Ссылки на внешние ресурсы",
+                "is_header": true
+              }
+            ],
+            [
+              {
+                "text": "Тематические сайты",
+                "is_header": true
+              },
+              {
+                "text": "MathWorldnLab",
+                "is_header": false
+              }
+            ],
+            [
+              {
+                "text": "Словари и энциклопедии",
+                "is_header": true
+              },
+              {
+                "text": "Большая датскаяБольшая российская (научно-образовательный портал)Брокгауза и ЕфронаКругосветМатематическаяЭнциклопедический лексиконBritannica (11-th)Britannica (онлайн)",
+                "is_header": false
+              }
+            ],
+            [
+              {
+                "text": "В библиографических каталогах",
+                "is_header": true
+              },
+              {
+                "text": "BNF:119891944J9U:987007293765505171LCCN:sh85018802NKC:ph1034721",
+                "is_header": false
+              }
+            ]
+          ]
+        },
+        {
+          "type": "list",
+          "list_type": "unordered",
+          "items": [
+            {
+              "text": "MathWorld"
+            },
+            {
+              "text": "nLab"
+            }
+          ]
+        },
+        {
+          "type": "list",
+          "list_type": "unordered",
+          "items": [
+            {
+              "text": "Большая датская"
+            },
+            {
+              "text": "Большая российская (научно-образовательный портал)"
+            },
+            {
+              "text": "Брокгауза и Ефрона"
+            },
+            {
+              "text": "Кругосвет"
+            },
+            {
+              "text": "Математическая"
+            },
+            {
+              "text": "Энциклопедический лексикон"
+            },
+            {
+              "text": "Britannica (11-th)"
+            },
+            {
+              "text": "Britannica (онлайн)"
+            }
+          ]
+        },
+        {
+          "type": "list",
+          "list_type": "unordered",
+          "items": [
+            {
+              "text": "BNF:119891944"
+            },
+            {
+              "text": "J9U:987007293765505171"
+            },
+            {
+              "text": "LCCN:sh85018802"
+            },
+            {
+              "text": "NKC:ph1034721"
+            }
+          ]
+        },
+        {
+          "type": "table",
+          "rows": [
+            [
+              {
+                "text": "Математика",
+                "is_header": true
+              }
+            ],
+            [
+              {
+                "text": "Элементарная математика",
+                "is_header": true
+              },
+              {
+                "text": "АрифметикаЕвклидова геометрияПланиметрияСтереометрияЭлементарная алгебраЭлементарная теория чиселАлгебра высказыванийЭлементарные функции",
+                "is_header": false
+              }
+            ],
+            [
+              {
+                "text": "Основания математики",
+                "is_header": true
+              },
+              {
+                "text": "Теория множествМатематическая логикаТеория категорийОбщая алгебраТеория порядковИстория математикиКрасота математикиМетаматематика",
+                "is_header": false
+              }
+            ],
+            [
+              {
+                "text": "АлгебраЛинейная алгебраВекторное исчислениеСистемы линейных уравненийМатрицыВекторные пространстваКвадратичные и билинейные формыСпектральная теорияТензорное исчислениеПолилинейная алгебраТопологические векторные пространства‎Теория группГруппы симметрииТеория абелевых группКонечные группыМатричные группыКомбинаторная теория группГеометрическая теория группТопологические группыТеория представлений группОбщая алгебраКоммутативная алгебраТеория модулейНекоммутативная алгебра[англ.]Теория полейТеория ГалуаТеория категорийТеория представленийДифференциальная алгебраГомологическая алгебраУниверсальная алгебраАлгебраическая геометрияАлгебраические кривыеАлгебраические многообразияБирациональная геометрияПространство модулейАлгебраические группыНекоммутативная геометрияДиофантова геометрияТеория инвариантов",
+                "is_header": false
+              },
+              {
+                "text": "Алгебра",
+                "is_header": true
+              },
+              {
+                "text": "Линейная алгебра",
+                "is_header": true
+              },
+              {
+                "text": "Векторное исчислениеСистемы линейных уравненийМатрицыВекторные пространстваКвадратичные и билинейные формыСпектральная теорияТензорное исчислениеПолилинейная алгебраТопологические векторные пространства‎",
+                "is_header": false
+              },
+              {
+                "text": "Теория групп",
+                "is_header": true
+              },
+              {
+                "text": "Группы симметрииТеория абелевых группКонечные группыМатричные группыКомбинаторная теория группГеометрическая теория группТопологические группыТеория представлений групп",
+                "is_header": false
+              },
+              {
+                "text": "Общая алгебра",
+                "is_header": true
+              },
+              {
+                "text": "Коммутативная алгебраТеория модулейНекоммутативная алгебра[англ.]Теория полейТеория ГалуаТеория категорийТеория представленийДифференциальная алгебраГомологическая алгебраУниверсальная алгебра",
+                "is_header": false
+              },
+              {
+                "text": "Алгебраическая геометрия",
+                "is_header": true
+              },
+              {
+                "text": "Алгебраические кривыеАлгебраические многообразияБирациональная геометрияПространство модулейАлгебраические группыНекоммутативная геометрияДиофантова геометрияТеория инвариантов",
+                "is_header": false
+              }
+            ],
+            [
+              {
+                "text": "Алгебра",
+                "is_header": true
+              }
+            ],
+            [
+              {
+                "text": "Линейная алгебра",
+                "is_header": true
+              },
+              {
+                "text": "Векторное исчислениеСистемы линейных уравненийМатрицыВекторные пространстваКвадратичные и билинейные формыСпектральная теорияТензорное исчислениеПолилинейная алгебраТопологические векторные пространства‎",
+                "is_header": false
+              }
+            ],
+            [
+              {
+                "text": "Теория групп",
+                "is_header": true
+              },
+              {
+                "text": "Группы симметрииТеория абелевых группКонечные группыМатричные группыКомбинаторная теория группГеометрическая теория группТопологические группыТеория представлений групп",
+                "is_header": false
+              }
+            ],
+            [
+              {
+                "text": "Общая алгебра",
+                "is_header": true
+              },
+              {
+                "text": "Коммутативная алгебраТеория модулейНекоммутативная алгебра[англ.]Теория полейТеория ГалуаТеория категорийТеория представленийДифференциальная алгебраГомологическая алгебраУниверсальная алгебра",
+                "is_header": false
+              }
+            ],
+            [
+              {
+                "text": "Алгебраическая геометрия",
+                "is_header": true
+              },
+              {
+                "text": "Алгебраические кривыеАлгебраические многообразияБирациональная геометрияПространство модулейАлгебраические группыНекоммутативная геометрияДиофантова геометрияТеория инвариантов",
+                "is_header": false
+              }
+            ],
+            [
+              {
+                "text": "АнализКлассический анализДифференциальное исчислениеИнтегральное исчислениеТеория функцийГармонический анализКватернионный анализКомплексный анализТеория мерыТеория функций вещественной переменнойФункциональный анализВариационное исчислениеДифференциальные иинтегральные уравненияДинамические системыиэргодическая теорияДифференциальные уравненияобыкновенныев частных производныхИнтегральные уравненияВекторный анализГлобальный анализТеория катастрофНестандартный анализГладкий инфинитезимальный анализ",
+                "is_header": false
+              },
+              {
+                "text": "Анализ",
+                "is_header": true
+              },
+              {
+                "text": "Классический анализ",
+                "is_header": true
+              },
+              {
+                "text": "Дифференциальное исчислениеИнтегральное исчисление",
+                "is_header": false
+              },
+              {
+                "text": "Теория функций",
+                "is_header": true
+              },
+              {
+                "text": "Гармонический анализКватернионный анализКомплексный анализТеория мерыТеория функций вещественной переменнойФункциональный анализВариационное исчисление",
+                "is_header": false
+              },
+              {
+                "text": "Дифференциальные иинтегральные уравнения",
+                "is_header": true
+              },
+              {
+                "text": "Динамические системыиэргодическая теорияДифференциальные уравненияобыкновенныев частных производныхИнтегральные уравнения",
+                "is_header": false
+              },
+              {
+                "text": "Векторный анализГлобальный анализТеория катастрофНестандартный анализГладкий инфинитезимальный анализ",
+                "is_header": false
+              }
+            ],
+            [
+              {
+                "text": "Анализ",
+                "is_header": true
+              }
+            ],
+            [
+              {
+                "text": "Классический анализ",
+                "is_header": true
+              },
+              {
+                "text": "Дифференциальное исчислениеИнтегральное исчисление",
+                "is_header": false
+              }
+            ],
+            [
+              {
+                "text": "Теория функций",
+                "is_header": true
+              },
+              {
+                "text": "Гармонический анализКватернионный анализКомплексный анализТеория мерыТеория функций вещественной переменнойФункциональный анализВариационное исчисление",
+                "is_header": false
+              }
+            ],
+            [
+              {
+                "text": "Дифференциальные иинтегральные уравнения",
+                "is_header": true
+              },
+              {
+                "text": "Динамические системыиэргодическая теорияДифференциальные уравненияобыкновенныев частных производныхИнтегральные уравнения",
+                "is_header": false
+              }
+            ],
+            [
+              {
+                "text": "Векторный анализГлобальный анализТеория катастрофНестандартный анализГладкий инфинитезимальный анализ",
+                "is_header": false
+              }
+            ],
+            [
+              {
+                "text": "ГеометрияитопологияГеометрияАлгебраическая геометрияАналитическая геометрияГеометрический объектДиффеотопДифференциальная геометрияДифференциальная геометрия многообразий фигурЕвклидова геометрияКонформное пространствоНеевклидова геометрияПланиметрияСтереометрияФигураФундаментальная группаТопологияОбщая топологияАлгебраическая топологияДифференциальная топология",
+                "is_header": false
+              },
+              {
+                "text": "Геометрияитопология",
+                "is_header": true
+              },
+              {
+                "text": "Геометрия",
+                "is_header": true
+              },
+              {
+                "text": "Алгебраическая геометрияАналитическая геометрияГеометрический объектДиффеотопДифференциальная геометрияДифференциальная геометрия многообразий фигурЕвклидова геометрияКонформное пространствоНеевклидова геометрияПланиметрияСтереометрияФигураФундаментальная группа",
+                "is_header": false
+              },
+              {
+                "text": "Топология",
+                "is_header": true
+              },
+              {
+                "text": "Общая топологияАлгебраическая топологияДифференциальная топология",
+                "is_header": false
+              }
+            ],
+            [
+              {
+                "text": "Геометрияитопология",
+                "is_header": true
+              }
+            ],
+            [
+              {
+                "text": "Геометрия",
+                "is_header": true
+              },
+              {
+                "text": "Алгебраическая геометрияАналитическая геометрияГеометрический объектДиффеотопДифференциальная геометрияДифференциальная геометрия многообразий фигурЕвклидова геометрияКонформное пространствоНеевклидова геометрияПланиметрияСтереометрияФигураФундаментальная группа",
+                "is_header": false
+              }
+            ],
+            [
+              {
+                "text": "Топология",
+                "is_header": true
+              },
+              {
+                "text": "Общая топологияАлгебраическая топологияДифференциальная топология",
+                "is_header": false
+              }
+            ],
+            [
+              {
+                "text": "Дискретная математикаКомбинаторикаТеория графов",
+                "is_header": false
+              },
+              {
+                "text": "Дискретная математика",
+                "is_header": true
+              },
+              {
+                "text": "КомбинаторикаТеория графов",
+                "is_header": false
+              }
+            ],
+            [
+              {
+                "text": "Дискретная математика",
+                "is_header": true
+              }
+            ],
+            [
+              {
+                "text": "КомбинаторикаТеория графов",
+                "is_header": false
+              }
+            ],
+            [
+              {
+                "text": "Прикладная математикаМатематическая физикаМатематическая химияМатематическая биологияМатематическая статистикаМатематическое моделированиеТеория алгоритмовЧисленные методыМатематическая экономикаФинансовая математикаТеория вероятностейИсследование операцийТеория игр",
+                "is_header": false
+              },
+              {
+                "text": "Прикладная математика",
+                "is_header": true
+              },
+              {
+                "text": "Математическая физикаМатематическая химияМатематическая биологияМатематическая статистикаМатематическое моделированиеТеория алгоритмовЧисленные методыМатематическая экономикаФинансовая математикаТеория вероятностейИсследование операцийТеория игр",
+                "is_header": false
+              }
+            ],
+            [
+              {
+                "text": "Прикладная математика",
+                "is_header": true
+              }
+            ],
+            [
+              {
+                "text": "Математическая физикаМатематическая химияМатематическая биологияМатематическая статистикаМатематическое моделированиеТеория алгоритмовЧисленные методыМатематическая экономикаФинансовая математикаТеория вероятностейИсследование операцийТеория игр",
+                "is_header": false
+              }
+            ],
+            [
+              {
+                "text": "Портал «Математика»Категория «Математика»",
+                "is_header": false
+              }
+            ]
+          ]
+        },
+        {
+          "type": "list",
+          "list_type": "unordered",
+          "items": [
+            {
+              "text": "Арифметика"
+            },
+            {
+              "text": "Евклидова геометрияПланиметрияСтереометрия"
+            },
+            {
+              "text": "Элементарная алгебра"
+            },
+            {
+              "text": "Элементарная теория чисел"
+            },
+            {
+              "text": "Алгебра высказываний"
+            },
+            {
+              "text": "Элементарные функции"
+            }
+          ]
+        },
+        {
+          "type": "list",
+          "list_type": "unordered",
+          "items": [
+            {
+              "text": "Планиметрия"
+            },
+            {
+              "text": "Стереометрия"
+            }
+          ]
+        },
+        {
+          "type": "list",
+          "list_type": "unordered",
+          "items": [
+            {
+              "text": "Теория множеств"
+            },
+            {
+              "text": "Математическая логика"
+            },
+            {
+              "text": "Теория категорий"
+            },
+            {
+              "text": "Общая алгебра"
+            },
+            {
+              "text": "Теория порядков"
+            },
+            {
+              "text": "История математики"
+            },
+            {
+              "text": "Красота математики"
+            },
+            {
+              "text": "Метаматематика"
+            }
+          ]
+        },
+        {
+          "type": "table",
+          "rows": [
+            [
+              {
+                "text": "Алгебра",
+                "is_header": true
+              }
+            ],
+            [
+              {
+                "text": "Линейная алгебра",
+                "is_header": true
+              },
+              {
+                "text": "Векторное исчислениеСистемы линейных уравненийМатрицыВекторные пространстваКвадратичные и билинейные формыСпектральная теорияТензорное исчислениеПолилинейная алгебраТопологические векторные пространства‎",
+                "is_header": false
+              }
+            ],
+            [
+              {
+                "text": "Теория групп",
+                "is_header": true
+              },
+              {
+                "text": "Группы симметрииТеория абелевых группКонечные группыМатричные группыКомбинаторная теория группГеометрическая теория группТопологические группыТеория представлений групп",
+                "is_header": false
+              }
+            ],
+            [
+              {
+                "text": "Общая алгебра",
+                "is_header": true
+              },
+              {
+                "text": "Коммутативная алгебраТеория модулейНекоммутативная алгебра[англ.]Теория полейТеория ГалуаТеория категорийТеория представленийДифференциальная алгебраГомологическая алгебраУниверсальная алгебра",
+                "is_header": false
+              }
+            ],
+            [
+              {
+                "text": "Алгебраическая геометрия",
+                "is_header": true
+              },
+              {
+                "text": "Алгебраические кривыеАлгебраические многообразияБирациональная геометрияПространство модулейАлгебраические группыНекоммутативная геометрияДиофантова геометрияТеория инвариантов",
+                "is_header": false
+              }
+            ]
+          ]
+        },
+        {
+          "type": "list",
+          "list_type": "unordered",
+          "items": [
+            {
+              "text": "Векторное исчисление"
+            },
+            {
+              "text": "Системы линейных уравнений"
+            },
+            {
+              "text": "Матрицы"
+            },
+            {
+              "text": "Векторные пространства"
+            },
+            {
+              "text": "Квадратичные и билинейные формы"
+            },
+            {
+              "text": "Спектральная теория"
+            },
+            {
+              "text": "Тензорное исчисление"
+            },
+            {
+              "text": "Полилинейная алгебра"
+            },
+            {
+              "text": "Топологические векторные пространства‎"
+            }
+          ]
+        },
+        {
+          "type": "list",
+          "list_type": "unordered",
+          "items": [
+            {
+              "text": "Группы симметрии"
+            },
+            {
+              "text": "Теория абелевых групп"
+            },
+            {
+              "text": "Конечные группы"
+            },
+            {
+              "text": "Матричные группы"
+            },
+            {
+              "text": "Комбинаторная теория групп"
+            },
+            {
+              "text": "Геометрическая теория групп"
+            },
+            {
+              "text": "Топологические группы"
+            },
+            {
+              "text": "Теория представлений групп"
+            }
+          ]
+        },
+        {
+          "type": "list",
+          "list_type": "unordered",
+          "items": [
+            {
+              "text": "Коммутативная алгебра"
+            },
+            {
+              "text": "Теория модулей"
+            },
+            {
+              "text": "Некоммутативная алгебра[англ.]"
+            },
+            {
+              "text": "Теория полей"
+            },
+            {
+              "text": "Теория Галуа"
+            },
+            {
+              "text": "Теория категорий"
+            },
+            {
+              "text": "Теория представлений"
+            },
+            {
+              "text": "Дифференциальная алгебра"
+            },
+            {
+              "text": "Гомологическая алгебра"
+            },
+            {
+              "text": "Универсальная алгебра"
+            }
+          ]
+        },
+        {
+          "type": "list",
+          "list_type": "unordered",
+          "items": [
+            {
+              "text": "Алгебраические кривые"
+            },
+            {
+              "text": "Алгебраические многообразия"
+            },
+            {
+              "text": "Бирациональная геометрия"
+            },
+            {
+              "text": "Пространство модулей"
+            },
+            {
+              "text": "Алгебраические группы"
+            },
+            {
+              "text": "Некоммутативная геометрия"
+            },
+            {
+              "text": "Диофантова геометрия"
+            },
+            {
+              "text": "Теория инвариантов"
+            }
+          ]
+        },
+        {
+          "type": "table",
+          "rows": [
+            [
+              {
+                "text": "Анализ",
+                "is_header": true
+              }
+            ],
+            [
+              {
+                "text": "Классический анализ",
+                "is_header": true
+              },
+              {
+                "text": "Дифференциальное исчислениеИнтегральное исчисление",
+                "is_header": false
+              }
+            ],
+            [
+              {
+                "text": "Теория функций",
+                "is_header": true
+              },
+              {
+                "text": "Гармонический анализКватернионный анализКомплексный анализТеория мерыТеория функций вещественной переменнойФункциональный анализВариационное исчисление",
+                "is_header": false
+              }
+            ],
+            [
+              {
+                "text": "Дифференциальные иинтегральные уравнения",
+                "is_header": true
+              },
+              {
+                "text": "Динамические системыиэргодическая теорияДифференциальные уравненияобыкновенныев частных производныхИнтегральные уравнения",
+                "is_header": false
+              }
+            ],
+            [
+              {
+                "text": "Векторный анализГлобальный анализТеория катастрофНестандартный анализГладкий инфинитезимальный анализ",
+                "is_header": false
+              }
+            ]
+          ]
+        },
+        {
+          "type": "list",
+          "list_type": "unordered",
+          "items": [
+            {
+              "text": "Дифференциальное исчисление"
+            },
+            {
+              "text": "Интегральное исчисление"
+            }
+          ]
+        },
+        {
+          "type": "list",
+          "list_type": "unordered",
+          "items": [
+            {
+              "text": "Гармонический анализ"
+            },
+            {
+              "text": "Кватернионный анализ"
+            },
+            {
+              "text": "Комплексный анализ"
+            },
+            {
+              "text": "Теория меры"
+            },
+            {
+              "text": "Теория функций вещественной переменной"
+            },
+            {
+              "text": "Функциональный анализВариационное исчисление"
+            }
+          ]
+        },
+        {
+          "type": "list",
+          "list_type": "unordered",
+          "items": [
+            {
+              "text": "Вариационное исчисление"
+            }
+          ]
+        },
+        {
+          "type": "list",
+          "list_type": "unordered",
+          "items": [
+            {
+              "text": "Динамические системыиэргодическая теория"
+            },
+            {
+              "text": "Дифференциальные уравненияобыкновенныев частных производных"
+            },
+            {
+              "text": "Интегральные уравнения"
+            }
+          ]
+        },
+        {
+          "type": "list",
+          "list_type": "unordered",
+          "items": [
+            {
+              "text": "обыкновенные"
+            },
+            {
+              "text": "в частных производных"
+            }
+          ]
+        },
+        {
+          "type": "list",
+          "list_type": "unordered",
+          "items": [
+            {
+              "text": "Векторный анализ"
+            },
+            {
+              "text": "Глобальный анализ"
+            },
+            {
+              "text": "Теория катастроф"
+            },
+            {
+              "text": "Нестандартный анализ"
+            },
+            {
+              "text": "Гладкий инфинитезимальный анализ"
+            }
+          ]
+        },
+        {
+          "type": "table",
+          "rows": [
+            [
+              {
+                "text": "Геометрияитопология",
+                "is_header": true
+              }
+            ],
+            [
+              {
+                "text": "Геометрия",
+                "is_header": true
+              },
+              {
+                "text": "Алгебраическая геометрияАналитическая геометрияГеометрический объектДиффеотопДифференциальная геометрияДифференциальная геометрия многообразий фигурЕвклидова геометрияКонформное пространствоНеевклидова геометрияПланиметрияСтереометрияФигураФундаментальная группа",
+                "is_header": false
+              }
+            ],
+            [
+              {
+                "text": "Топология",
+                "is_header": true
+              },
+              {
+                "text": "Общая топологияАлгебраическая топологияДифференциальная топология",
+                "is_header": false
+              }
+            ]
+          ]
+        },
+        {
+          "type": "list",
+          "list_type": "unordered",
+          "items": [
+            {
+              "text": "Алгебраическая геометрия"
+            },
+            {
+              "text": "Аналитическая геометрия"
+            },
+            {
+              "text": "Геометрический объект"
+            },
+            {
+              "text": "Диффеотоп"
+            },
+            {
+              "text": "Дифференциальная геометрия"
+            },
+            {
+              "text": "Дифференциальная геометрия многообразий фигур"
+            },
+            {
+              "text": "Евклидова геометрия"
+            },
+            {
+              "text": "Конформное пространство"
+            },
+            {
+              "text": "Неевклидова геометрия"
+            },
+            {
+              "text": "Планиметрия"
+            },
+            {
+              "text": "Стереометрия"
+            },
+            {
+              "text": "Фигура"
+            },
+            {
+              "text": "Фундаментальная группа"
+            }
+          ]
+        },
+        {
+          "type": "list",
+          "list_type": "unordered",
+          "items": [
+            {
+              "text": "Общая топология"
+            },
+            {
+              "text": "Алгебраическая топология"
+            },
+            {
+              "text": "Дифференциальная топология"
+            }
+          ]
+        },
+        {
+          "type": "table",
+          "rows": [
+            [
+              {
+                "text": "Дискретная математика",
+                "is_header": true
+              }
+            ],
+            [
+              {
+                "text": "КомбинаторикаТеория графов",
+                "is_header": false
+              }
+            ]
+          ]
+        },
+        {
+          "type": "list",
+          "list_type": "unordered",
+          "items": [
+            {
+              "text": "Комбинаторика"
+            },
+            {
+              "text": "Теория графов"
+            }
+          ]
+        },
+        {
+          "type": "table",
+          "rows": [
+            [
+              {
+                "text": "Прикладная математика",
+                "is_header": true
+              }
+            ],
+            [
+              {
+                "text": "Математическая физикаМатематическая химияМатематическая биологияМатематическая статистикаМатематическое моделированиеТеория алгоритмовЧисленные методыМатематическая экономикаФинансовая математикаТеория вероятностейИсследование операцийТеория игр",
+                "is_header": false
+              }
+            ]
+          ]
+        },
+        {
+          "type": "list",
+          "list_type": "unordered",
+          "items": [
+            {
+              "text": "Математическая физика"
+            },
+            {
+              "text": "Математическая химия"
+            },
+            {
+              "text": "Математическая биология"
+            },
+            {
+              "text": "Математическая статистика"
+            },
+            {
+              "text": "Математическое моделирование"
+            },
+            {
+              "text": "Теория алгоритмов"
+            },
+            {
+              "text": "Численные методы"
+            },
+            {
+              "text": "Математическая экономика"
+            },
+            {
+              "text": "Финансовая математика"
+            },
+            {
+              "text": "Теория вероятностей"
+            },
+            {
+              "text": "Исследование операций"
+            },
+            {
+              "text": "Теория игр"
+            }
+          ]
+        },
+        {
+          "type": "list",
+          "list_type": "unordered",
+          "items": [
+            {
+              "text": "Портал «Математика»"
+            },
+            {
+              "text": "Категория «Математика»"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

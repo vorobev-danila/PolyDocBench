@@ -1,0 +1,586 @@
+{
+  "title": "Regresja liniowa",
+  "url": "https://pl.wikipedia.org/wiki/Regresja_liniowa",
+  "content": [
+    {
+      "type": "image",
+      "src": "https://upload.wikimedia.org/wikipedia/commons/thumb/f/f6/Regresja_liniowa_%E2%80%93_przyk%C5%82ad.svg/250px-Regresja_liniowa_%E2%80%93_przyk%C5%82ad.svg.png",
+      "caption": "Przykład danych z modelem liniowym dopasowanymmetodą najmniejszych kwadratów",
+      "alt": "Dwuwymiarowy wykres punktowy, przedstawiający przykładowe obserwacje i dopasowaną linię trendu."
+    },
+    {
+      "type": "paragraph",
+      "text": "Regresja liniowa– wmodelowaniu statystycznym, metody oparte naliniowych kombinacjachzmiennych i parametrów dopasowujących model do danych. Dopasowana linia lub krzywa regresji reprezentujeoszacowanąwartość oczekiwanązmiennejy{\\displaystyle y}przy konkretnych wartościach innej zmiennej lub zmiennychx.{\\displaystyle x.}W najprostszym przypadku dopasowana jeststałalubfunkcja liniowa, na przykład:"
+    },
+    {
+      "type": "formula",
+      "formula_type": "inline",
+      "mathml": "<math alttext=\"{\\displaystyle y=\\beta _{0}+\\beta _{1}x.}\" xmlns=\"http://www.w3.org/1998/Math/MathML\"><semantics><mrow class=\"MJX-TeXAtom-ORD\"><mstyle displaystyle=\"true\" scriptlevel=\"0\"><mi>y</mi><mo>=</mo><msub><mi>β<!-- β --></mi><mrow class=\"MJX-TeXAtom-ORD\"><mn>0</mn></mrow></msub><mo>+</mo><msub><mi>β<!-- β --></mi><mrow class=\"MJX-TeXAtom-ORD\"><mn>1</mn></mrow></msub><mi>x</mi><mo>.</mo></mstyle></mrow><annotation encoding=\"application/x-tex\">{\\displaystyle y=\\beta _{0}+\\beta _{1}x.}</annotation></semantics></math>",
+      "latex": "y=\\beta _{0}+\\beta _{1}x.",
+      "image_src": "https://wikimedia.org/api/rest_v1/media/math/render/svg/fe8b6aa0b98eb62a7f9e3ad078805cb45784f85c",
+      "alt_text": "{\\displaystyle y=\\beta _{0}+\\beta _{1}x.}",
+      "alttext": "{\\displaystyle y=\\beta _{0}+\\beta _{1}x.}"
+    },
+    {
+      "type": "paragraph",
+      "text": "Zmiennay{\\displaystyle y}jest tradycyjnie nazywanazmienną objaśnianąlubzależną. Zmiennex{\\displaystyle x}nazywa sięzmiennymi objaśniającymilubniezależnymi. Zarówno zmienne objaśniane i objaśniające mogą byćwielkościami skalarnymilubwektorami."
+    },
+    {
+      "type": "paragraph",
+      "text": "Regresjaw ogólności to problem estymacjiwarunkowej wartości oczekiwanej. Regresja liniowa jest nazywana liniową, gdyż zakładanymmodelemzależności między zmiennymi zależnymi a niezależnymi jestprzekształcenie liniowe(afiniczne) względem parametrów, reprezentowane w przypadku wielowymiarowym przezmacierz."
+    },
+    {
+      "type": "heading",
+      "level": 2,
+      "text": "Model regresji liniowej",
+      "id": "Model_regresji_liniowej",
+      "content": [
+        {
+          "type": "paragraph",
+          "text": "Niech dany będzie zbiór danych zaobserwowanych{yi,xi1,…,xip}i=1n.{\\displaystyle \\{y_{i},\\,x_{i1},\\dots ,x_{ip}\\}_{i=1}^{n}.}Model regresji liniowej zakłada, że istnieje liniowa (afiniczna) relacja pomiędzy zmienną zależnąyi{\\displaystyle y_{i}}a wektoremp×1{\\displaystyle p\\times 1}regresorówxi.{\\displaystyle \\mathbf {x} _{i}.}Zależność ta jest modelowana przez uwzględnienie składnika losowego (błędu)εi,{\\displaystyle \\varepsilon _{i},}który jestzmienną losową. Dokładniej, model ten jest postaci"
+        },
+        {
+          "type": "formula",
+          "formula_type": "inline",
+          "mathml": "<math alttext=\"{\\displaystyle y_{i}=\\beta _{0}1+\\beta _{1}x_{i1}+\\ldots +\\beta _{p}x_{ip}+\\varepsilon _{i}=\\mathbf {x} _{i}^{\\top }{\\boldsymbol {\\beta }}+\\varepsilon _{i},\\qquad i=1,\\dots ,n,}\" xmlns=\"http://www.w3.org/1998/Math/MathML\"><semantics><mrow class=\"MJX-TeXAtom-ORD\"><mstyle displaystyle=\"true\" scriptlevel=\"0\"><msub><mi>y</mi><mrow class=\"MJX-TeXAtom-ORD\"><mi>i</mi></mrow></msub><mo>=</mo><msub><mi>β<!-- β --></mi><mrow class=\"MJX-TeXAtom-ORD\"><mn>0</mn></mrow></msub><mn>1</mn><mo>+</mo><msub><mi>β<!-- β --></mi><mrow class=\"MJX-TeXAtom-ORD\"><mn>1</mn></mrow></msub><msub><mi>x</mi><mrow class=\"MJX-TeXAtom-ORD\"><mi>i</mi><mn>1</mn></mrow></msub><mo>+</mo><mo>…<!-- … --></mo><mo>+</mo><msub><mi>β<!-- β --></mi><mrow class=\"MJX-TeXAtom-ORD\"><mi>p</mi></mrow></msub><msub><mi>x</mi><mrow class=\"MJX-TeXAtom-ORD\"><mi>i</mi><mi>p</mi></mrow></msub><mo>+</mo><msub><mi>ε<!-- ε --></mi><mrow class=\"MJX-TeXAtom-ORD\"><mi>i</mi></mrow></msub><mo>=</mo><msubsup><mrow class=\"MJX-TeXAtom-ORD\"><mi mathvariant=\"bold\">x</mi></mrow><mrow class=\"MJX-TeXAtom-ORD\"><mi>i</mi></mrow><mrow class=\"MJX-TeXAtom-ORD\"><mi mathvariant=\"normal\">⊤<!-- ⊤ --></mi></mrow></msubsup><mrow class=\"MJX-TeXAtom-ORD\"><mi mathvariant=\"bold-italic\">β<!-- β --></mi></mrow><mo>+</mo><msub><mi>ε<!-- ε --></mi><mrow class=\"MJX-TeXAtom-ORD\"><mi>i</mi></mrow></msub><mo>,</mo><mspace width=\"2em\"></mspace><mi>i</mi><mo>=</mo><mn>1</mn><mo>,</mo><mo>…<!-- … --></mo><mo>,</mo><mi>n</mi><mo>,</mo></mstyle></mrow><annotation encoding=\"application/x-tex\">{\\displaystyle y_{i}=\\beta _{0}1+\\beta _{1}x_{i1}+\\ldots +\\beta _{p}x_{ip}+\\varepsilon _{i}=\\mathbf {x} _{i}^{\\top }{\\boldsymbol {\\beta }}+\\varepsilon _{i},\\qquad i=1,\\dots ,n,}</annotation></semantics></math>",
+          "latex": "y_{i}=\\beta _{0}1+\\beta _{1}x_{i1}+\\ldots +\\beta _{p}x_{ip}+\\varepsilon _{i}=\\mathbf {x} _{i}^{\\top }{\\boldsymbol {\\beta }}+\\varepsilon _{i},\\qquad i=1,\\dots ,n,",
+          "image_src": "https://wikimedia.org/api/rest_v1/media/math/render/svg/85b6b33e4308ae9f5ae5e942fbbe3ea59d630ed9",
+          "alt_text": "{\\displaystyle y_{i}=\\beta _{0}1+\\beta _{1}x_{i1}+\\ldots +\\beta _{p}x_{ip}+\\varepsilon _{i}=\\mathbf {x} _{i}^{\\top }{\\boldsymbol {\\beta }}+\\varepsilon _{i},\\qquad i=1,\\dots ,n,}",
+          "alttext": "{\\displaystyle y_{i}=\\beta _{0}1+\\beta _{1}x_{i1}+\\ldots +\\beta _{p}x_{ip}+\\varepsilon _{i}=\\mathbf {x} _{i}^{\\top }{\\boldsymbol {\\beta }}+\\varepsilon _{i},\\qquad i=1,\\dots ,n,}"
+        },
+        {
+          "type": "paragraph",
+          "text": "gdzie⊤{\\displaystyle ^{\\top }}oznaczatranspozycję, tj.xi⊤β{\\displaystyle \\mathbf {x} _{i}^{\\top }{\\boldsymbol {\\beta }}}jestiloczynem skalarnymwektorówxi{\\displaystyle \\mathbf {x} _{i}}orazβ.{\\displaystyle {\\boldsymbol {\\beta }}.}"
+        },
+        {
+          "type": "paragraph",
+          "text": "Powyższen{\\displaystyle n}równań można zapisać w sposób macierzowy:"
+        },
+        {
+          "type": "formula",
+          "formula_type": "inline",
+          "mathml": "<math alttext=\"{\\displaystyle \\mathbf {y} =X{\\boldsymbol {\\beta }}+{\\boldsymbol {\\varepsilon }},}\" xmlns=\"http://www.w3.org/1998/Math/MathML\"><semantics><mrow class=\"MJX-TeXAtom-ORD\"><mstyle displaystyle=\"true\" scriptlevel=\"0\"><mrow class=\"MJX-TeXAtom-ORD\"><mi mathvariant=\"bold\">y</mi></mrow><mo>=</mo><mi>X</mi><mrow class=\"MJX-TeXAtom-ORD\"><mi mathvariant=\"bold-italic\">β<!-- β --></mi></mrow><mo>+</mo><mrow class=\"MJX-TeXAtom-ORD\"><mi mathvariant=\"bold-italic\">ε<!-- ε --></mi></mrow><mo>,</mo></mstyle></mrow><annotation encoding=\"application/x-tex\">{\\displaystyle \\mathbf {y} =X{\\boldsymbol {\\beta }}+{\\boldsymbol {\\varepsilon }},}</annotation></semantics></math>",
+          "latex": "\\mathbf {y} =X{\\boldsymbol {\\beta }}+{\\boldsymbol {\\varepsilon }},",
+          "image_src": "https://wikimedia.org/api/rest_v1/media/math/render/svg/6fe9b73aebc90e06516e0b4a37d0bccedbc01689",
+          "alt_text": "{\\displaystyle \\mathbf {y} =X{\\boldsymbol {\\beta }}+{\\boldsymbol {\\varepsilon }},}",
+          "alttext": "{\\displaystyle \\mathbf {y} =X{\\boldsymbol {\\beta }}+{\\boldsymbol {\\varepsilon }},}"
+        },
+        {
+          "type": "paragraph",
+          "text": "gdzie:"
+        },
+        {
+          "type": "formula",
+          "formula_type": "inline",
+          "mathml": "<math alttext=\"{\\displaystyle \\mathbf {y} ={\\begin{pmatrix}y_{1}\\\\y_{2}\\\\\\vdots \\\\y_{n}\\end{pmatrix}},\\qquad X={\\begin{pmatrix}\\mathbf {x} _{1}^{\\top }\\\\\\mathbf {x} _{2}^{\\top }\\\\\\vdots \\\\\\mathbf {x} _{n}^{\\top }\\end{pmatrix}}={\\begin{pmatrix}1&amp;x_{11}&amp;\\ldots &amp;x_{1p}\\\\1&amp;x_{21}&amp;\\ldots &amp;x_{2p}\\\\\\vdots &amp;\\vdots &amp;\\ddots &amp;\\vdots \\\\1&amp;x_{n1}&amp;\\ldots &amp;x_{np}\\end{pmatrix}},\\qquad {\\boldsymbol {\\beta }}={\\begin{pmatrix}\\beta _{0}\\\\\\beta _{1}\\\\\\beta _{2}\\\\\\vdots \\\\\\beta _{p}\\end{pmatrix}},\\qquad {\\boldsymbol {\\varepsilon }}={\\begin{pmatrix}\\varepsilon _{1}\\\\\\varepsilon _{2}\\\\\\vdots \\\\\\varepsilon _{n}\\end{pmatrix}}.}\" xmlns=\"http://www.w3.org/1998/Math/MathML\"><semantics><mrow class=\"MJX-TeXAtom-ORD\"><mstyle displaystyle=\"true\" scriptlevel=\"0\"><mrow class=\"MJX-TeXAtom-ORD\"><mi mathvariant=\"bold\">y</mi></mrow><mo>=</mo><mrow class=\"MJX-TeXAtom-ORD\"><mrow><mo>(</mo><mtable columnspacing=\"1em\" rowspacing=\"4pt\"><mtr><mtd><msub><mi>y</mi><mrow class=\"MJX-TeXAtom-ORD\"><mn>1</mn></mrow></msub></mtd></mtr><mtr><mtd><msub><mi>y</mi><mrow class=\"MJX-TeXAtom-ORD\"><mn>2</mn></mrow></msub></mtd></mtr><mtr><mtd><mo>⋮<!-- ⋮ --></mo></mtd></mtr><mtr><mtd><msub><mi>y</mi><mrow class=\"MJX-TeXAtom-ORD\"><mi>n</mi></mrow></msub></mtd></mtr></mtable><mo>)</mo></mrow></mrow><mo>,</mo><mspace width=\"2em\"></mspace><mi>X</mi><mo>=</mo><mrow class=\"MJX-TeXAtom-ORD\"><mrow><mo>(</mo><mtable columnspacing=\"1em\" rowspacing=\"4pt\"><mtr><mtd><msubsup><mrow class=\"MJX-TeXAtom-ORD\"><mi mathvariant=\"bold\">x</mi></mrow><mrow class=\"MJX-TeXAtom-ORD\"><mn>1</mn></mrow><mrow class=\"MJX-TeXAtom-ORD\"><mi mathvariant=\"normal\">⊤<!-- ⊤ --></mi></mrow></msubsup></mtd></mtr><mtr><mtd><msubsup><mrow class=\"MJX-TeXAtom-ORD\"><mi mathvariant=\"bold\">x</mi></mrow><mrow class=\"MJX-TeXAtom-ORD\"><mn>2</mn></mrow><mrow class=\"MJX-TeXAtom-ORD\"><mi mathvariant=\"normal\">⊤<!-- ⊤ --></mi></mrow></msubsup></mtd></mtr><mtr><mtd><mo>⋮<!-- ⋮ --></mo></mtd></mtr><mtr><mtd><msubsup><mrow class=\"MJX-TeXAtom-ORD\"><mi mathvariant=\"bold\">x</mi></mrow><mrow class=\"MJX-TeXAtom-ORD\"><mi>n</mi></mrow><mrow class=\"MJX-TeXAtom-ORD\"><mi mathvariant=\"normal\">⊤<!-- ⊤ --></mi></mrow></msubsup></mtd></mtr></mtable><mo>)</mo></mrow></mrow><mo>=</mo><mrow class=\"MJX-TeXAtom-ORD\"><mrow><mo>(</mo><mtable columnspacing=\"1em\" rowspacing=\"4pt\"><mtr><mtd><mn>1</mn></mtd><mtd><msub><mi>x</mi><mrow class=\"MJX-TeXAtom-ORD\"><mn>11</mn></mrow></msub></mtd><mtd><mo>…<!-- … --></mo></mtd><mtd><msub><mi>x</mi><mrow class=\"MJX-TeXAtom-ORD\"><mn>1</mn><mi>p</mi></mrow></msub></mtd></mtr><mtr><mtd><mn>1</mn></mtd><mtd><msub><mi>x</mi><mrow class=\"MJX-TeXAtom-ORD\"><mn>21</mn></mrow></msub></mtd><mtd><mo>…<!-- … --></mo></mtd><mtd><msub><mi>x</mi><mrow class=\"MJX-TeXAtom-ORD\"><mn>2</mn><mi>p</mi></mrow></msub></mtd></mtr><mtr><mtd><mo>⋮<!-- ⋮ --></mo></mtd><mtd><mo>⋮<!-- ⋮ --></mo></mtd><mtd><mo>⋱<!-- ⋱ --></mo></mtd><mtd><mo>⋮<!-- ⋮ --></mo></mtd></mtr><mtr><mtd><mn>1</mn></mtd><mtd><msub><mi>x</mi><mrow class=\"MJX-TeXAtom-ORD\"><mi>n</mi><mn>1</mn></mrow></msub></mtd><mtd><mo>…<!-- … --></mo></mtd><mtd><msub><mi>x</mi><mrow class=\"MJX-TeXAtom-ORD\"><mi>n</mi><mi>p</mi></mrow></msub></mtd></mtr></mtable><mo>)</mo></mrow></mrow><mo>,</mo><mspace width=\"2em\"></mspace><mrow class=\"MJX-TeXAtom-ORD\"><mi mathvariant=\"bold-italic\">β<!-- β --></mi></mrow><mo>=</mo><mrow class=\"MJX-TeXAtom-ORD\"><mrow><mo>(</mo><mtable columnspacing=\"1em\" rowspacing=\"4pt\"><mtr><mtd><msub><mi>β<!-- β --></mi><mrow class=\"MJX-TeXAtom-ORD\"><mn>0</mn></mrow></msub></mtd></mtr><mtr><mtd><msub><mi>β<!-- β --></mi><mrow class=\"MJX-TeXAtom-ORD\"><mn>1</mn></mrow></msub></mtd></mtr><mtr><mtd><msub><mi>β<!-- β --></mi><mrow class=\"MJX-TeXAtom-ORD\"><mn>2</mn></mrow></msub></mtd></mtr><mtr><mtd><mo>⋮<!-- ⋮ --></mo></mtd></mtr><mtr><mtd><msub><mi>β<!-- β --></mi><mrow class=\"MJX-TeXAtom-ORD\"><mi>p</mi></mrow></msub></mtd></mtr></mtable><mo>)</mo></mrow></mrow><mo>,</mo><mspace width=\"2em\"></mspace><mrow class=\"MJX-TeXAtom-ORD\"><mi mathvariant=\"bold-italic\">ε<!-- ε --></mi></mrow><mo>=</mo><mrow class=\"MJX-TeXAtom-ORD\"><mrow><mo>(</mo><mtable columnspacing=\"1em\" rowspacing=\"4pt\"><mtr><mtd><msub><mi>ε<!-- ε --></mi><mrow class=\"MJX-TeXAtom-ORD\"><mn>1</mn></mrow></msub></mtd></mtr><mtr><mtd><msub><mi>ε<!-- ε --></mi><mrow class=\"MJX-TeXAtom-ORD\"><mn>2</mn></mrow></msub></mtd></mtr><mtr><mtd><mo>⋮<!-- ⋮ --></mo></mtd></mtr><mtr><mtd><msub><mi>ε<!-- ε --></mi><mrow class=\"MJX-TeXAtom-ORD\"><mi>n</mi></mrow></msub></mtd></mtr></mtable><mo>)</mo></mrow></mrow><mo>.</mo></mstyle></mrow><annotation encoding=\"application/x-tex\">{\\displaystyle \\mathbf {y} ={\\begin{pmatrix}y_{1}\\\\y_{2}\\\\\\vdots \\\\y_{n}\\end{pmatrix}},\\qquad X={\\begin{pmatrix}\\mathbf {x} _{1}^{\\top }\\\\\\mathbf {x} _{2}^{\\top }\\\\\\vdots \\\\\\mathbf {x} _{n}^{\\top }\\end{pmatrix}}={\\begin{pmatrix}1&amp;x_{11}&amp;\\ldots &amp;x_{1p}\\\\1&amp;x_{21}&amp;\\ldots &amp;x_{2p}\\\\\\vdots &amp;\\vdots &amp;\\ddots &amp;\\vdots \\\\1&amp;x_{n1}&amp;\\ldots &amp;x_{np}\\end{pmatrix}},\\qquad {\\boldsymbol {\\beta }}={\\begin{pmatrix}\\beta _{0}\\\\\\beta _{1}\\\\\\beta _{2}\\\\\\vdots \\\\\\beta _{p}\\end{pmatrix}},\\qquad {\\boldsymbol {\\varepsilon }}={\\begin{pmatrix}\\varepsilon _{1}\\\\\\varepsilon _{2}\\\\\\vdots \\\\\\varepsilon _{n}\\end{pmatrix}}.}</annotation></semantics></math>",
+          "latex": "\\mathbf {y} ={\\begin{pmatrix}y_{1}\\\\y_{2}\\\\\\vdots \\\\y_{n}\\end{pmatrix}},\\qquad X={\\begin{pmatrix}\\mathbf {x} _{1}^{\\top }\\\\\\mathbf {x} _{2}^{\\top }\\\\\\vdots \\\\\\mathbf {x} _{n}^{\\top }\\end{pmatrix}}={\\begin{pmatrix}1&x_{11}&\\ldots &x_{1p}\\\\1&x_{21}&\\ldots &x_{2p}\\\\\\vdots &\\vdots &\\ddots &\\vdots \\\\1&x_{n1}&\\ldots &x_{np}\\end{pmatrix}},\\qquad {\\boldsymbol {\\beta }}={\\begin{pmatrix}\\beta _{0}\\\\\\beta _{1}\\\\\\beta _{2}\\\\\\vdots \\\\\\beta _{p}\\end{pmatrix}},\\qquad {\\boldsymbol {\\varepsilon }}={\\begin{pmatrix}\\varepsilon _{1}\\\\\\varepsilon _{2}\\\\\\vdots \\\\\\varepsilon _{n}\\end{pmatrix}}.",
+          "image_src": "https://wikimedia.org/api/rest_v1/media/math/render/svg/d984ec02305c51fdb18062148be3991f8c1fe9c9",
+          "alt_text": "{\\displaystyle \\mathbf {y} ={\\begin{pmatrix}y_{1}\\\\y_{2}\\\\\\vdots \\\\y_{n}\\end{pmatrix}},\\qquad X={\\begin{pmatrix}\\mathbf {x} _{1}^{\\top }\\\\\\mathbf {x} _{2}^{\\top }\\\\\\vdots \\\\\\mathbf {x} _{n}^{\\top }\\end{pmatrix}}={\\begin{pmatrix}1&x_{11}&\\ldots &x_{1p}\\\\1&x_{21}&\\ldots &x_{2p}\\\\\\vdots &\\vdots &\\ddots &\\vdots \\\\1&x_{n1}&\\ldots &x_{np}\\end{pmatrix}},\\qquad {\\boldsymbol {\\beta }}={\\begin{pmatrix}\\beta _{0}\\\\\\beta _{1}\\\\\\beta _{2}\\\\\\vdots \\\\\\beta _{p}\\end{pmatrix}},\\qquad {\\boldsymbol {\\varepsilon }}={\\begin{pmatrix}\\varepsilon _{1}\\\\\\varepsilon _{2}\\\\\\vdots \\\\\\varepsilon _{n}\\end{pmatrix}}.}",
+          "alttext": "{\\displaystyle \\mathbf {y} ={\\begin{pmatrix}y_{1}\\\\y_{2}\\\\\\vdots \\\\y_{n}\\end{pmatrix}},\\qquad X={\\begin{pmatrix}\\mathbf {x} _{1}^{\\top }\\\\\\mathbf {x} _{2}^{\\top }\\\\\\vdots \\\\\\mathbf {x} _{n}^{\\top }\\end{pmatrix}}={\\begin{pmatrix}1&x_{11}&\\ldots &x_{1p}\\\\1&x_{21}&\\ldots &x_{2p}\\\\\\vdots &\\vdots &\\ddots &\\vdots \\\\1&x_{n1}&\\ldots &x_{np}\\end{pmatrix}},\\qquad {\\boldsymbol {\\beta }}={\\begin{pmatrix}\\beta _{0}\\\\\\beta _{1}\\\\\\beta _{2}\\\\\\vdots \\\\\\beta _{p}\\end{pmatrix}},\\qquad {\\boldsymbol {\\varepsilon }}={\\begin{pmatrix}\\varepsilon _{1}\\\\\\varepsilon _{2}\\\\\\vdots \\\\\\varepsilon _{n}\\end{pmatrix}}.}"
+        },
+        {
+          "type": "paragraph",
+          "text": "Najczęściej wykorzystuje się do tego celu klasycznąmetodę najmniejszych kwadratówi jej pochodne. Metoda ta jest najstarsza i najłatwiejsza do zastosowania, choć posiada wady (np. niewielką odporność naelementy odstające), które udało się usunąć w innych, mniej rozpropagowanych metodach. Są toodporne metody statystyczne, do których należyregresja medianowai algorytmy zregularyzacją."
+        },
+        {
+          "type": "image",
+          "src": "https://upload.wikimedia.org/wikipedia/commons/thumb/e/ec/Anscombe%27s_quartet_3.svg/330px-Anscombe%27s_quartet_3.svg.png",
+          "caption": "Kwartet Anscombe’a",
+          "alt": ""
+        },
+        {
+          "type": "paragraph",
+          "text": "Niedostateczność prostych algorytmów w ogólnym przypadku pokazuje m.in.kwartet Anscombe’a– specjalnie przygotowany zestaw czterechzbiorów danych, które mają niemal tożsame wskaźniki statystyczne (średniąiwariancjęw kierunku X i Y,współczynnik korelacjioraz prostą regresji) mimo znacząco różnego charakteru danych."
+        }
+      ]
+    },
+    {
+      "type": "heading",
+      "level": 2,
+      "text": "Testy oparte na modelu liniowym",
+      "id": "Testy_oparte_na_modelu_liniowym",
+      "content": [
+        {
+          "type": "paragraph",
+          "text": "Wiele klasycznych narzędzistatystycznychopatrzonych własnymi nazwami, takich jak współczynnik korelacjir{\\displaystyle r}Pearsona,ANOVAczytesttStudentajest szczególnymi przypadkami lub aspektami modelu liniowego. Dotyczy to również licznychtestów nieparametrycznych, w których przypadku zamiast surowych wartości zmiennych stosuje sięrangi obserwacji[1]."
+        },
+        {
+          "type": "paragraph",
+          "text": "Historycznie, klasyczne narzędzia stanowiły proste, gotowe do użycia modele z dobrze opisanymi właściwościami. W wielu przypadkach wymagają one jedynie obliczenia kilku średnich arytmetycznych, ignorując tym samym większość informacji zawartych w danych. W ortodoksyjnympodejściu częstościowymtest realizuje się następnie z reguły przez określenie prawdopodobieństwa danych przy założeniu modelu zerowego: o odpowiedniej dla sytuacji strukturze, ale zakładającego zerowe zależności. Modele zerowe dla klasycznych testów mają dobrze znanerozkłady prawdopodobieństwa, i wykonanie testu polegało na odnalezieniu odpowiedniej wartości w standardowej tabeli w podręczniku[2][3]."
+        },
+        {
+          "type": "paragraph",
+          "text": "Prostota technik pozwoliła na ich łatwe i powszechne stosowanie w epoce niskiej dostępności i mocy komputerów. Zwyczaj ten ukrywa jednak ich strukturalną i poznawczą banalność, i zachęca do zaniedbywania surowych założeń warunkujących ich trafność. Współcześnie statystycy mogą tworzyć i stosować modele oraz testy dużo dokładniej dopasowane do konkretnych zastosowań i ograniczeń[2][3][4][5][6]."
+        },
+        {
+          "type": "paragraph",
+          "text": "Poniższa tabela – oparta na pracy Lindeløva[7]– przedstawia równoważne klasycznym narzędziom modele liniowe, gdzieD{\\displaystyle D}reprezentujezmienne typudummy, przyjmujące wartości 1 lub 0 dla obserwacji należących (lub nie) do konkretnej grupy obserwacji,ranga(){\\displaystyle ranga()}to funkcja mapująca surowe wartości zmiennych na ich relatywne rangi (w niektórych przypadkach ze znakiem, rozróżniając wartości ujemne i dodatnie), aϵ{\\displaystyle \\epsilon }to wyraz błędu."
+        },
+        {
+          "type": "table",
+          "rows": [
+            [
+              {
+                "text": "Nazwa zwyczajowa",
+                "is_header": true
+              },
+              {
+                "text": "Równoważny model liniowy",
+                "is_header": true
+              },
+              {
+                "text": "Opis słowny",
+                "is_header": true
+              }
+            ],
+            [
+              {
+                "text": "testtStudenta dla jednej próby",
+                "is_header": false
+              },
+              {
+                "text": "y=β0+ϵ{\\displaystyle y=\\beta _{0}+\\epsilon }",
+                "is_header": false
+              },
+              {
+                "text": "Czy średnia (lub mediana) obserwacjijest ich dobrym predyktorem?",
+                "is_header": false
+              }
+            ],
+            [
+              {
+                "text": "test Wilcoxona dla jednej próby",
+                "is_header": false
+              },
+              {
+                "text": "ranga−+(y)=β0+ϵ{\\displaystyle \\mathrm {ranga} _{-}^{+}(y)=\\beta _{0}+\\epsilon }",
+                "is_header": false
+              }
+            ],
+            [
+              {
+                "text": "testtStudenta dla par obserwacji",
+                "is_header": false
+              },
+              {
+                "text": "y2−y1=β0+ϵ{\\displaystyle y_{2}-y_{1}=\\beta _{0}+\\epsilon }",
+                "is_header": false
+              },
+              {
+                "text": "Czy średnia (lub mediana) różnic obserwacjijest ich dobrym predyktorem?",
+                "is_header": false
+              }
+            ],
+            [
+              {
+                "text": "test Wilcoxona dla par obserwacji",
+                "is_header": false
+              },
+              {
+                "text": "ranga−+(y2−y1)=β0+ϵ{\\displaystyle \\mathrm {ranga} _{-}^{+}(y_{2}-y_{1})=\\beta _{0}+\\epsilon }",
+                "is_header": false
+              }
+            ],
+            [
+              {
+                "text": "korelacjarPearsona",
+                "is_header": false
+              },
+              {
+                "text": "y=β0+β1x+ϵ{\\displaystyle y=\\beta _{0}+\\beta _{1}x+\\epsilon }",
+                "is_header": false
+              },
+              {
+                "text": "Czy model liniowyjest dobrym predyktorem obserwacji (lub ich rang)?",
+                "is_header": false
+              }
+            ],
+            [
+              {
+                "text": "korelacja Spearmana",
+                "is_header": false
+              },
+              {
+                "text": "ranga(y)=β0+β1ranga(x)+ϵ{\\displaystyle \\mathrm {ranga} (y)=\\beta _{0}+\\beta _{1}\\mathrm {ranga} (x)+\\epsilon }",
+                "is_header": false
+              }
+            ],
+            [
+              {
+                "text": "testt{\\displaystyle t}Studenta dla dwóch prób",
+                "is_header": false
+              },
+              {
+                "text": "y=β0+β1D+ϵ{\\displaystyle y=\\beta _{0}+\\beta _{1}D+\\epsilon }",
+                "is_header": false
+              },
+              {
+                "text": "Czy średnie grupsą dobrym predyktorem obserwacji (lub ich rang)?",
+                "is_header": false
+              }
+            ],
+            [
+              {
+                "text": "test Manna-Whitneya",
+                "is_header": false
+              },
+              {
+                "text": "ranga−+(y)=β0+β1D+ϵ{\\displaystyle \\mathrm {ranga} _{-}^{+}(y)=\\beta _{0}+\\beta _{1}D+\\epsilon }",
+                "is_header": false
+              }
+            ],
+            [
+              {
+                "text": "jednoczynnikowaANOVA",
+                "is_header": false
+              },
+              {
+                "text": "y=β0+β1D1+β2D2+…+βnDn+ϵ{\\displaystyle y=\\beta _{0}+\\beta _{1}D_{1}+\\beta _{2}D_{2}+\\ldots +\\beta _{n}D_{n}+\\epsilon }",
+                "is_header": false
+              }
+            ],
+            [
+              {
+                "text": "test Kruskala-Wallisa",
+                "is_header": false
+              },
+              {
+                "text": "ranga−+(y)=β0+β1D1+β2D2+…+βnDn+ϵ{\\displaystyle \\mathrm {ranga} _{-}^{+}(y)=\\beta _{0}+\\beta _{1}D_{1}+\\beta _{2}D_{2}+\\ldots +\\beta _{n}D_{n}+\\epsilon }",
+                "is_header": false
+              }
+            ],
+            [
+              {
+                "text": "jednoczynnikowaANCOVA",
+                "is_header": false
+              },
+              {
+                "text": "y=β0+β1D1+β2D2+…+βnDn+βxx+ϵ{\\displaystyle y=\\beta _{0}+\\beta _{1}D_{1}+\\beta _{2}D_{2}+\\ldots +\\beta _{n}D_{n}+\\beta _{x}x+\\epsilon }",
+                "is_header": false
+              },
+              {
+                "text": "Czy średnie grup oraz ich liniowy modelsą dobrym predyktorem obserwacji (lub ich rang)?",
+                "is_header": false
+              }
+            ],
+            [
+              {
+                "text": "dwuczynnikowa ANOVA",
+                "is_header": false
+              },
+              {
+                "text": "y=β0+β1D1+β2D2+…+βnDn+βoE1+βpE2+…+βrEm+βsD1E1+βtD1E2+…+βuDnEm+ϵ{\\displaystyle {\\begin{aligned}y=\\beta _{0}&+\\beta _{1}D_{1}+\\beta _{2}D_{2}+\\ldots +\\beta _{n}D_{n}\\\\&+\\beta _{o}E_{1}+\\beta _{p}E_{2}+\\ldots +\\beta _{r}E_{m}\\\\&+\\beta _{s}D_{1}E_{1}+\\beta _{t}D_{1}E_{2}+\\ldots +\\beta _{u}D_{n}E_{m}+\\epsilon \\end{aligned}}}",
+                "is_header": false
+              },
+              {
+                "text": "Czy średnie grup oraz ich iloczynówsą dobrym predyktorem obserwacji?",
+                "is_header": false
+              }
+            ]
+          ]
+        }
+      ]
+    },
+    {
+      "type": "heading",
+      "level": 2,
+      "text": "Przypisy",
+      "id": "Przypisy",
+      "content": [
+        {
+          "type": "list",
+          "list_type": "ordered",
+          "items": [
+            {
+              "text": "↑W.J.W.J.ConoverW.J.W.J.,Ronald L.R.L.ImanRonald L.R.L.,Rank Transformations as a Bridge Between Parametric and Nonparametric Statistics, „The American Statistician”, 35 (3), 1981, s. 124–129,DOI:10.2307/2683975,ISSN0003-1305,JSTOR:2683975[dostęp 2019-03-29]."
+            },
+            {
+              "text": "↑abWilliam W.W.W.RozeboomWilliam W.W.W.,The fallacy of the null-hypothesis significance test., „Psychological Bulletin”, 57 (5), 1960, s. 416–428,DOI:10.1037/h0042040,ISSN0033-2909[dostęp 2019-03-29](ang.)."
+            },
+            {
+              "text": "↑abGerdG.GigerenzerGerdG.,Mindless statistics, „The Journal of Socio-Economics”, 33 (5),2004, s. 587–606,DOI:10.1016/j.socec.2004.09.033[dostęp 2019-03-29](ang.)."
+            },
+            {
+              "text": "↑AndrewA.GelmanAndrewA.,Analysis of variance – why it is more important than ever, „The Annals of Statistics”, 33 (1),2005, s. 1–53,DOI:10.1214/009053604000001048,ISSN0090-5364[dostęp 2019-03-29](ang.)."
+            },
+            {
+              "text": "↑5: Fitting models to data, [w:]Russell A.R.A.PoldrackRussell A.R.A.,Statistical Thinking for the 21st Century, 2019[dostęp 2019-03-29][zarchiwizowane zadresu2019-03-29].Brak numerów stron w książce"
+            },
+            {
+              "text": "↑William W.W.W.RozeboomWilliam W.W.W.,Good Science Is Abductive, not Hypothetico-Deductive, [w:]Lisa L.L.L.Harlow,Stanley A.S.A.Mulaik,James H.J.H.Steiger(red.),What If There Were No Significance Tests?, 1997.Brak numerów stron w książce"
+            },
+            {
+              "text": "↑Jonas KristofferJ.K.LindeløvJonas KristofferJ.K.,Common statistical tests are linear models (or: how to teach stats)[online], Tabela udostępniona na licencji CC-BY, lindeloev.github.io, 2019[dostęp 2019-03-29]."
+            }
+          ]
+        },
+        {
+          "type": "list",
+          "list_type": "unordered",
+          "items": [
+            {
+              "text": "p"
+            },
+            {
+              "text": "d"
+            },
+            {
+              "text": "e"
+            }
+          ]
+        },
+        {
+          "type": "table",
+          "rows": [
+            [
+              {
+                "text": "Paradygmaty",
+                "is_header": true
+              },
+              {
+                "text": "uczenie nadzorowaneuczenie nienadzorowaneuczenie przez wzmacnianieuczenie samonadzorowane",
+                "is_header": false
+              }
+            ],
+            [
+              {
+                "text": "Zagadnienia",
+                "is_header": true
+              },
+              {
+                "text": "inferencja gramatykiinżynieria cechklasteryzacjaklasyfikacjaregresjaredukcja wymiaruuczenie multimodalneuczenie (się) cechwykrywanie anomalii",
+                "is_header": false
+              }
+            ],
+            [
+              {
+                "text": "Uczenie nadzorowane(Klasyfikacja,Regresja)",
+                "is_header": true
+              },
+              {
+                "text": "drzewa klasyfikacyjneuczenie zespołoweagregacjalas losowyk najbliższych sąsiadówregresja liniowanaiwny klasyfikator bayesowskisieć neuronowaregresja logistycznaperceptronmaszyna wektorów nośnych",
+                "is_header": false
+              }
+            ],
+            [
+              {
+                "text": "Klasteryzacja",
+                "is_header": true
+              },
+              {
+                "text": "grupowanie hierarchicznealgorytm centroidówDBSCANinferencja gramatyki",
+                "is_header": false
+              }
+            ],
+            [
+              {
+                "text": "Redukcja wymiaru",
+                "is_header": true
+              },
+              {
+                "text": "analiza czynnikowakorelacja kanonicznaliniowa analiza dyskryminacyjnaanaliza głównych składowych",
+                "is_header": false
+              }
+            ],
+            [
+              {
+                "text": "Sieć neuronowa",
+                "is_header": true
+              },
+              {
+                "text": "autoenkoderuczenie głębokiejednokierunkowa sieć neuronowamodel dyfuzyjnyrekurencyjna sieć neuronowaLSTMsieć generatywna GANsieć Kohonenakonwolucyjna sieć neuronowatransformer",
+                "is_header": false
+              }
+            ]
+          ]
+        },
+        {
+          "type": "list",
+          "list_type": "unordered",
+          "items": [
+            {
+              "text": "uczenie nadzorowane"
+            },
+            {
+              "text": "uczenie nienadzorowane"
+            },
+            {
+              "text": "uczenie przez wzmacnianie"
+            },
+            {
+              "text": "uczenie samonadzorowane"
+            }
+          ]
+        },
+        {
+          "type": "list",
+          "list_type": "unordered",
+          "items": [
+            {
+              "text": "inferencja gramatyki"
+            },
+            {
+              "text": "inżynieria cech"
+            },
+            {
+              "text": "klasteryzacja"
+            },
+            {
+              "text": "klasyfikacja"
+            },
+            {
+              "text": "regresja"
+            },
+            {
+              "text": "redukcja wymiaru"
+            },
+            {
+              "text": "uczenie multimodalne"
+            },
+            {
+              "text": "uczenie (się) cech"
+            },
+            {
+              "text": "wykrywanie anomalii"
+            }
+          ]
+        },
+        {
+          "type": "list",
+          "list_type": "unordered",
+          "items": [
+            {
+              "text": "drzewa klasyfikacyjne"
+            },
+            {
+              "text": "uczenie zespołoweagregacjalas losowy"
+            },
+            {
+              "text": "k najbliższych sąsiadów"
+            },
+            {
+              "text": "regresja liniowa"
+            },
+            {
+              "text": "naiwny klasyfikator bayesowski"
+            },
+            {
+              "text": "sieć neuronowa"
+            },
+            {
+              "text": "regresja logistyczna"
+            },
+            {
+              "text": "perceptron"
+            },
+            {
+              "text": "maszyna wektorów nośnych"
+            }
+          ]
+        },
+        {
+          "type": "list",
+          "list_type": "unordered",
+          "items": [
+            {
+              "text": "agregacja"
+            },
+            {
+              "text": "las losowy"
+            }
+          ]
+        },
+        {
+          "type": "list",
+          "list_type": "unordered",
+          "items": [
+            {
+              "text": "grupowanie hierarchiczne"
+            },
+            {
+              "text": "algorytm centroidów"
+            },
+            {
+              "text": "DBSCAN"
+            },
+            {
+              "text": "inferencja gramatyki"
+            }
+          ]
+        },
+        {
+          "type": "list",
+          "list_type": "unordered",
+          "items": [
+            {
+              "text": "analiza czynnikowa"
+            },
+            {
+              "text": "korelacja kanoniczna"
+            },
+            {
+              "text": "liniowa analiza dyskryminacyjna"
+            },
+            {
+              "text": "analiza głównych składowych"
+            }
+          ]
+        },
+        {
+          "type": "list",
+          "list_type": "unordered",
+          "items": [
+            {
+              "text": "autoenkoder"
+            },
+            {
+              "text": "uczenie głębokie"
+            },
+            {
+              "text": "jednokierunkowa sieć neuronowa"
+            },
+            {
+              "text": "model dyfuzyjny"
+            },
+            {
+              "text": "rekurencyjna sieć neuronowaLSTM"
+            },
+            {
+              "text": "sieć generatywna GAN"
+            },
+            {
+              "text": "sieć Kohonena"
+            },
+            {
+              "text": "konwolucyjna sieć neuronowa"
+            },
+            {
+              "text": "transformer"
+            }
+          ]
+        },
+        {
+          "type": "list",
+          "list_type": "unordered",
+          "items": [
+            {
+              "text": "LSTM"
+            }
+          ]
+        },
+        {
+          "type": "list",
+          "list_type": "unordered",
+          "items": [
+            {
+              "text": "GND:4167709-2"
+            },
+            {
+              "text": "BNCF:15574"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
