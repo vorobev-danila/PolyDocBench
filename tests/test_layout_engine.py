@@ -52,9 +52,11 @@ def test_layout_engine_uses_graphic_element_dimensions():
 
     result = LayoutEngine(font_path="DejaVu Sans/DejaVuSans.ttf").layout_document(input_path)
     image = next(element for element in result.elements if element.type == "image")
+    container = result.pages[0].containers[0]
 
     assert image.bbox.width == 180
     assert image.bbox.height == 90
+    assert image.bbox.x == container.x + (container.width - image.bbox.width) / 2
 
 
 def test_layout_engine_exports_justified_line_dimensions():
@@ -145,7 +147,9 @@ def test_layout_engine_preserves_formula_image_metadata():
 
     result = LayoutEngine(font_path="DejaVu Sans/DejaVuSans.ttf").layout_document(input_path)
     formula = next(element for element in result.ground_truth["elements"] if element["type"] == "formula")
+    container = result.pages[0].containers[0]
 
     assert formula["metadata"]["image_src"] == "outputs/test_runs/formula.png"
     assert formula["metadata"]["latex"] == "a+b"
     assert formula["metadata"]["formula_type"] == "display"
+    assert formula["bbox"]["x"] == container.x + (container.width - formula["bbox"]["width"]) / 2

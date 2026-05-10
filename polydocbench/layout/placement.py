@@ -155,6 +155,7 @@ class PlacementEngine:
             raise RuntimeError("Failed to place graphic element")
 
         bbox.width = spec.width_for_container(self.current_container.width)
+        bbox.x = self.current_container.x + (self.current_container.width - bbox.width) / 2
 
         return PlacedLine(
             text="",
