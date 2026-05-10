@@ -98,6 +98,9 @@ class LayoutEngine:
                             "paragraph_id": placed_line.paragraph_id,
                             "container_id": placed_line.container_id,
                             "page_number": placed_line.page_number,
+                            "text_width": placed_line.text_width,
+                            "target_width": placed_line.target_width,
+                            "justify": placed_line.justify,
                         },
                         metadata={
                             "role": "line",
@@ -131,6 +134,9 @@ class LayoutEngine:
                     "container_id": line.container_id,
                     "page_number": line.page_number,
                     "element_type": line.element_type,
+                    "text_width": line.text_width,
+                    "target_width": line.target_width,
+                    "justify": line.justify,
                 }
                 for line in placement_result.placed_lines
             ]

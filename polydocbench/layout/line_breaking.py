@@ -20,6 +20,8 @@ class TextLineInfo:
     is_first_line: bool = False
     indent: float = 0.0
     y_offset: float = 0.0
+    target_width: float = 0.0
+    justify: bool = False
 
 
 class LineBreaker:
@@ -59,6 +61,7 @@ class LineBreaker:
 
         def finalize_line(words_list: list[str], is_first: bool) -> TextLineInfo:
             indent = first_line_indent if is_first else indent_all_lines
+            target_width = effective_width(is_first)
             actual_text = " ".join(words_list)
             actual_width = self.metrics.measure_text_width(actual_text, font_size)
             return TextLineInfo(
@@ -72,6 +75,7 @@ class LineBreaker:
                 font_family=self.metrics.font_name,
                 is_first_line=is_first,
                 indent=indent,
+                target_width=target_width,
             )
 
         def try_hyphenate(word: str, available_width: float, current_width: float, current_words: list[str]):
@@ -183,6 +187,7 @@ class LineBreaker:
         if current_words:
             lines.append(finalize_line(current_words, len(lines) == 0))
 
+        self._assign_justification(lines)
         self._assign_y_offsets(lines)
         return lines
 
@@ -219,6 +224,7 @@ class LineBreaker:
                 font_family=self.metrics.font_name,
                 is_first_line=False,
                 indent=0.0,
+                target_width=actual_width,
             )
 
         for word in words:
@@ -260,6 +266,7 @@ class LineBreaker:
                         line_height=line_height,
                         font_size=font_size,
                         font_family=self.metrics.font_name,
+                        target_width=part_width,
                     )
                 )
                 remaining = remaining[len(part):]
@@ -272,6 +279,17 @@ class LineBreaker:
 
         self._assign_y_offsets(lines)
         return lines
+
+    @staticmethod
+    def _assign_justification(lines: list[TextLineInfo]) -> None:
+        for index, line in enumerate(lines):
+            is_last_line = index == len(lines) - 1
+            has_inter_word_gaps = len(line.text.split()) > 1
+            line.justify = (
+                not is_last_line
+                and has_inter_word_gaps
+                and line.target_width > line.width
+            )
 
     @staticmethod
     def _assign_y_offsets(lines: list[TextLineInfo]) -> None:

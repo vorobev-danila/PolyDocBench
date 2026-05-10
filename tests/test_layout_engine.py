@@ -57,6 +57,41 @@ def test_layout_engine_uses_graphic_element_dimensions():
     assert image.bbox.height == 90
 
 
+def test_layout_engine_exports_justified_line_dimensions():
+    input_path = Path("outputs/test_runs/layout_engine_justified_source.json")
+    input_path.parent.mkdir(parents=True, exist_ok=True)
+    input_path.write_text(
+        json.dumps(
+            {
+                "title": "Justified article",
+                "url": "https://example.test/justified",
+                "content": [
+                    {
+                        "type": "paragraph",
+                        "text": (
+                            "This paragraph has enough words to create multiple lines "
+                            "and mark non-final lines as candidates for justified rendering."
+                        ),
+                    }
+                ],
+            },
+            ensure_ascii=False,
+        ),
+        encoding="utf-8",
+    )
+
+    result = LayoutEngine(font_path="DejaVu Sans/DejaVuSans.ttf").layout_document(input_path)
+    justified_lines = [
+        element for element in result.elements
+        if element.type == "text_line" and element.dimensions.get("justify")
+    ]
+
+    assert justified_lines
+    line = justified_lines[0]
+    assert line.dimensions["target_width"] > line.dimensions["text_width"]
+    assert line.bbox.width == line.dimensions["target_width"]
+
+
 def test_layout_engine_exports_stable_ids_and_reading_order():
     input_path = Path("outputs/test_runs/layout_engine_reading_order_source.json")
     input_path.parent.mkdir(parents=True, exist_ok=True)

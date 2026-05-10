@@ -122,8 +122,11 @@ class PlacementEngine:
             raise RuntimeError("Failed to place line")
 
         indent = getattr(line_info, "indent", 0)
+        text_width = getattr(line_info, "width", bbox.width)
+        target_width = getattr(line_info, "target_width", text_width) or text_width
+        justify = bool(getattr(line_info, "justify", False))
         bbox.x += indent
-        bbox.width = getattr(line_info, "width", bbox.width)
+        bbox.width = target_width if justify else text_width
 
         return PlacedLine(
             text=getattr(line_info, "text", ""),
@@ -138,6 +141,9 @@ class PlacementEngine:
             line_index=line_index,
             paragraph_id=paragraph_id,
             element_type=element_type,
+            text_width=text_width,
+            target_width=target_width,
+            justify=justify,
         )
 
     def _create_graphic_line(self, spec: ElementLayoutSpec) -> PlacedLine:
@@ -162,6 +168,9 @@ class PlacementEngine:
             page_number=self.current_page_number,
             line_index=0,
             element_type=spec.element_type,
+            text_width=0,
+            target_width=bbox.width,
+            justify=False,
         )
 
     @staticmethod

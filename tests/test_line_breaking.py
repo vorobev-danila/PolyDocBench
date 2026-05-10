@@ -26,6 +26,24 @@ def test_line_breaker_splits_paragraph_with_indent_offsets():
     assert lines[1].y_offset == lines[0].height
 
 
+def test_line_breaker_marks_wrapped_lines_for_justification():
+    breaker = LineBreaker(TextMetrics(font_name="Helvetica"))
+    lines = breaker.split_into_lines(
+        "This paragraph has enough words to wrap into several justified text lines.",
+        max_width=100,
+        font_size=10,
+        first_line_indent=0,
+    )
+
+    assert len(lines) > 1
+    assert any(line.justify for line in lines[:-1])
+    assert not lines[-1].justify
+    for line in lines[:-1]:
+        if len(line.text.split()) > 1:
+            assert line.target_width == 100
+            assert line.target_width > line.width
+
+
 def test_bbox_calculator_remains_compatible_facade():
     calculator = BBoxCalculator(font_name="Helvetica")
     lines = calculator.split_heading_into_lines("A Very Long Heading", max_width=60, font_size=12)

@@ -32,6 +32,9 @@ class PlacedLine:
     line_index: int
     paragraph_id: Optional[str] = None
     element_type: Optional[str] = None
+    text_width: float = 0.0
+    target_width: float = 0.0
+    justify: bool = False
 
 
 @dataclass
