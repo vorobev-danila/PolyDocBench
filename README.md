@@ -11,6 +11,7 @@ Synthetic document generation, rendering, degradation, and evaluation toolkit fo
 [Features](#features) |
 [Architecture](#architecture) |
 [Quick Start](#quick-start) |
+[Docker](#docker) |
 [Tutorials](#tutorials) |
 [Contributing](#contributing)
 
@@ -66,7 +67,7 @@ flowchart TB
         R[Renderer]
         G[Ground Truth]
         D[Degradation]
-        P[OCR/model predictions]
+        M[OCR/model predictions]
         E[Evaluation]
     end
 
@@ -79,9 +80,9 @@ flowchart TB
     J --> L --> R
     L --> G
     R --> D
-    D --> P
+    D --> M
     G --> E
-    P --> E
+    M --> E
     C --> P
     C --> L
     C --> R
@@ -122,6 +123,24 @@ http://127.0.0.1:8000/docs
 
 Full setup guide: [Installation Tutorial](tutorials/installation.md).
 
+## Docker
+
+Build and run the API with Docker Compose:
+
+```powershell
+docker compose up --build
+```
+
+Open:
+
+```text
+http://127.0.0.1:8000/docs
+```
+
+Generated files are written to `outputs/` through a mounted volume.
+
+Docker guide: [Docker Tutorial](tutorials/docker.md).
+
 ## Tutorials
 
 The detailed documentation is split into focused tutorials:
@@ -129,6 +148,7 @@ The detailed documentation is split into focused tutorials:
 | Tutorial | What it covers |
 | --- | --- |
 | [Installation](tutorials/installation.md) | Prerequisites, `uv` setup, extras, Docker note |
+| [Docker](tutorials/docker.md) | Build image, run API, execute CLI in a container |
 | [CLI Workflow](tutorials/cli-workflow.md) | Parse, render, debug bboxes, noisy scans |
 | [FastAPI Workflow](tutorials/fastapi-workflow.md) | API startup, endpoints, request examples |
 | [Architecture](tutorials/architecture.md) | Components, data flow, module responsibilities |
@@ -156,6 +176,8 @@ scripts/         # Small manual workflows
 tests/           # Pytest suite
 tutorials/       # Extended user and developer guides
 outputs/         # Generated artifacts, ignored by git
+Dockerfile       # Container image for API and CLI usage
+docker-compose.yml
 ```
 
 ## Development Workflow

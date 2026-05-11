@@ -46,10 +46,18 @@ uv run python -m polydocbench list-templates
 uv run python -m pytest -q -p no:cacheprovider
 ```
 
-## Docker Note
+## Docker Setup
 
-Docker packaging is not included yet. A future production Dockerfile should install the package with the required extras, expose port `8000`, and run:
+Build and run the API:
 
-```dockerfile
-CMD ["python", "-m", "uvicorn", "polydocbench.api.app:app", "--host", "0.0.0.0", "--port", "8000"]
+```powershell
+docker compose up --build
 ```
+
+Open:
+
+```text
+http://127.0.0.1:8000/docs
+```
+
+More Docker examples are available in [Docker](docker.md).

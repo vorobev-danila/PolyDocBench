@@ -5,6 +5,7 @@ This directory contains focused guides for using and developing PolyDocBench.
 ## Guides
 
 - [Installation](installation.md)
+- [Docker](docker.md)
 - [CLI Workflow](cli-workflow.md)
 - [FastAPI Workflow](fastapi-workflow.md)
 - [Architecture](architecture.md)

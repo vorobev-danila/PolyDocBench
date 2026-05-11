@@ -55,6 +55,8 @@ scripts/         # Small manual workflows
 tests/           # Pytest suite
 tutorials/       # Extended user and developer guides
 outputs/         # Generated artifacts, ignored by git
+Dockerfile       # Container image for API and CLI usage
+docker-compose.yml
 ```
 
 ## Recommended Maintenance Improvements

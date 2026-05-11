@@ -1,0 +1,17 @@
+.git
+.github
+.ipynb_checkpoints
+.pytest_cache
+.venv
+*.egg-info
+__pycache__
+*.py[cod]
+
+outputs
+out_scans
+output
+notebooks
+test.py
+
+Dockerfile
+docker-compose.yml
