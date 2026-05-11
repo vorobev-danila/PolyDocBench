@@ -27,15 +27,4 @@ def resolve_template_path(path: str | Path = DEFAULT_TEMPLATE_PATH) -> Path:
     if config_path.exists():
         return config_path
 
-    legacy_path = Path("render/configs/layout_templates.yaml")
-    normalized_path = str(path).replace("\\", "/")
-    default_path = str(DEFAULT_TEMPLATE_PATH).replace("\\", "/")
-    legacy_path_text = str(legacy_path).replace("\\", "/")
-
-    if normalized_path == default_path and legacy_path.exists():
-        return legacy_path
-
-    if normalized_path == legacy_path_text and DEFAULT_TEMPLATE_PATH.exists():
-        return DEFAULT_TEMPLATE_PATH
-
     return config_path

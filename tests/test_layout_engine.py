@@ -2,7 +2,6 @@ import json
 from pathlib import Path
 
 from polydocbench.layout import LayoutEngine
-from polydocbench.layout.templates import list_template_names
 
 
 def test_layout_engine_layouts_parsed_source_json():
@@ -29,10 +28,6 @@ def test_layout_engine_layouts_parsed_source_json():
     assert len(result.pages) == 1
     assert any(element.type == "text_line" for element in result.elements)
     assert result.ground_truth["metadata"]["page_count"] == 1
-
-
-def test_layout_template_loader_accepts_legacy_config_path():
-    assert "simple_article" in list_template_names("render/configs/layout_templates.yaml")
 
 
 def test_layout_engine_uses_graphic_element_dimensions():

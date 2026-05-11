@@ -1,6 +1,6 @@
 """Wikipedia HTML parser for PolyDocBench source documents.
 
-The parser keeps the legacy JSON shape used by the current layout engine:
+The parser produces the normalized JSON shape consumed by the layout engine:
 
 ```
 {
@@ -76,7 +76,7 @@ class HeadingInfo:
 
 
 class WikipediaParser:
-    """Parse Wikipedia HTML into the normalized legacy content structure."""
+    """Parse Wikipedia HTML into the normalized content structure."""
 
     def __init__(
         self,

@@ -17,14 +17,11 @@ Canonical project-level directories:
 - `notebooks`: exploratory research notebooks; reusable logic should move into
   `polydocbench`.
 - `outputs`: generated PDFs, GT JSON, scans, and temporary experiment outputs.
-- `render`: legacy compatibility layer for old imports and scripts.
 - `scripts`: small manual examples built on the public `polydocbench` API.
 - `tests`: pytest coverage for parser, layout, rendering, GT, evaluation, and CLI.
 
-The migration is incremental but the public implementation now lives in
-`polydocbench`. Legacy modules in `render/core`, `render/layout_engine`,
-`render/render`, and `render/utils` should only re-export canonical classes or
-provide thin compatibility entry points.
+The public implementation lives in `polydocbench`; root-level wrappers have
+been removed.
 
 Ground-truth data now includes stable block/line identifiers and explicit
 reading-order lists. Layout ids are generated in `polydocbench.layout.ids`;

@@ -34,16 +34,6 @@ def test_pdf_renderer_writes_pdf_and_gt():
     assert json.loads(gt_path.read_text(encoding="utf-8"))["elements"][0]["content"] == "Hello PDF"
 
 
-def test_legacy_root_pdf_renderer_import_still_works():
-    from render.pdf_renderer import create_simple_pdf
-
-    output_pdf = Path("outputs/test_runs/legacy_import_pdf_renderer.pdf")
-    render_result = create_simple_pdf("Legacy import", str(output_pdf))
-
-    assert output_pdf.exists()
-    assert Path(render_result["gt_path"]).exists()
-
-
 def test_pdf_renderer_draws_local_image():
     image_path = Path("outputs/test_runs/image_fixture.png")
     image_path.parent.mkdir(parents=True, exist_ok=True)

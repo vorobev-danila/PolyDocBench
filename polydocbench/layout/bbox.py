@@ -1,4 +1,4 @@
-"""Compatibility facade for text metrics and line breaking."""
+"""Facade for text metrics and line breaking."""
 
 from __future__ import annotations
 

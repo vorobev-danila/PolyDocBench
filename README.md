@@ -9,7 +9,7 @@ ground-truth extraction, and reading-order research.
 polydocbench/
   sources/       # Wikipedia parsing and future source adapters
   document/      # Canonical document data model
-  layout/        # Public layout API; currently wraps the legacy backend
+  layout/        # Layout engine, placement, templates, typography
   render/        # PDF rendering, fonts, debug rendering, element renderers
   gt/            # Ground-truth schema, exporters, validators
   degradation/   # Synthetic scan/noise generation
@@ -20,13 +20,12 @@ configs/         # Canonical config files
 examples/        # Small examples and fixtures
 notebooks/       # Exploratory notebooks
 outputs/         # Generated files, ignored by git
-render/          # Legacy compatibility wrappers
 scripts/         # Small manual examples
 tests/           # Pytest tests
 ```
 
-The old `render/` package is still present as a compatibility layer. New code
-should import from `polydocbench`.
+The public implementation lives under `polydocbench`. New code should import
+from this package directly.
 
 ## Public API
 
@@ -37,9 +36,6 @@ from polydocbench.sources import WikipediaParser
 from polydocbench.layout import LayoutEngine
 from polydocbench.render import PDFRenderer
 ```
-
-Legacy imports from `render.*`, `layout_engine.*`, and `render.render.*` are
-kept only so older scripts continue to run during the migration.
 
 ## Common Commands
 
@@ -96,12 +92,6 @@ optional formula dependency:
 
 ```powershell
 .\.venv\Scripts\python.exe -m pip install -e ".[formula]"
-```
-
-Compatibility script for older workflows:
-
-```powershell
-.\.venv\Scripts\python.exe render\run_render.py
 ```
 
 Run tests:

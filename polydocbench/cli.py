@@ -18,10 +18,10 @@ def build_parser() -> argparse.ArgumentParser:
     parse_wiki.add_argument("-o", "--output", required=True, help="Output JSON path")
     parse_wiki.add_argument("--debug", action="store_true", help="Print parser debug messages")
 
-    templates = subparsers.add_parser("list-templates", help="List available legacy layout templates")
+    templates = subparsers.add_parser("list-templates", help="List available layout templates")
     templates.add_argument("--config", default="configs/layout_templates.yaml", help="Template config path")
 
-    render = subparsers.add_parser("render", help="Render parsed JSON with the legacy backend")
+    render = subparsers.add_parser("render", help="Render parsed JSON")
     render.add_argument("json_path", help="Parsed source JSON")
     render.add_argument("-o", "--output", required=True, help="Output PDF path")
     render.add_argument("--template", default="simple_article", help="Layout template name")
@@ -69,7 +69,7 @@ def main(argv: list[str] | None = None) -> int:
 
 
 def _configure_console_encoding() -> None:
-    """Avoid legacy backend Unicode print crashes on Windows cp1251 consoles."""
+    """Use UTF-8 output on Windows cp1251 consoles."""
 
     for stream in (sys.stdout, sys.stderr):
         if hasattr(stream, "reconfigure"):
