@@ -33,11 +33,14 @@ def render_pdf_page(pdf_path: str | Path, page_index: int = 0, dpi: int = 200) -
     np = _require_numpy()
 
     document = fitz.open(pdf_path)
-    page = document[page_index]
-    zoom = dpi / 72
-    pixmap = page.get_pixmap(matrix=fitz.Matrix(zoom, zoom), alpha=False)
-    image = Image.frombytes("RGB", [pixmap.width, pixmap.height], pixmap.samples)
-    return np.array(image), zoom
+    try:
+        page = document[page_index]
+        zoom = dpi / 72
+        pixmap = page.get_pixmap(matrix=fitz.Matrix(zoom, zoom), alpha=False)
+        image = Image.frombytes("RGB", [pixmap.width, pixmap.height], pixmap.samples)
+        return np.array(image), zoom
+    finally:
+        document.close()
 
 
 def degrade_resolution(image: ImageArray, scale_range: tuple[float, float] = (0.4, 0.8)) -> ImageArray:
@@ -113,6 +116,7 @@ def pdf_to_noisy_images(
     n_variants: int = 3,
     seed: int = 42,
     dpi: int = 200,
+    profiles: list[str] | None = None,
 ) -> dict[str, object]:
     """Render a PDF page and save noisy JPEG variants for each profile."""
 
@@ -124,13 +128,19 @@ def pdf_to_noisy_images(
     random.seed(seed)
     np.random.seed(seed)
 
+    selected_profiles = profiles or list(NOISE_PROFILES)
+    unknown_profiles = sorted(set(selected_profiles) - set(NOISE_PROFILES))
+    if unknown_profiles:
+        raise ValueError(f"Unknown degradation profiles: {', '.join(unknown_profiles)}")
+
     base_image, zoom = render_pdf_page(pdf_path, page_index=page_index, dpi=dpi)
     written: list[str] = []
-    for profile_name, pipeline in NOISE_PROFILES.items():
+    for profile_name in selected_profiles:
+        pipeline = NOISE_PROFILES[profile_name]
         for index in range(n_variants):
             image = apply_pipeline(base_image, pipeline)
             target = output_path / f"{profile_name}_{index}.jpg"
             Image.fromarray(image).save(target, "JPEG", quality=95)
             written.append(str(target))
 
-    return {"zoom": zoom, "images": written}
+    return {"zoom": zoom, "images": written, "profiles": selected_profiles}

@@ -8,18 +8,20 @@ from fastapi import FastAPI, HTTPException
 from pydantic import BaseModel, Field
 
 from polydocbench.api.services import (
+    degrade_pdf_document,
     evaluate_ordering_from_gt,
     evaluate_quality_from_gt,
     parse_wikipedia_to_file,
     render_document,
 )
+from polydocbench.degradation import NOISE_PROFILES
 from polydocbench.layout.templates import list_template_names
 
 
 app = FastAPI(
     title="PolyDocBench API",
     version="0.1.0",
-    description="API for Wikipedia parsing, synthetic document rendering, and OCR/layout evaluation.",
+    description="API for Wikipedia parsing, synthetic document rendering, scan degradation, and OCR/layout evaluation.",
 )
 
 
@@ -35,6 +37,16 @@ class RenderRequest(BaseModel):
     template: str = "simple_article"
     font_path: str | None = "DejaVu Sans/DejaVuSans.ttf"
     debug: bool = False
+
+
+class DegradePdfRequest(BaseModel):
+    pdf_path: str
+    output_dir: str | None = None
+    page_index: int = 0
+    variants: int = 1
+    seed: int = 42
+    dpi: int = 200
+    profiles: list[str] | None = None
 
 
 class BBoxPayload(BaseModel):
@@ -78,6 +90,11 @@ def templates() -> dict[str, list[str]]:
     return {"templates": list_template_names()}
 
 
+@app.get("/degrade/profiles")
+def degradation_profiles() -> dict[str, list[str]]:
+    return {"profiles": list(NOISE_PROFILES)}
+
+
 @app.post("/parse/wikipedia")
 def parse_wikipedia(request: ParseWikipediaRequest) -> dict[str, Any]:
     try:
@@ -99,6 +116,22 @@ def render(request: RenderRequest) -> dict[str, Any]:
             template=request.template,
             font_path=request.font_path,
             debug=request.debug,
+        )
+    except Exception as exc:
+        raise HTTPException(status_code=400, detail=str(exc)) from exc
+
+
+@app.post("/degrade/pdf")
+def degrade_pdf(request: DegradePdfRequest) -> dict[str, Any]:
+    try:
+        return degrade_pdf_document(
+            pdf_path=request.pdf_path,
+            output_dir=request.output_dir,
+            page_index=request.page_index,
+            variants=request.variants,
+            seed=request.seed,
+            dpi=request.dpi,
+            profiles=request.profiles,
         )
     except Exception as exc:
         raise HTTPException(status_code=400, detail=str(exc)) from exc
