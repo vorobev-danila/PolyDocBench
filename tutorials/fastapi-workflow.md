@@ -25,6 +25,7 @@ http://127.0.0.1:8000/docs
 | `POST` | `/render` | Render JSON to PDF and GT |
 | `GET` | `/degrade/profiles` | List degradation profiles |
 | `POST` | `/degrade/pdf` | Generate noisy scan images from PDF |
+| `POST` | `/degrade/pdf-with-gt` | Generate noisy images with transformed pixel-coordinate GT |
 | `POST` | `/evaluate/quality` | Evaluate OCR text/geometry quality |
 | `POST` | `/evaluate/ordering` | Evaluate predicted reading order |
 
@@ -61,6 +62,21 @@ http://127.0.0.1:8000/docs
   "seed": 42,
   "dpi": 200,
   "profiles": ["light_scan", "medium_scan"]
+}
+```
+
+Use `/degrade/pdf-with-gt` when geometric transforms should also update GT:
+
+```json
+{
+  "pdf_path": "outputs/api/history_of_russia.pdf",
+  "gt_path": "outputs/api/history_of_russia_gt.json",
+  "output_dir": "outputs/api/history_of_russia_dataset",
+  "page_index": 0,
+  "variants": 1,
+  "seed": 42,
+  "dpi": 200,
+  "profiles": ["medium_scan"]
 }
 ```
 

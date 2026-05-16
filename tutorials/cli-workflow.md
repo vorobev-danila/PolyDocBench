@@ -55,6 +55,24 @@ result = pdf_to_noisy_images(
 print(result["images"])
 ```
 
+Generate paired noisy images and transformed pixel-coordinate GT:
+
+```python
+from polydocbench.degradation import pdf_to_noisy_dataset
+
+result = pdf_to_noisy_dataset(
+    pdf_path="outputs/history_of_russia.pdf",
+    gt_path="outputs/history_of_russia_gt.json",
+    output_dir="outputs/history_of_russia_dataset",
+    page_index=0,
+    n_variants=1,
+    dpi=200,
+    profiles=["medium_scan"],
+)
+
+print(result["artifacts"])
+```
+
 Available profiles:
 
 - `light_scan`

@@ -164,6 +164,53 @@ gt = validate_gt_document(data)
 print(gt.schema_version)
 ```
 
+## Degraded Image GT
+
+When using `pdf_to_noisy_dataset(...)` or `POST /degrade/pdf-with-gt`, PolyDocBench writes a paired GT file for every degraded image.
+
+This GT uses image coordinates:
+
+```json
+{
+  "schema_version": "0.1",
+  "metadata": {
+    "coordinate_system": {
+      "unit": "pixels",
+      "origin": "top-left",
+      "image_width": 1653,
+      "image_height": 2339
+    },
+    "transform": {
+      "type": "affine",
+      "matrix": [[1.0, 0.0, 0.0], [0.0, 1.0, 0.0]]
+    }
+  },
+  "image": {
+    "path": "outputs/document_dataset/medium_scan_0.jpg",
+    "width": 1653,
+    "height": 2339
+  },
+  "elements": [
+    {
+      "id": "paragraph_0001_line_0001",
+      "type": "text_line",
+      "content": "Text line",
+      "bbox": {"x": 100, "y": 200, "width": 320, "height": 32, "page": 1},
+      "polygon": [[100, 200], [420, 200], [420, 232], [100, 232]],
+      "metadata": {
+        "source_bbox": {"x": 36, "y": 720, "width": 115, "height": 12, "page": 1}
+      }
+    }
+  ]
+}
+```
+
+For affine transforms, PolyDocBench transforms all four bbox corners and stores:
+
+- `polygon`: transformed corner points;
+- `bbox`: axis-aligned box enclosing the polygon;
+- `metadata.source_bbox`: original PDF-coordinate bbox.
+
 ## Versioning Policy
 
 - `0.1` is the first explicit schema version.

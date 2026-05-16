@@ -109,6 +109,55 @@ def degrade_pdf_document(
     }
 
 
+def degrade_pdf_with_gt_document(
+    pdf_path: str | Path,
+    gt_path: str | Path,
+    output_dir: str | Path | None = None,
+    page_index: int = 0,
+    variants: int = 1,
+    seed: int = 42,
+    dpi: int = 200,
+    profiles: list[str] | None = None,
+) -> dict[str, Any]:
+    input_pdf = Path(pdf_path)
+    input_gt = Path(gt_path)
+    if not input_pdf.exists():
+        raise FileNotFoundError(f"Input PDF was not found: {input_pdf}")
+    if not input_gt.exists():
+        raise FileNotFoundError(f"Input GT was not found: {input_gt}")
+    if variants < 1:
+        raise ValueError("variants must be at least 1")
+    if dpi < 36:
+        raise ValueError("dpi must be at least 36")
+
+    target_dir = Path(output_dir) if output_dir else DEFAULT_API_OUTPUT_DIR / f"{_slug(input_pdf.stem)}_dataset"
+
+    try:
+        from polydocbench.degradation import pdf_to_noisy_dataset
+    except ImportError as exc:
+        raise RuntimeError('Install degradation dependencies with: uv pip install -e ".[degradation]"') from exc
+
+    result = pdf_to_noisy_dataset(
+        pdf_path=input_pdf,
+        gt_path=input_gt,
+        output_dir=target_dir,
+        page_index=page_index,
+        n_variants=variants,
+        seed=seed,
+        dpi=dpi,
+        profiles=profiles,
+    )
+    return {
+        "pdf_path": str(input_pdf),
+        "gt_path": str(input_gt),
+        "output_dir": str(target_dir),
+        "page_index": page_index,
+        "variants": variants,
+        "dpi": dpi,
+        **result,
+    }
+
+
 def evaluate_quality_from_gt(
     gt_path: str | Path,
     predicted_lines: list[dict[str, Any]],

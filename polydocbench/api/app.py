@@ -9,6 +9,7 @@ from pydantic import BaseModel, Field
 
 from polydocbench.api.services import (
     degrade_pdf_document,
+    degrade_pdf_with_gt_document,
     evaluate_ordering_from_gt,
     evaluate_quality_from_gt,
     parse_wikipedia_to_file,
@@ -47,6 +48,10 @@ class DegradePdfRequest(BaseModel):
     seed: int = 42
     dpi: int = 200
     profiles: list[str] | None = None
+
+
+class DegradePdfWithGtRequest(DegradePdfRequest):
+    gt_path: str
 
 
 class BBoxPayload(BaseModel):
@@ -126,6 +131,23 @@ def degrade_pdf(request: DegradePdfRequest) -> dict[str, Any]:
     try:
         return degrade_pdf_document(
             pdf_path=request.pdf_path,
+            output_dir=request.output_dir,
+            page_index=request.page_index,
+            variants=request.variants,
+            seed=request.seed,
+            dpi=request.dpi,
+            profiles=request.profiles,
+        )
+    except Exception as exc:
+        raise HTTPException(status_code=400, detail=str(exc)) from exc
+
+
+@app.post("/degrade/pdf-with-gt")
+def degrade_pdf_with_gt(request: DegradePdfWithGtRequest) -> dict[str, Any]:
+    try:
+        return degrade_pdf_with_gt_document(
+            pdf_path=request.pdf_path,
+            gt_path=request.gt_path,
             output_dir=request.output_dir,
             page_index=request.page_index,
             variants=request.variants,

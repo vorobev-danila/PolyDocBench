@@ -48,6 +48,7 @@ The project is useful for:
 - Ground-truth export with stable IDs, bboxes, and reading order.
 - Text justification and centered graphical elements.
 - Scan-like degradation profiles: `light_scan`, `medium_scan`, `heavy_scan`.
+- Transform-aware degraded GT for rotated/affine scan variants.
 - OCR quality and reading-order evaluation utilities.
 - CLI and FastAPI interfaces.
 - `uv`-first developer workflow.

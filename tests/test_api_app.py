@@ -44,3 +44,31 @@ def test_api_degradation_profiles_and_pdf_endpoint(monkeypatch):
     assert "light_scan" in profiles
     assert response.status_code == 200
     assert response.json()["images"] == ["outputs/api/light_scan_0.jpg"]
+
+
+def test_api_degradation_with_gt_endpoint(monkeypatch):
+    def fake_degrade_pdf_with_gt_document(**kwargs):
+        return {
+            "pdf_path": kwargs["pdf_path"],
+            "gt_path": kwargs["gt_path"],
+            "output_dir": kwargs["output_dir"],
+            "artifacts": [{"image_path": "outputs/api/light_scan_0.jpg", "gt_path": "outputs/api/light_scan_0_gt.json"}],
+            "profiles": kwargs["profiles"],
+            "zoom": 2.0,
+        }
+
+    monkeypatch.setattr("polydocbench.api.app.degrade_pdf_with_gt_document", fake_degrade_pdf_with_gt_document)
+    client = TestClient(app)
+    response = client.post(
+        "/degrade/pdf-with-gt",
+        json={
+            "pdf_path": "outputs/api/source.pdf",
+            "gt_path": "outputs/api/source_gt.json",
+            "output_dir": "outputs/api/scans",
+            "variants": 1,
+            "profiles": ["light_scan"],
+        },
+    )
+
+    assert response.status_code == 200
+    assert response.json()["artifacts"][0]["gt_path"] == "outputs/api/light_scan_0_gt.json"
