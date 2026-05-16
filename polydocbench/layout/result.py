@@ -7,6 +7,7 @@ from datetime import datetime
 from typing import Any
 
 from polydocbench.document import DocumentElement, Page
+from polydocbench.document.schema import FORMAT_SCHEMA_VERSION
 from polydocbench.gt.reading_order import assign_reading_order
 
 
@@ -54,9 +55,10 @@ class LayoutResult:
             pages_gt.append(page_info)
 
         self.ground_truth = {
+            "schema_version": FORMAT_SCHEMA_VERSION,
             "metadata": {
                 "generator": generator_name,
-                "version": "1.0",
+                "format_version": FORMAT_SCHEMA_VERSION,
                 "page_count": len(self.pages),
                 "element_count": len(self.elements),
                 "timestamp": datetime.now().isoformat(),

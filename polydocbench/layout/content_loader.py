@@ -7,6 +7,7 @@ from pathlib import Path
 from typing import Any
 
 from polydocbench.document.normalize import flatten_source_content
+from polydocbench.document.schema import FORMAT_SCHEMA_VERSION, validate_source_document
 
 
 class ContentLoader:
@@ -19,10 +20,13 @@ class ContentLoader:
         with Path(json_path).open("r", encoding="utf-8") as file:
             data = json.load(file)
 
-        if "content" in data:
-            elements = flatten_source_content(data["content"])
+        document = validate_source_document(data)
+        source_items = document.source_items()
+
+        if document.content:
+            elements = flatten_source_content(source_items)
         else:
-            elements = data.get("elements", [])
+            elements = source_items
 
         print(f"   Loaded elements: {len(elements)}")
         print(f"   Element types: {ContentLoader.count_element_types(elements)}")
@@ -43,6 +47,7 @@ class ContentLoader:
         output_path.write_text(
             json.dumps(
                 {
+                    "schema_version": FORMAT_SCHEMA_VERSION,
                     "elements": elements,
                     "metadata": {
                         "element_count": len(elements),
@@ -55,4 +60,3 @@ class ContentLoader:
             encoding="utf-8",
         )
         print(f"   Processed content saved: {output_path}")
-

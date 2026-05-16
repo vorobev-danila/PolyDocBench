@@ -152,6 +152,7 @@ The detailed documentation is split into focused tutorials:
 | [CLI Workflow](tutorials/cli-workflow.md) | Parse, render, debug bboxes, noisy scans |
 | [FastAPI Workflow](tutorials/fastapi-workflow.md) | API startup, endpoints, request examples |
 | [Architecture](tutorials/architecture.md) | Components, data flow, module responsibilities |
+| [Data Format](tutorials/data-format.md) | Source JSON, GT JSON, schema versions |
 | [Configuration](tutorials/configuration.md) | Layout templates, render config, JSON snippets |
 | [Development](tutorials/development.md) | Tests, CI, project structure, contribution flow |
 

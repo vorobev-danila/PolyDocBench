@@ -27,6 +27,7 @@ def test_layout_engine_layouts_parsed_source_json():
 
     assert len(result.pages) == 1
     assert any(element.type == "text_line" for element in result.elements)
+    assert result.ground_truth["schema_version"] == "0.1"
     assert result.ground_truth["metadata"]["page_count"] == 1
 
 

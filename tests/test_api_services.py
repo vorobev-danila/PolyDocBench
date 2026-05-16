@@ -29,12 +29,16 @@ def test_api_quality_service_uses_gt_file():
         json.dumps(
             {
                 "pages": [
-                    {
-                        "page_number": 1,
-                        "containers": [
-                            {
-                                "id": "main",
-                                "elements": [
+                        {
+                            "page_number": 1,
+                            "width": 100,
+                            "height": 100,
+                            "containers": [
+                                {
+                                    "id": "main",
+                                    "type": "single_column",
+                                    "bbox": {"x": 0, "y": 0, "width": 100, "height": 100, "page": 1},
+                                    "elements": [
                                     {
                                         "id": "line_1",
                                         "type": "text_line",

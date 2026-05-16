@@ -26,5 +26,7 @@ def test_ground_truth_exporter_writes_layout_result():
     exported = json.loads(output_path.read_text(encoding="utf-8"))
 
     assert export_result["success"] is True
+    assert exported["schema_version"] == "0.1"
+    assert exported["metadata"]["format_version"] == "0.1"
     assert exported["metadata"]["generator"] == "PolyDocBench"
     assert exported["pages"][0]["containers"][0]["elements"][0]["content"] == "Hello"

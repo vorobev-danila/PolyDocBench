@@ -6,6 +6,8 @@ import json
 from pathlib import Path
 from typing import Any
 
+from polydocbench.gt.schema import validate_gt_document
+
 from .types import LineDict
 
 
@@ -13,7 +15,10 @@ def load_gt(path: str | Path) -> dict[str, Any]:
     """Load a PolyDocBench ground-truth JSON file."""
 
     with Path(path).open("r", encoding="utf-8") as file:
-        return json.load(file)
+        data = json.load(file)
+
+    validate_gt_document(data)
+    return data
 
 
 def extract_gt_lines(gt_json: dict[str, Any], page_number: int) -> list[LineDict]:
@@ -50,4 +55,3 @@ def extract_gt_lines(gt_json: dict[str, Any], page_number: int) -> list[LineDict
                 )
 
     return lines
-

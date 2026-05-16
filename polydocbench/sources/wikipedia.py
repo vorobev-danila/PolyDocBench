@@ -28,6 +28,8 @@ from urllib.parse import urljoin
 
 from bs4 import BeautifulSoup, Tag
 
+from polydocbench.document.schema import FORMAT_SCHEMA_VERSION
+
 
 DEFAULT_USER_AGENT = (
     "PolyDocBench/0.1 "
@@ -121,6 +123,7 @@ class WikipediaParser:
             return {"error": "Wikipedia content container 'mw-parser-output' was not found"}
 
         document = {
+            "schema_version": FORMAT_SCHEMA_VERSION,
             "title": self._extract_title(),
             "url": url,
             "content": [],

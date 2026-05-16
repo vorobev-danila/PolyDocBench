@@ -7,6 +7,9 @@ from datetime import datetime
 from pathlib import Path
 from typing import Any
 
+from polydocbench.document.schema import FORMAT_SCHEMA_VERSION
+from polydocbench.gt.schema import validate_gt_document
+
 
 def export_json(data: dict[str, Any], output_path: str | Path, indent: int = 2) -> None:
     Path(output_path).parent.mkdir(parents=True, exist_ok=True)
@@ -24,8 +27,11 @@ class GroundTruthExporter:
 
         try:
             gt_data = self._get_gt_data(layout_result)
+            gt_data.setdefault("schema_version", FORMAT_SCHEMA_VERSION)
             gt_data.setdefault("metadata", {})
+            gt_data["metadata"].setdefault("format_version", gt_data["schema_version"])
             gt_data["metadata"]["export_time"] = datetime.now().isoformat()
+            validate_gt_document(gt_data)
 
             self._save_to_json(gt_data, output_path)
             return {
@@ -47,13 +53,15 @@ class GroundTruthExporter:
 
     def _prepare_gt_data(self, layout_dict: dict[str, Any]) -> dict[str, Any]:
         return {
+            "schema_version": FORMAT_SCHEMA_VERSION,
             "metadata": {
                 "generator": "PolyDocBench",
                 "export_time": datetime.now().isoformat(),
-                "format_version": "1.0",
+                "format_version": FORMAT_SCHEMA_VERSION,
                 "coordinate_system": "points (1/72 inch)",
                 "origin": "bottom-left",
             },
+            "reading_order": {"blocks": [], "lines": []},
             "pages": layout_dict.get("pages", []),
             "elements": layout_dict.get("elements", []),
         }

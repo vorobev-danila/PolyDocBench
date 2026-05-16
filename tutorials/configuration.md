@@ -37,8 +37,11 @@ They control PDF metadata, debug colors, image cache settings, and renderer defa
 
 ## Source JSON Shape
 
+The canonical data format is documented in [Data Format](data-format.md).
+
 ```json
 {
+  "schema_version": "0.1",
   "title": "Example",
   "url": "https://example.org",
   "content": [
