@@ -107,7 +107,7 @@ uv pip install -e ".[api,degradation,dev]"
 Render a bundled example:
 
 ```powershell
-uv run python -m polydocbench render examples\wiki_formulas_isl.json -o outputs\wiki_formulas_isl.pdf --template simple_article
+uv run python -m polydocbench render examples\wiki_formulas.json -o outputs\wiki_formulas.pdf --template simple_article
 ```
 
 Start the API:

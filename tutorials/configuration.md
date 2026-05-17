@@ -26,7 +26,7 @@ uv run python -m polydocbench list-templates
 Use a template during rendering:
 
 ```powershell
-uv run python -m polydocbench render examples\wiki_formulas_isl.json -o outputs\paper.pdf --template scientific_paper
+uv run python -m polydocbench render examples\wiki_formulas.json -o outputs\paper.pdf --template scientific_paper
 ```
 
 ## Render Config

@@ -11,7 +11,7 @@ def test_api_render_service_renders_document():
     output_gt.unlink(missing_ok=True)
 
     result = render_document(
-        json_path="examples/wiki_formulas_isl.json",
+        json_path="examples/wiki_formulas.json",
         output_pdf=output_pdf,
         template="simple_article",
         debug=False,

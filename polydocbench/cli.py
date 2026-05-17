@@ -28,6 +28,15 @@ def build_parser() -> argparse.ArgumentParser:
     render.add_argument("--font", default="DejaVu Sans/DejaVuSans.ttf", help="Font path")
     render.add_argument("--debug", action="store_true", help="Render debug bboxes")
 
+    overlay = subparsers.add_parser("draw-gt-overlay", help="Draw degraded GT polygons and/or bboxes over an image")
+    overlay.add_argument("image_path", help="Input degraded image path")
+    overlay.add_argument("gt_path", help="Input degraded GT JSON path")
+    overlay.add_argument("-o", "--output", required=True, help="Output image path")
+    overlay.add_argument("--mode", choices=["polygon", "bbox", "both"], default="polygon", help="Overlay mode")
+    overlay.add_argument("--polygon-color", default="red", help="Polygon line color")
+    overlay.add_argument("--bbox-color", default="blue", help="BBox line color")
+    overlay.add_argument("--line-width", type=int, default=2, help="Overlay line width in pixels")
+
     return parser
 
 
@@ -62,6 +71,21 @@ def main(argv: list[str] | None = None) -> int:
         result = PDFRenderer(debug=args.debug).render(layout_result, args.output)
         print(f"PDF: {result['pdf_path']}")
         print(f"GT : {result['gt_path']}")
+        return 0
+
+    if args.command == "draw-gt-overlay":
+        from polydocbench.degradation import draw_gt_overlay
+
+        output_path = draw_gt_overlay(
+            image_path=args.image_path,
+            gt_path=args.gt_path,
+            output_path=args.output,
+            mode=args.mode,
+            polygon_color=args.polygon_color,
+            bbox_color=args.bbox_color,
+            line_width=args.line_width,
+        )
+        print(f"Overlay: {output_path}")
         return 0
 
     parser.error(f"Unknown command: {args.command}")

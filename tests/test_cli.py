@@ -1,6 +1,9 @@
+import json
 import subprocess
 import sys
 from pathlib import Path
+
+from PIL import Image
 
 
 def run_cli(*args: str) -> subprocess.CompletedProcess[str]:
@@ -29,7 +32,7 @@ def test_cli_renders_bundled_example():
 
     run_cli(
         "render",
-        "examples/wiki_formulas_isl.json",
+        "examples/wiki_formulas.json",
         "-o",
         str(output_pdf),
         "--template",
@@ -38,3 +41,47 @@ def test_cli_renders_bundled_example():
 
     assert output_pdf.exists()
     assert output_gt.exists()
+
+
+def test_cli_draws_gt_overlay_modes():
+    output_dir = Path("outputs/test_runs")
+    image_path = output_dir / "overlay_input.jpg"
+    gt_path = output_dir / "overlay_input_gt.json"
+    output_path = output_dir / "overlay_polygon.jpg"
+    output_dir.mkdir(parents=True, exist_ok=True)
+
+    Image.new("RGB", (80, 60), "white").save(image_path)
+    gt_path.write_text(
+        json.dumps(
+            {
+                "pages": [
+                    {
+                        "containers": [
+                            {
+                                "elements": [
+                                    {
+                                        "id": "line_1",
+                                        "bbox": {"x": 10, "y": 10, "width": 30, "height": 12},
+                                        "polygon": [[10, 10], [40, 10], [40, 22], [10, 22]],
+                                    }
+                                ]
+                            }
+                        ]
+                    }
+                ]
+            }
+        ),
+        encoding="utf-8",
+    )
+
+    run_cli(
+        "draw-gt-overlay",
+        str(image_path),
+        str(gt_path),
+        "-o",
+        str(output_path),
+        "--mode",
+        "polygon",
+    )
+
+    assert output_path.exists()

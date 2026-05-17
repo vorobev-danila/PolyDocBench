@@ -86,7 +86,7 @@ The layout engine also accepts pre-flattened input through `elements`:
 ```python
 from polydocbench.layout.content_loader import ContentLoader
 
-elements = ContentLoader.load_json("examples/wiki_formulas_isl.json")
+elements = ContentLoader.load_json("examples/wiki_formulas.json")
 ```
 
 Invalid files raise a Pydantic `ValidationError` before any layout work starts.

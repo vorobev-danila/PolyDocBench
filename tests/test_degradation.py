@@ -8,7 +8,13 @@ from reportlab.pdfgen import canvas
 cv2 = pytest.importorskip("cv2")
 fitz = pytest.importorskip("fitz")
 
-from polydocbench.degradation import NOISE_PROFILES, pdf_to_noisy_dataset, pdf_to_noisy_images, render_pdf_page
+from polydocbench.degradation import (
+    NOISE_PROFILES,
+    draw_gt_overlay,
+    pdf_to_noisy_dataset,
+    pdf_to_noisy_images,
+    render_pdf_page,
+)
 from polydocbench.gt.schema import validate_gt_document
 
 
@@ -55,6 +61,46 @@ def test_pdf_to_noisy_images_rejects_unknown_profile():
 
 def test_noise_profiles_are_available():
     assert {"light_scan", "medium_scan", "heavy_scan"}.issubset(NOISE_PROFILES)
+
+
+def test_draw_gt_overlay_can_draw_polygon_or_bbox():
+    from PIL import Image
+
+    output_dir = Path("outputs/test_runs")
+    image_path = output_dir / "debug_overlay_input.jpg"
+    gt_path = output_dir / "debug_overlay_gt.json"
+    polygon_output = output_dir / "debug_overlay_polygon.jpg"
+    bbox_output = output_dir / "debug_overlay_bbox.jpg"
+    output_dir.mkdir(parents=True, exist_ok=True)
+
+    Image.new("RGB", (80, 60), "white").save(image_path)
+    gt_path.write_text(
+        json.dumps(
+            {
+                "pages": [
+                    {
+                        "containers": [
+                            {
+                                "elements": [
+                                    {
+                                        "id": "line_1",
+                                        "bbox": {"x": 10, "y": 10, "width": 30, "height": 12},
+                                        "polygon": [[10, 10], [40, 10], [40, 22], [10, 22]],
+                                    }
+                                ]
+                            }
+                        ]
+                    }
+                ]
+            }
+        ),
+        encoding="utf-8",
+    )
+
+    assert draw_gt_overlay(image_path, gt_path, polygon_output, mode="polygon") == str(polygon_output)
+    assert draw_gt_overlay(image_path, gt_path, bbox_output, mode="bbox") == str(bbox_output)
+    assert polygon_output.exists()
+    assert bbox_output.exists()
 
 
 def test_pdf_to_noisy_dataset_writes_transformed_gt_for_affine_profile():

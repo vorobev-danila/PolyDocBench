@@ -45,13 +45,13 @@ docker compose run --rm polydocbench-api python -m polydocbench list-templates
 Render a bundled example:
 
 ```powershell
-docker compose run --rm polydocbench-api python -m polydocbench render examples/wiki_formulas_isl.json -o outputs/wiki_formulas_isl.pdf --template simple_article
+docker compose run --rm polydocbench-api python -m polydocbench render examples/wiki_formulas.json -o outputs/wiki_formulas.pdf --template simple_article
 ```
 
 ## Run Degradation from the Container
 
 ```powershell
-docker compose run --rm polydocbench-api python -c "from polydocbench.degradation import pdf_to_noisy_images; print(pdf_to_noisy_images('outputs/wiki_formulas_isl.pdf', 'outputs/wiki_formulas_isl_scans', n_variants=1, profiles=['light_scan']))"
+docker compose run --rm polydocbench-api python -c "from polydocbench.degradation import pdf_to_noisy_images; print(pdf_to_noisy_images('outputs/wiki_formulas.pdf', 'outputs/wiki_formulas_scans', n_variants=1, profiles=['light_scan']))"
 ```
 
 ## Stop the API
