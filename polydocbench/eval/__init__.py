@@ -5,12 +5,14 @@ from .gt import extract_gt_lines, load_gt
 from .matching import LineMatch, match_lines
 from .ocr import extract_tesseract_lines
 from .ordering import evaluate_ordering
+from .quality import evaluate_ocr_quality
 from .text_metrics import cer, normalize_text, wer
 
 __all__ = [
     "LineMatch",
     "bbox_iou",
     "cer",
+    "evaluate_ocr_quality",
     "evaluate_ordering",
     "extract_gt_lines",
     "extract_tesseract_lines",
@@ -20,4 +22,3 @@ __all__ = [
     "to_xyxy",
     "wer",
 ]
-

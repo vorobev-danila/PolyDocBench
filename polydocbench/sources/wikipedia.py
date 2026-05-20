@@ -24,7 +24,7 @@ import re
 from dataclasses import dataclass
 from pathlib import Path
 from typing import Any
-from urllib.parse import urljoin
+from urllib.parse import unquote, urljoin, urlparse
 
 from bs4 import BeautifulSoup, Tag
 
@@ -102,7 +102,14 @@ class WikipediaParser:
         except requests.RequestException as exc:
             return {"error": f"Failed to download Wikipedia page: {exc}"}
 
-        return self.parse_html(response.text, url=url)
+        document = self.parse_html(response.text, url=url)
+        if "error" not in document and not document.get("content"):
+            self._log("HTML parser returned no content; trying MediaWiki parse API fallback")
+            fallback_document = self._parse_from_mediawiki_api(url, requests_module=requests)
+            if "error" not in fallback_document and fallback_document.get("content"):
+                return fallback_document
+
+        return document
 
     def parse_from_file(self, file_path: str | Path, url: str = "") -> dict[str, Any]:
         """Parse a saved Wikipedia HTML file."""
@@ -413,6 +420,48 @@ class WikipediaParser:
 
         title = self.soup.find("h1", class_="firstHeading") or self.soup.find("h1")
         return self._clean_text(title.get_text(" ", strip=True)) if isinstance(title, Tag) else ""
+
+    def _parse_from_mediawiki_api(self, url: str, requests_module: Any) -> dict[str, Any]:
+        parsed = urlparse(url)
+        page_title = unquote(parsed.path.removeprefix("/wiki/")).replace("_", " ")
+        if not parsed.netloc or not page_title:
+            return {"error": f"Cannot derive MediaWiki API endpoint from URL: {url}"}
+
+        api_url = f"{parsed.scheme or 'https'}://{parsed.netloc}/w/api.php"
+        try:
+            response = requests_module.get(
+                api_url,
+                headers={"User-Agent": self.user_agent},
+                params={
+                    "action": "parse",
+                    "page": page_title,
+                    "prop": "text|displaytitle",
+                    "format": "json",
+                    "formatversion": "2",
+                    "redirects": "1",
+                },
+                timeout=self.timeout,
+            )
+            response.raise_for_status()
+            payload = response.json()
+        except requests_module.RequestException as exc:
+            return {"error": f"Failed to download Wikipedia page through MediaWiki API: {exc}"}
+        except ValueError as exc:
+            return {"error": f"Failed to decode MediaWiki API response: {exc}"}
+
+        if "error" in payload:
+            return {"error": f"MediaWiki API error: {payload['error'].get('info', payload['error'])}"}
+
+        parse_payload = payload.get("parse", {})
+        html = parse_payload.get("text", "")
+        if not html:
+            return {"error": "MediaWiki API response did not include parse text"}
+
+        document = self.parse_html(html, url=url)
+        if "error" not in document and parse_payload.get("displaytitle"):
+            title = BeautifulSoup(str(parse_payload["displaytitle"]), "html.parser").get_text(" ", strip=True)
+            document["title"] = self._clean_text(title)
+        return document
 
     def _should_skip(self, node: Tag) -> bool:
         if node.name in {"link", "meta", "script", "style"}:

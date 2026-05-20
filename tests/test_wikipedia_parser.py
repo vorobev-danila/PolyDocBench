@@ -51,3 +51,54 @@ def test_wikipedia_parser_extracts_hierarchy_and_elements():
     assert nested_types == ["paragraph", "formula", "list", "image"]
     assert heading["content"][1]["latex"] == "y=Xb"
     assert heading["content"][3]["src"] == "https://upload.wikimedia.org/example.png"
+
+
+def test_wikipedia_parser_uses_mediawiki_api_fallback_for_empty_html(monkeypatch):
+    import requests
+
+    class Response:
+        def __init__(self, text="", payload=None):
+            self.text = text
+            self.payload = payload
+
+        def raise_for_status(self):
+            return None
+
+        def json(self):
+            return self.payload
+
+    empty_html = """
+    <html>
+      <body>
+        <h1 class="firstHeading">History of Russia</h1>
+        <div class="mw-parser-output"></div>
+      </body>
+    </html>
+    """
+    fallback_html = """
+    <div class="mw-parser-output">
+      <p>Russia has a long history.</p>
+    </div>
+    """
+
+    calls = []
+
+    def fake_get(url, **kwargs):
+        calls.append((url, kwargs))
+        if url.endswith("/w/api.php"):
+            return Response(
+                payload={
+                    "parse": {
+                        "displaytitle": "History of Russia",
+                        "text": fallback_html,
+                    }
+                }
+            )
+        return Response(text=empty_html)
+
+    monkeypatch.setattr(requests, "get", fake_get)
+
+    parsed = WikipediaParser().parse_from_url("https://en.wikipedia.org/wiki/History_of_Russia")
+
+    assert parsed["content"] == [{"type": "paragraph", "text": "Russia has a long history."}]
+    assert calls[1][0] == "https://en.wikipedia.org/w/api.php"

@@ -11,19 +11,28 @@ def extract_tesseract_lines(
     image_path: str | Path,
     zoom: float = 1.0,
     page_number: int = 1,
+    lang: str | None = None,
+    coordinate_system: str = "pdf",
 ) -> list[LineDict]:
     """Extract line boxes from Tesseract TSV word output.
 
-    Tesseract image coordinates use a top-left origin. Returned bboxes use the
-    PolyDocBench bottom-left coordinate convention and are divided by ``zoom``.
+    Tesseract image coordinates use a top-left origin. With
+    ``coordinate_system="pdf"``, returned bboxes use the PolyDocBench PDF
+    bottom-left convention and are divided by ``zoom``. With
+    ``coordinate_system="image"``, returned bboxes stay in top-left image
+    pixels, matching degraded image GT.
     """
 
     import pytesseract
     from PIL import Image
 
+    if coordinate_system not in {"pdf", "image"}:
+        raise ValueError("coordinate_system must be one of: pdf, image")
+
     image = Image.open(image_path)
     _, image_height = image.size
-    tsv = pytesseract.image_to_data(image, output_type=pytesseract.Output.DICT)
+    kwargs = {"lang": lang} if lang else {}
+    tsv = pytesseract.image_to_data(image, output_type=pytesseract.Output.DICT, **kwargs)
 
     grouped: dict[tuple[int, int, int], dict[str, object]] = {}
     for index, raw_word in enumerate(tsv["text"]):
@@ -44,10 +53,14 @@ def extract_tesseract_lines(
         width = float(tsv["width"][index])
         height = float(tsv["height"][index])
 
-        x = left / zoom
-        y = (image_height - (top + height)) / zoom
-        width /= zoom
-        height /= zoom
+        if coordinate_system == "image":
+            x = left
+            y = top
+        else:
+            x = left / zoom
+            y = (image_height - (top + height)) / zoom
+            width /= zoom
+            height /= zoom
 
         if key not in grouped:
             grouped[key] = {

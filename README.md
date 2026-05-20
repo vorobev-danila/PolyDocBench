@@ -155,6 +155,7 @@ The detailed documentation is split into focused tutorials:
 | [Architecture](tutorials/architecture.md) | Components, data flow, module responsibilities |
 | [Data Format](tutorials/data-format.md) | Source JSON, GT JSON, schema versions |
 | [Configuration](tutorials/configuration.md) | Layout templates, render config, JSON snippets |
+| [Experiments](tutorials/experiments.md) | Multilingual Tesseract OCR benchmark workflow |
 | [Development](tutorials/development.md) | Tests, CI, project structure, contribution flow |
 
 ## Project Structure
