@@ -21,7 +21,7 @@ COPY examples ./examples
 COPY ["DejaVu Sans", "./DejaVu Sans"]
 
 RUN python -m pip install --upgrade pip \
-    && python -m pip install ".[api,degradation,formula]" \
+    && python -m pip install ".[api,noise,formula]" \
     && mkdir -p outputs
 
 EXPOSE 8000

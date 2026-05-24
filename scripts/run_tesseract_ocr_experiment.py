@@ -1,7 +1,7 @@
 """Run a multilingual Tesseract OCR quality experiment with PolyDocBench.
 
 Pipeline:
-    Wikipedia URL -> source JSON -> PDF + GT -> degraded scans + transformed GT
+    Wikipedia URL -> source JSON -> PDF + GT -> noisy scans + transformed GT
     -> Tesseract OCR -> quality metrics.
 """
 
@@ -19,7 +19,7 @@ from pathlib import Path
 from statistics import mean
 from typing import Any
 
-from polydocbench.degradation import pdf_to_noisy_dataset
+from polydocbench.noise import pdf_to_noisy_dataset
 from polydocbench.eval import evaluate_ocr_quality, extract_gt_lines, load_gt
 from polydocbench.eval.ocr import extract_tesseract_lines
 from polydocbench.layout import LayoutEngine
@@ -55,15 +55,15 @@ def build_parser() -> argparse.ArgumentParser:
     parser.add_argument("--output-dir", default="outputs/experiments/tesseract_quality", help="Experiment output root")
     parser.add_argument("--template", default="simple_article", help="Layout template")
     parser.add_argument("--font", default="DejaVu Sans/DejaVuSans.ttf", help="Font path")
-    parser.add_argument("--profiles", nargs="+", default=["light_scan", "medium_scan", "heavy_scan"], help="Degradation profiles")
-    parser.add_argument("--variants", type=int, default=1, help="Variants per degradation profile")
-    parser.add_argument("--dpi", type=int, default=200, help="PDF rendering DPI for degradation")
-    parser.add_argument("--seed", type=int, default=42, help="Degradation random seed")
-    parser.add_argument("--page-index", type=int, default=0, help="PDF page index to degrade")
+    parser.add_argument("--profiles", nargs="+", default=["light_scan", "medium_scan", "heavy_scan"], help="Noise profiles")
+    parser.add_argument("--variants", type=int, default=1, help="Variants per noise profile")
+    parser.add_argument("--dpi", type=int, default=200, help="PDF rendering DPI for noising")
+    parser.add_argument("--seed", type=int, default=42, help="Noise random seed")
+    parser.add_argument("--page-index", type=int, default=0, help="PDF page index to convert into a noisy scan")
     parser.add_argument("--iou-threshold", type=float, default=0.3, help="Line matching IoU threshold")
     parser.add_argument("--languages", nargs="+", default=[case.code for case in LANGUAGE_CASES], help="Language codes to run")
     parser.add_argument("--tesseract-cmd", default=None, help="Path to tesseract executable")
-    parser.add_argument("--reuse", action="store_true", help="Reuse existing parsed/rendered/degraded artifacts when possible")
+    parser.add_argument("--reuse", action="store_true", help="Reuse existing parsed/rendered/noisy artifacts when possible")
     parser.add_argument("--fail-on-missing-tesseract-lang", action="store_true", help="Fail instead of skipping missing Tesseract languages")
     parser.add_argument("--debug-render", action="store_true", help="Render debug bboxes into PDFs")
     parser.add_argument("--verbose-layout", action="store_true", help="Show internal layout engine logs")
@@ -118,7 +118,7 @@ def _run_case(case: LanguageCase, args: argparse.Namespace, output_root: Path) -
     source_path = case_dir / "source.json"
     pdf_path = case_dir / "document.pdf"
     gt_path = case_dir / "document_gt.json"
-    dataset_dir = case_dir / "degraded"
+    dataset_dir = case_dir / "noisy"
     predictions_dir = case_dir / "predictions"
     predictions_dir.mkdir(parents=True, exist_ok=True)
 
@@ -151,8 +151,8 @@ def _run_case(case: LanguageCase, args: argparse.Namespace, output_root: Path) -
         print(f"[2/4] Render PDF + GT: reuse {pdf_path}, {gt_path}")
 
     if not args.reuse or not dataset_dir.exists() or not list(dataset_dir.glob("*_gt.json")):
-        print("[3/4] Generate degraded scans + transformed GT")
-        degradation_result = pdf_to_noisy_dataset(
+        print("[3/4] Generate noisy scans + transformed GT")
+        noise_result = pdf_to_noisy_dataset(
             pdf_path=pdf_path,
             gt_path=gt_path,
             output_dir=dataset_dir,
@@ -162,9 +162,9 @@ def _run_case(case: LanguageCase, args: argparse.Namespace, output_root: Path) -
             dpi=args.dpi,
             profiles=args.profiles,
         )
-        print(f"      artifacts={len(degradation_result['artifacts'])}, profiles={', '.join(degradation_result['profiles'])}")
+        print(f"      artifacts={len(noise_result['artifacts'])}, profiles={', '.join(noise_result['profiles'])}")
     else:
-        print(f"[3/4] Generate degraded scans + transformed GT: reuse {dataset_dir}")
+        print(f"[3/4] Generate noisy scans + transformed GT: reuse {dataset_dir}")
 
     print("[4/4] Run Tesseract + evaluate")
     rows: list[dict[str, Any]] = []

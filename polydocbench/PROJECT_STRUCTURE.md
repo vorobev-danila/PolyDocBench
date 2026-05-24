@@ -7,7 +7,7 @@ This package is organized around the research pipeline:
 3. `layout`: convert normalized content into placed elements and pages.
 4. `render`: render layout results into PDFs/images.
 5. `gt`: validate and export ground-truth annotations.
-6. `degradation`: generate synthetic scans from clean rendered documents.
+6. `noise`: generate synthetic scans from clean rendered documents.
 7. `eval`: evaluate OCR quality, geometry matching, and reading order.
 
 Canonical project-level directories:

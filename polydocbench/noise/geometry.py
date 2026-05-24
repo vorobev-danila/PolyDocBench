@@ -1,4 +1,4 @@
-"""Geometry helpers for transform-aware degraded GT."""
+"""Geometry helpers for transform-aware noisy image GT."""
 
 from __future__ import annotations
 
@@ -89,7 +89,7 @@ def transform_gt_to_image_gt(
     variant: int,
     dpi: int,
 ) -> dict[str, Any]:
-    """Create pixel-coordinate GT paired with one degraded image."""
+    """Create pixel-coordinate GT paired with one noisy image."""
 
     top_level_elements: list[dict[str, Any]] = []
     for element in source_gt.get("elements", []):
@@ -123,7 +123,7 @@ def transform_gt_to_image_gt(
                     transformed.setdefault("metadata", {})["container_id"] = container.get("id", "")
                     container_elements.append(transformed)
 
-    degraded_gt = {
+    noisy_gt = {
         "schema_version": FORMAT_SCHEMA_VERSION,
         "metadata": {
             "generator": "PolyDocBench",
@@ -159,7 +159,7 @@ def transform_gt_to_image_gt(
                 "containers": [
                     {
                         "id": f"page_{page_number}_image",
-                        "type": "degraded_image",
+                        "type": "noisy_image",
                         "bbox": {"x": 0, "y": 0, "width": output_width, "height": output_height, "page": 1},
                         "element_count": len(container_elements),
                         "elements": container_elements,
@@ -169,8 +169,8 @@ def transform_gt_to_image_gt(
         ],
         "elements": top_level_elements,
     }
-    validate_gt_document(degraded_gt)
-    return degraded_gt
+    validate_gt_document(noisy_gt)
+    return noisy_gt
 
 
 def _transform_element(

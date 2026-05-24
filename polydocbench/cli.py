@@ -28,9 +28,9 @@ def build_parser() -> argparse.ArgumentParser:
     render.add_argument("--font", default="DejaVu Sans/DejaVuSans.ttf", help="Font path")
     render.add_argument("--debug", action="store_true", help="Render debug bboxes")
 
-    overlay = subparsers.add_parser("draw-gt-overlay", help="Draw degraded GT polygons and/or bboxes over an image")
-    overlay.add_argument("image_path", help="Input degraded image path")
-    overlay.add_argument("gt_path", help="Input degraded GT JSON path")
+    overlay = subparsers.add_parser("draw-gt-overlay", help="Draw noisy-image GT polygons and/or bboxes over an image")
+    overlay.add_argument("image_path", help="Input noisy image path")
+    overlay.add_argument("gt_path", help="Input noisy-image GT JSON path")
     overlay.add_argument("-o", "--output", required=True, help="Output image path")
     overlay.add_argument("--mode", choices=["polygon", "bbox", "both"], default="polygon", help="Overlay mode")
     overlay.add_argument("--polygon-color", default="red", help="Polygon line color")
@@ -74,7 +74,7 @@ def main(argv: list[str] | None = None) -> int:
         return 0
 
     if args.command == "draw-gt-overlay":
-        from polydocbench.degradation import draw_gt_overlay
+        from polydocbench.noise import draw_gt_overlay
 
         output_path = draw_gt_overlay(
             image_path=args.image_path,

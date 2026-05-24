@@ -1,4 +1,4 @@
-"""Debug visualization helpers for degraded image GT."""
+"""Debug visualization helpers for noisy image GT."""
 
 from __future__ import annotations
 
@@ -21,7 +21,7 @@ def draw_gt_overlay(
     bbox_color: str = "blue",
     line_width: int = 2,
 ) -> str:
-    """Draw transformed GT polygons and/or bboxes over a degraded image."""
+    """Draw transformed GT polygons and/or bboxes over a noisy image."""
 
     if mode not in {"polygon", "bbox", "both"}:
         raise ValueError("mode must be one of: polygon, bbox, both")

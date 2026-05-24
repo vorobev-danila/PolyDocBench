@@ -164,9 +164,9 @@ gt = validate_gt_document(data)
 print(gt.schema_version)
 ```
 
-## Degraded Image GT
+## Noisy Image GT
 
-When using `pdf_to_noisy_dataset(...)` or `POST /degrade/pdf-with-gt`, PolyDocBench writes a paired GT file for every degraded image.
+When using `pdf_to_noisy_dataset(...)` or `POST /noise/pdf-with-gt`, PolyDocBench writes a paired GT file for every noisy image.
 
 This GT uses image coordinates:
 

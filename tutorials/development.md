@@ -5,7 +5,7 @@ This guide covers local development, tests, CI, and contribution flow.
 ## Install Development Dependencies
 
 ```powershell
-uv pip install -e ".[api,degradation,formula,dev]"
+uv pip install -e ".[api,noise,formula,dev]"
 ```
 
 ## Run Tests
@@ -17,7 +17,7 @@ uv run python -m pytest -q -p no:cacheprovider
 Run a focused test file:
 
 ```powershell
-uv run python -m pytest tests\test_degradation.py -q -p no:cacheprovider
+uv run python -m pytest tests\test_noise.py -q -p no:cacheprovider
 ```
 
 ## Run API Locally
@@ -39,7 +39,7 @@ CI runs on every push and pull request to `main` using GitHub Actions:
 ```text
 polydocbench/
   api/           # FastAPI application and workflow services
-  degradation/   # PDF-to-scan rendering and noise profiles
+  noise/   # PDF-to-scan rendering and noise profiles
   document/      # Shared document model and normalization
   eval/          # OCR quality, geometry, and ordering metrics
   gt/            # Ground-truth export, schema, validation, reading order

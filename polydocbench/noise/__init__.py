@@ -1,4 +1,4 @@
-"""Synthetic scan degradation helpers."""
+"""Synthetic scan noising helpers."""
 
 from .debug import draw_gt_overlay
 from .geometry import transform_gt_to_image_gt

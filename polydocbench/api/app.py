@@ -8,21 +8,21 @@ from fastapi import FastAPI, HTTPException
 from pydantic import BaseModel, Field
 
 from polydocbench.api.services import (
-    degrade_pdf_document,
-    degrade_pdf_with_gt_document,
     evaluate_ordering_from_gt,
     evaluate_quality_from_gt,
+    noise_pdf_document,
+    noise_pdf_with_gt_document,
     parse_wikipedia_to_file,
     render_document,
 )
-from polydocbench.degradation import NOISE_PROFILES
+from polydocbench.noise import NOISE_PROFILES
 from polydocbench.layout.templates import list_template_names
 
 
 app = FastAPI(
     title="PolyDocBench API",
     version="0.1.0",
-    description="API for Wikipedia parsing, synthetic document rendering, scan degradation, and OCR/layout evaluation.",
+    description="API for Wikipedia parsing, synthetic document rendering, scan noising, and OCR/layout evaluation.",
 )
 
 
@@ -40,7 +40,7 @@ class RenderRequest(BaseModel):
     debug: bool = False
 
 
-class DegradePdfRequest(BaseModel):
+class NoisePdfRequest(BaseModel):
     pdf_path: str
     output_dir: str | None = None
     page_index: int = 0
@@ -50,7 +50,7 @@ class DegradePdfRequest(BaseModel):
     profiles: list[str] | None = None
 
 
-class DegradePdfWithGtRequest(DegradePdfRequest):
+class NoisePdfWithGtRequest(NoisePdfRequest):
     gt_path: str
 
 
@@ -95,8 +95,8 @@ def templates() -> dict[str, list[str]]:
     return {"templates": list_template_names()}
 
 
-@app.get("/degrade/profiles")
-def degradation_profiles() -> dict[str, list[str]]:
+@app.get("/noise/profiles")
+def noise_profiles() -> dict[str, list[str]]:
     return {"profiles": list(NOISE_PROFILES)}
 
 
@@ -126,10 +126,10 @@ def render(request: RenderRequest) -> dict[str, Any]:
         raise HTTPException(status_code=400, detail=str(exc)) from exc
 
 
-@app.post("/degrade/pdf")
-def degrade_pdf(request: DegradePdfRequest) -> dict[str, Any]:
+@app.post("/noise/pdf")
+def noise_pdf(request: NoisePdfRequest) -> dict[str, Any]:
     try:
-        return degrade_pdf_document(
+        return noise_pdf_document(
             pdf_path=request.pdf_path,
             output_dir=request.output_dir,
             page_index=request.page_index,
@@ -142,10 +142,10 @@ def degrade_pdf(request: DegradePdfRequest) -> dict[str, Any]:
         raise HTTPException(status_code=400, detail=str(exc)) from exc
 
 
-@app.post("/degrade/pdf-with-gt")
-def degrade_pdf_with_gt(request: DegradePdfWithGtRequest) -> dict[str, Any]:
+@app.post("/noise/pdf-with-gt")
+def noise_pdf_with_gt(request: NoisePdfWithGtRequest) -> dict[str, Any]:
     try:
-        return degrade_pdf_with_gt_document(
+        return noise_pdf_with_gt_document(
             pdf_path=request.pdf_path,
             gt_path=request.gt_path,
             output_dir=request.output_dir,

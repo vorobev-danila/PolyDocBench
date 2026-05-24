@@ -1,4 +1,4 @@
-"""Reusable scan degradation pipeline extracted from the research notebook."""
+"""Reusable scan noising pipeline extracted from the research notebook."""
 
 from __future__ import annotations
 
@@ -9,16 +9,16 @@ from dataclasses import dataclass
 from pathlib import Path
 from typing import Any
 
-from polydocbench.degradation.geometry import transform_gt_to_image_gt
+from polydocbench.noise.geometry import transform_gt_to_image_gt
 from polydocbench.gt.schema import validate_gt_document
 
 
 ImageArray = Any
-DegradationFn = Callable[[ImageArray], ImageArray]
+NoiseFn = Callable[[ImageArray], ImageArray]
 
 
 @dataclass(frozen=True)
-class DegradationResult:
+class NoiseResult:
     image: ImageArray
     transform_matrix: list[list[float]]
 
@@ -54,7 +54,7 @@ def render_pdf_page(pdf_path: str | Path, page_index: int = 0, dpi: int = 200) -
         document.close()
 
 
-def degrade_resolution(image: ImageArray, scale_range: tuple[float, float] = (0.4, 0.8)) -> ImageArray:
+def reduce_resolution(image: ImageArray, scale_range: tuple[float, float] = (0.4, 0.8)) -> ImageArray:
     cv2 = _require_cv2()
 
     height, width = image.shape[:2]
@@ -88,14 +88,14 @@ def random_affine(image: ImageArray) -> ImageArray:
     return random_affine_with_transform(image).image
 
 
-def random_affine_with_transform(image: ImageArray) -> DegradationResult:
+def random_affine_with_transform(image: ImageArray) -> NoiseResult:
     cv2 = _require_cv2()
 
     height, width = image.shape[:2]
     matrix = cv2.getRotationMatrix2D((width / 2, height / 2), random.uniform(-2, 2), 1.0)
     matrix[0, 1] += random.uniform(-0.05, 0.05)
     transformed = cv2.warpAffine(image, matrix, (width, height), borderMode=cv2.BORDER_REPLICATE)
-    return DegradationResult(image=transformed, transform_matrix=_matrix_to_list(matrix))
+    return NoiseResult(image=transformed, transform_matrix=_matrix_to_list(matrix))
 
 
 def jpeg_artifacts(image: ImageArray, quality_range: tuple[int, int] = (30, 70)) -> ImageArray:
@@ -106,21 +106,21 @@ def jpeg_artifacts(image: ImageArray, quality_range: tuple[int, int] = (30, 70))
     return cv2.imdecode(encoded, cv2.IMREAD_COLOR)
 
 
-NOISE_PROFILES: dict[str, list[DegradationFn]] = {
-    "light_scan": [degrade_resolution, illumination_gradient, jpeg_artifacts],
-    "medium_scan": [degrade_resolution, random_affine, illumination_gradient, jpeg_artifacts],
-    "heavy_scan": [degrade_resolution, random_affine, illumination_gradient, ink_morphology, jpeg_artifacts],
+NOISE_PROFILES: dict[str, list[NoiseFn]] = {
+    "light_scan": [reduce_resolution, illumination_gradient, jpeg_artifacts],
+    "medium_scan": [reduce_resolution, random_affine, illumination_gradient, jpeg_artifacts],
+    "heavy_scan": [reduce_resolution, random_affine, illumination_gradient, ink_morphology, jpeg_artifacts],
 }
 
 
-def apply_pipeline(image: ImageArray, pipeline: list[DegradationFn]) -> ImageArray:
-    """Apply a sequence of degradation functions."""
+def apply_pipeline(image: ImageArray, pipeline: list[NoiseFn]) -> ImageArray:
+    """Apply a sequence of noising functions."""
 
     return apply_pipeline_with_transform(image, pipeline).image
 
 
-def apply_pipeline_with_transform(image: ImageArray, pipeline: list[DegradationFn]) -> DegradationResult:
-    """Apply degradation functions and return the cumulative affine transform."""
+def apply_pipeline_with_transform(image: ImageArray, pipeline: list[NoiseFn]) -> NoiseResult:
+    """Apply noising functions and return the cumulative affine transform."""
 
     np = _require_numpy()
 
@@ -135,7 +135,7 @@ def apply_pipeline_with_transform(image: ImageArray, pipeline: list[DegradationF
             output = fn(output, random.choice(["erode", "dilate"]))
         else:
             output = fn(output)
-    return DegradationResult(image=output, transform_matrix=_matrix_to_list(cumulative[:2, :]))
+    return NoiseResult(image=output, transform_matrix=_matrix_to_list(cumulative[:2, :]))
 
 
 def pdf_to_noisy_images(
@@ -160,7 +160,7 @@ def pdf_to_noisy_images(
     selected_profiles = profiles or list(NOISE_PROFILES)
     unknown_profiles = sorted(set(selected_profiles) - set(NOISE_PROFILES))
     if unknown_profiles:
-        raise ValueError(f"Unknown degradation profiles: {', '.join(unknown_profiles)}")
+        raise ValueError(f"Unknown noise profiles: {', '.join(unknown_profiles)}")
 
     base_image, zoom = render_pdf_page(pdf_path, page_index=page_index, dpi=dpi)
     written: list[str] = []
@@ -198,7 +198,7 @@ def pdf_to_noisy_dataset(
     selected_profiles = profiles or list(NOISE_PROFILES)
     unknown_profiles = sorted(set(selected_profiles) - set(NOISE_PROFILES))
     if unknown_profiles:
-        raise ValueError(f"Unknown degradation profiles: {', '.join(unknown_profiles)}")
+        raise ValueError(f"Unknown noise profiles: {', '.join(unknown_profiles)}")
 
     source_gt = json.loads(Path(gt_path).read_text(encoding="utf-8"))
     validate_gt_document(source_gt)
@@ -217,7 +217,7 @@ def pdf_to_noisy_dataset(
             gt_target = output_path / f"{profile_name}_{index}_gt.json"
 
             Image.fromarray(image).save(image_target, "JPEG", quality=95)
-            degraded_gt = transform_gt_to_image_gt(
+            noisy_gt = transform_gt_to_image_gt(
                 source_gt=source_gt,
                 image_path=image_target,
                 source_pdf_path=pdf_path,
@@ -232,7 +232,7 @@ def pdf_to_noisy_dataset(
                 variant=index,
                 dpi=dpi,
             )
-            gt_target.write_text(json.dumps(degraded_gt, ensure_ascii=False, indent=2), encoding="utf-8")
+            gt_target.write_text(json.dumps(noisy_gt, ensure_ascii=False, indent=2), encoding="utf-8")
             artifacts.append(
                 {
                     "profile": profile_name,
@@ -256,3 +256,4 @@ def _to_homogeneous(matrix: list[list[float]]):
 
 def _matrix_to_list(matrix) -> list[list[float]]:
     return [[float(value) for value in row] for row in matrix]
+

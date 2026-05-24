@@ -1,6 +1,6 @@
 # PolyDocBench
 
-Synthetic document generation, rendering, degradation, and evaluation toolkit for OCR, document layout analysis, and reading-order research.
+Synthetic document generation, rendering, noise, and evaluation toolkit for OCR, document layout analysis, and reading-order research.
 
 [![Tests](https://github.com/vorobev-danila/PolyDocBench/actions/workflows/tests.yml/badge.svg)](https://github.com/vorobev-danila/PolyDocBench/actions/workflows/tests.yml)
 ![Python](https://img.shields.io/badge/python-3.10%2B-blue)
@@ -47,8 +47,8 @@ The project is useful for:
 - PDF rendering with text, images, formulas, and debug bounding boxes.
 - Ground-truth export with stable IDs, bboxes, and reading order.
 - Text justification and centered graphical elements.
-- Scan-like degradation profiles: `light_scan`, `medium_scan`, `heavy_scan`.
-- Transform-aware degraded GT for rotated/affine scan variants.
+- Scan-like noise profiles: `light_scan`, `medium_scan`, `heavy_scan`.
+- Transform-aware noisy GT for rotated/affine scan variants.
 - OCR quality and reading-order evaluation utilities.
 - CLI and FastAPI interfaces.
 - `uv`-first developer workflow.
@@ -67,7 +67,7 @@ flowchart TB
         L[Layout]
         R[Renderer]
         G[Ground Truth]
-        D[Degradation]
+        D[Noise]
         M[OCR/model predictions]
         E[Evaluation]
     end
@@ -101,7 +101,7 @@ More details: [Architecture Tutorial](tutorials/architecture.md).
 git clone https://github.com/vorobev-danila/PolyDocBench.git
 cd PolyDocBench
 uv sync
-uv pip install -e ".[api,degradation,dev]"
+uv pip install -e ".[api,noise,dev]"
 ```
 
 Render a bundled example:
@@ -163,7 +163,7 @@ The detailed documentation is split into focused tutorials:
 ```text
 polydocbench/
   api/           # FastAPI application and workflow services
-  degradation/   # PDF-to-scan rendering and noise profiles
+  noise/         # PDF-to-scan rendering and noise profiles
   document/      # Shared document model and normalization
   eval/          # OCR quality, geometry, and ordering metrics
   gt/            # Ground-truth export, schema, validation, reading order
@@ -186,7 +186,7 @@ docker-compose.yml
 ## Development Workflow
 
 ```powershell
-uv pip install -e ".[api,degradation,formula,dev]"
+uv pip install -e ".[api,noise,formula,dev]"
 uv run python -m pytest -q -p no:cacheprovider
 ```
 
@@ -196,7 +196,7 @@ Developer guide: [Development Tutorial](tutorials/development.md).
 
 ## Contributing
 
-Contributions are welcome around new sources, richer templates, rendering quality, degradation profiles, OCR metrics, API/UI workflows, and documentation.
+Contributions are welcome around new sources, richer templates, rendering quality, noise profiles, OCR metrics, API/UI workflows, and documentation.
 
 Suggested flow:
 

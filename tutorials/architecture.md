@@ -11,7 +11,7 @@ flowchart LR
     C --> D[Layout engine]
     D --> E[PDF renderer]
     D --> F[Ground truth exporter]
-    E --> G[Scan degradation]
+    E --> G[Scan noise]
     G --> H[Noisy images]
     F --> I[Evaluation]
     H --> J[OCR or model predictions]
@@ -77,6 +77,6 @@ flowchart TB
 | `polydocbench.layout` | Line breaking, typography, placement, templates |
 | `polydocbench.render` | PDF rendering and debug overlays |
 | `polydocbench.gt` | Ground-truth export, schema, validation, reading order |
-| `polydocbench.degradation` | PDF-to-image conversion and scan noise profiles |
+| `polydocbench.noise` | PDF-to-image conversion and scan noise profiles |
 | `polydocbench.eval` | OCR quality, geometry matching, reading-order metrics |
 | `polydocbench.api` | FastAPI workflows over the pipeline |

@@ -28,7 +28,7 @@ uv pip install -e .
 
 ```powershell
 uv pip install -e ".[api]"
-uv pip install -e ".[degradation]"
+uv pip install -e ".[noise]"
 uv pip install -e ".[formula]"
 uv pip install -e ".[dev]"
 ```
@@ -36,7 +36,7 @@ uv pip install -e ".[dev]"
 For the full research stack:
 
 ```powershell
-uv pip install -e ".[api,degradation,formula,dev]"
+uv pip install -e ".[api,noise,formula,dev]"
 ```
 
 ## Verify Installation

@@ -11,13 +11,13 @@ docker build -t polydocbench:local .
 The image installs these optional dependency groups:
 
 - `api`
-- `degradation`
+- `noise`
 - `formula`
 
 This supports the main pipeline:
 
 ```text
-parse -> render -> degrade -> evaluate
+parse -> render -> noise -> evaluate
 ```
 
 ## Run the API
@@ -48,10 +48,10 @@ Render a bundled example:
 docker compose run --rm polydocbench-api python -m polydocbench render examples/wiki_formulas.json -o outputs/wiki_formulas.pdf --template simple_article
 ```
 
-## Run Degradation from the Container
+## Run Noise from the Container
 
 ```powershell
-docker compose run --rm polydocbench-api python -c "from polydocbench.degradation import pdf_to_noisy_images; print(pdf_to_noisy_images('outputs/wiki_formulas.pdf', 'outputs/wiki_formulas_scans', n_variants=1, profiles=['light_scan']))"
+docker compose run --rm polydocbench-api python -c "from polydocbench.noise import pdf_to_noisy_images; print(pdf_to_noisy_images('outputs/wiki_formulas.pdf', 'outputs/wiki_formulas_scans', n_variants=1, profiles=['light_scan']))"
 ```
 
 ## Stop the API

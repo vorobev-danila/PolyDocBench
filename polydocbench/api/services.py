@@ -66,7 +66,7 @@ def render_document(
     }
 
 
-def degrade_pdf_document(
+def noise_pdf_document(
     pdf_path: str | Path,
     output_dir: str | Path | None = None,
     page_index: int = 0,
@@ -86,9 +86,9 @@ def degrade_pdf_document(
     target_dir = Path(output_dir) if output_dir else DEFAULT_API_OUTPUT_DIR / f"{_slug(input_path.stem)}_scans"
 
     try:
-        from polydocbench.degradation import pdf_to_noisy_images
+        from polydocbench.noise import pdf_to_noisy_images
     except ImportError as exc:
-        raise RuntimeError('Install degradation dependencies with: pip install -e ".[degradation]"') from exc
+        raise RuntimeError('Install noise dependencies with: uv pip install -e ".[noise]"') from exc
 
     result = pdf_to_noisy_images(
         pdf_path=input_path,
@@ -109,7 +109,7 @@ def degrade_pdf_document(
     }
 
 
-def degrade_pdf_with_gt_document(
+def noise_pdf_with_gt_document(
     pdf_path: str | Path,
     gt_path: str | Path,
     output_dir: str | Path | None = None,
@@ -130,12 +130,12 @@ def degrade_pdf_with_gt_document(
     if dpi < 36:
         raise ValueError("dpi must be at least 36")
 
-    target_dir = Path(output_dir) if output_dir else DEFAULT_API_OUTPUT_DIR / f"{_slug(input_pdf.stem)}_dataset"
+    target_dir = Path(output_dir) if output_dir else DEFAULT_API_OUTPUT_DIR / f"{_slug(input_pdf.stem)}_noisy_dataset"
 
     try:
-        from polydocbench.degradation import pdf_to_noisy_dataset
+        from polydocbench.noise import pdf_to_noisy_dataset
     except ImportError as exc:
-        raise RuntimeError('Install degradation dependencies with: uv pip install -e ".[degradation]"') from exc
+        raise RuntimeError('Install noise dependencies with: uv pip install -e ".[noise]"') from exc
 
     result = pdf_to_noisy_dataset(
         pdf_path=input_pdf,
@@ -156,6 +156,7 @@ def degrade_pdf_with_gt_document(
         "dpi": dpi,
         **result,
     }
+
 
 
 def evaluate_quality_from_gt(

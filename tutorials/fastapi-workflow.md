@@ -5,7 +5,7 @@ FastAPI exposes the main research pipeline through HTTP endpoints.
 ## Start the API
 
 ```powershell
-uv pip install -e ".[api,degradation]"
+uv pip install -e ".[api,noise]"
 uv run python -m uvicorn polydocbench.api.app:app --reload --host 127.0.0.1 --port 8000
 ```
 
@@ -23,9 +23,9 @@ http://127.0.0.1:8000/docs
 | `GET` | `/templates` | List layout templates |
 | `POST` | `/parse/wikipedia` | Parse Wikipedia page to source JSON |
 | `POST` | `/render` | Render JSON to PDF and GT |
-| `GET` | `/degrade/profiles` | List degradation profiles |
-| `POST` | `/degrade/pdf` | Generate noisy scan images from PDF |
-| `POST` | `/degrade/pdf-with-gt` | Generate noisy images with transformed pixel-coordinate GT |
+| `GET` | `/noise/profiles` | List noise profiles |
+| `POST` | `/noise/pdf` | Generate noisy scan images from PDF |
+| `POST` | `/noise/pdf-with-gt` | Generate noisy images with transformed pixel-coordinate GT |
 | `POST` | `/evaluate/quality` | Evaluate OCR text/geometry quality |
 | `POST` | `/evaluate/ordering` | Evaluate predicted reading order |
 
@@ -51,7 +51,7 @@ http://127.0.0.1:8000/docs
 }
 ```
 
-## Degrade Request
+## Noise Request
 
 ```json
 {
@@ -65,7 +65,7 @@ http://127.0.0.1:8000/docs
 }
 ```
 
-Use `/degrade/pdf-with-gt` when geometric transforms should also update GT:
+Use `/noise/pdf-with-gt` when geometric transforms should also update GT:
 
 ```json
 {

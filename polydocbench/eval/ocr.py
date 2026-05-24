@@ -20,7 +20,7 @@ def extract_tesseract_lines(
     ``coordinate_system="pdf"``, returned bboxes use the PolyDocBench PDF
     bottom-left convention and are divided by ``zoom``. With
     ``coordinate_system="image"``, returned bboxes stay in top-left image
-    pixels, matching degraded image GT.
+    pixels, matching noisy image GT.
     """
 
     import pytesseract

@@ -754,16 +754,16 @@ api = [
     { name = "fastapi" },
     { name = "uvicorn", extra = ["standard"] },
 ]
-degradation = [
-    { name = "opencv-python" },
-    { name = "pymupdf" },
-]
 dev = [
     { name = "httpx" },
     { name = "pytest" },
 ]
 formula = [
     { name = "svglib" },
+]
+noise = [
+    { name = "opencv-python" },
+    { name = "pymupdf" },
 ]
 ocr = [
     { name = "pytesseract" },
@@ -778,11 +778,11 @@ requires-dist = [
     { name = "httpx", marker = "extra == 'dev'", specifier = ">=0.28.0" },
     { name = "numpy", specifier = ">=1.26.0" },
     { name = "opencv-python", marker = "extra == 'all'", specifier = ">=4.9.0" },
-    { name = "opencv-python", marker = "extra == 'degradation'", specifier = ">=4.9.0" },
+    { name = "opencv-python", marker = "extra == 'noise'", specifier = ">=4.9.0" },
     { name = "pillow", specifier = ">=10.0.0" },
     { name = "pydantic", specifier = ">=2.9.0" },
     { name = "pymupdf", marker = "extra == 'all'", specifier = ">=1.24.0" },
-    { name = "pymupdf", marker = "extra == 'degradation'", specifier = ">=1.24.0" },
+    { name = "pymupdf", marker = "extra == 'noise'", specifier = ">=1.24.0" },
     { name = "pytesseract", marker = "extra == 'all'", specifier = ">=0.3.10" },
     { name = "pytesseract", marker = "extra == 'ocr'", specifier = ">=0.3.10" },
     { name = "pytest", marker = "extra == 'all'", specifier = ">=8.0.0" },
@@ -794,7 +794,7 @@ requires-dist = [
     { name = "uvicorn", extras = ["standard"], marker = "extra == 'all'", specifier = ">=0.29.0" },
     { name = "uvicorn", extras = ["standard"], marker = "extra == 'api'", specifier = ">=0.29.0" },
 ]
-provides-extras = ["degradation", "ocr", "formula", "dev", "api", "all"]
+provides-extras = ["noise", "ocr", "formula", "dev", "api", "all"]
 
 [[package]]
 name = "pydantic"

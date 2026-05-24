@@ -3,7 +3,7 @@
 This guide describes the first OCR benchmark loop:
 
 ```text
-Wikipedia pages -> synthetic PDFs -> degraded scans -> Tesseract OCR -> quality metrics
+Wikipedia pages -> synthetic PDFs -> noisy scans -> Tesseract OCR -> quality metrics
 ```
 
 ## Tesseract Setup
@@ -11,7 +11,7 @@ Wikipedia pages -> synthetic PDFs -> degraded scans -> Tesseract OCR -> quality 
 Install the Python dependencies:
 
 ```powershell
-uv pip install -e ".[degradation,ocr,dev]"
+uv pip install -e ".[noise,ocr,dev]"
 ```
 
 Install the Tesseract executable and language packs separately. The default experiment uses:
@@ -47,7 +47,7 @@ The script runs:
 
 1. Wikipedia parsing for each language.
 2. PDF and GT rendering.
-3. Scan degradation with paired transformed GT.
+3. Scan noise with paired transformed GT.
 4. Tesseract OCR.
 5. Quality evaluation with CER, WER, IoU, and matched line ratio.
 
@@ -57,7 +57,7 @@ The script runs:
 uv run python scripts\run_tesseract_ocr_experiment.py --languages en ru fr --profiles light_scan --variants 1
 ```
 
-Reuse already generated source/render/degradation artifacts:
+Reuse already generated source/render/noisy artifacts:
 
 ```powershell
 uv run python scripts\run_tesseract_ocr_experiment.py --reuse
@@ -69,7 +69,7 @@ The experiment script prints compact progress by default:
 == EN | English ==
 [1/4] Parse Wikipedia
 [2/4] Render PDF + GT
-[3/4] Generate degraded scans + transformed GT
+[3/4] Generate noisy scans + transformed GT
 [4/4] Run Tesseract + evaluate
       medium_scan_0: CER=0.403 WER=0.412 IoU=0.479 matched=0.700 lines=48/50
 ```
@@ -90,7 +90,7 @@ outputs/experiments/tesseract_quality/
     source.json
     document.pdf
     document_gt.json
-    degraded/
+    noisy/
       light_scan_0.jpg
       light_scan_0_gt.json
       medium_scan_0.jpg
@@ -102,7 +102,7 @@ outputs/experiments/tesseract_quality/
 
 `metrics.jsonl` stores one row per language/profile/variant.
 
-`summary.csv` stores aggregated metrics grouped by language and degradation profile.
+`summary.csv` stores aggregated metrics grouped by language and noise profile.
 
 ## Metric Notes
 
@@ -111,4 +111,4 @@ outputs/experiments/tesseract_quality/
 - `IoU`: average matched line geometry overlap, higher is better.
 - `matched_ratio`: share of GT lines matched to OCR lines by IoU, higher is better.
 
-For degraded scans, the script runs Tesseract in image-coordinate mode, so predicted bboxes are evaluated against the transformed degraded GT rather than the original PDF GT.
+For noisy scans, the script runs Tesseract in image-coordinate mode, so predicted bboxes are evaluated against the transformed noisy GT rather than the original PDF GT.

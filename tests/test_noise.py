@@ -8,7 +8,7 @@ from reportlab.pdfgen import canvas
 cv2 = pytest.importorskip("cv2")
 fitz = pytest.importorskip("fitz")
 
-from polydocbench.degradation import (
+from polydocbench.noise import (
     NOISE_PROFILES,
     draw_gt_overlay,
     pdf_to_noisy_dataset,
@@ -19,12 +19,12 @@ from polydocbench.gt.schema import validate_gt_document
 
 
 def test_pdf_to_noisy_images_writes_selected_profile_variants():
-    pdf_path = Path("outputs/test_runs/degradation_input.pdf")
-    output_dir = Path("outputs/test_runs/degraded")
+    pdf_path = Path("outputs/test_runs/noise_input.pdf")
+    output_dir = Path("outputs/test_runs/noisy")
     pdf_path.parent.mkdir(parents=True, exist_ok=True)
 
     pdf = canvas.Canvas(str(pdf_path), pagesize=(120, 80))
-    pdf.drawString(12, 40, "Degradation test")
+    pdf.drawString(12, 40, "Noise test")
     pdf.save()
 
     base_image, zoom = render_pdf_page(pdf_path, dpi=72)
@@ -48,15 +48,15 @@ def test_pdf_to_noisy_images_writes_selected_profile_variants():
 
 
 def test_pdf_to_noisy_images_rejects_unknown_profile():
-    pdf_path = Path("outputs/test_runs/degradation_unknown_profile.pdf")
+    pdf_path = Path("outputs/test_runs/noise_unknown_profile.pdf")
     pdf_path.parent.mkdir(parents=True, exist_ok=True)
 
     pdf = canvas.Canvas(str(pdf_path), pagesize=(120, 80))
     pdf.drawString(12, 40, "Profile test")
     pdf.save()
 
-    with pytest.raises(ValueError, match="Unknown degradation profiles"):
-        pdf_to_noisy_images(pdf_path, "outputs/test_runs/degraded_unknown", profiles=["unknown"])
+    with pytest.raises(ValueError, match="Unknown noise profiles"):
+        pdf_to_noisy_images(pdf_path, "outputs/test_runs/noisy_unknown", profiles=["unknown"])
 
 
 def test_noise_profiles_are_available():
@@ -104,9 +104,9 @@ def test_draw_gt_overlay_can_draw_polygon_or_bbox():
 
 
 def test_pdf_to_noisy_dataset_writes_transformed_gt_for_affine_profile():
-    pdf_path = Path("outputs/test_runs/degradation_dataset_input.pdf")
-    gt_path = Path("outputs/test_runs/degradation_dataset_input_gt.json")
-    output_dir = Path("outputs/test_runs/degraded_dataset")
+    pdf_path = Path("outputs/test_runs/noise_dataset_input.pdf")
+    gt_path = Path("outputs/test_runs/noise_dataset_input_gt.json")
+    output_dir = Path("outputs/test_runs/noisy_dataset")
     pdf_path.parent.mkdir(parents=True, exist_ok=True)
 
     pdf = canvas.Canvas(str(pdf_path), pagesize=(120, 80))
@@ -166,15 +166,15 @@ def test_pdf_to_noisy_dataset_writes_transformed_gt_for_affine_profile():
     )
 
     artifact = result["artifacts"][0]
-    degraded_gt = json.loads(Path(artifact["gt_path"]).read_text(encoding="utf-8"))
-    validate_gt_document(degraded_gt)
-    transformed_line = degraded_gt["pages"][0]["containers"][0]["elements"][0]
+    noisy_gt = json.loads(Path(artifact["gt_path"]).read_text(encoding="utf-8"))
+    validate_gt_document(noisy_gt)
+    transformed_line = noisy_gt["pages"][0]["containers"][0]["elements"][0]
 
     assert Path(artifact["image_path"]).exists()
     assert Path(artifact["gt_path"]).exists()
-    assert degraded_gt["metadata"]["coordinate_system"]["unit"] == "pixels"
-    assert degraded_gt["metadata"]["coordinate_system"]["origin"] == "top-left"
-    assert degraded_gt["metadata"]["profile"] == "medium_scan"
+    assert noisy_gt["metadata"]["coordinate_system"]["unit"] == "pixels"
+    assert noisy_gt["metadata"]["coordinate_system"]["origin"] == "top-left"
+    assert noisy_gt["metadata"]["profile"] == "medium_scan"
     assert transformed_line["polygon"]
     assert transformed_line["metadata"]["source_bbox"]["x"] == 10
     assert transformed_line["bbox"]["page"] == 1

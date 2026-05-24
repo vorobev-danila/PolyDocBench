@@ -17,8 +17,8 @@ def test_api_health_and_templates():
     assert "simple_article" in templates
 
 
-def test_api_degradation_profiles_and_pdf_endpoint(monkeypatch):
-    def fake_degrade_pdf_document(**kwargs):
+def test_api_noise_profiles_and_pdf_endpoint(monkeypatch):
+    def fake_noise_pdf_document(**kwargs):
         return {
             "pdf_path": kwargs["pdf_path"],
             "output_dir": kwargs["output_dir"],
@@ -27,12 +27,12 @@ def test_api_degradation_profiles_and_pdf_endpoint(monkeypatch):
             "zoom": 2.0,
         }
 
-    monkeypatch.setattr("polydocbench.api.app.degrade_pdf_document", fake_degrade_pdf_document)
+    monkeypatch.setattr("polydocbench.api.app.noise_pdf_document", fake_noise_pdf_document)
     client = TestClient(app)
 
-    profiles = client.get("/degrade/profiles").json()["profiles"]
+    profiles = client.get("/noise/profiles").json()["profiles"]
     response = client.post(
-        "/degrade/pdf",
+        "/noise/pdf",
         json={
             "pdf_path": "outputs/api/source.pdf",
             "output_dir": "outputs/api/scans",
@@ -46,8 +46,8 @@ def test_api_degradation_profiles_and_pdf_endpoint(monkeypatch):
     assert response.json()["images"] == ["outputs/api/light_scan_0.jpg"]
 
 
-def test_api_degradation_with_gt_endpoint(monkeypatch):
-    def fake_degrade_pdf_with_gt_document(**kwargs):
+def test_api_noise_with_gt_endpoint(monkeypatch):
+    def fake_noise_pdf_with_gt_document(**kwargs):
         return {
             "pdf_path": kwargs["pdf_path"],
             "gt_path": kwargs["gt_path"],
@@ -57,10 +57,10 @@ def test_api_degradation_with_gt_endpoint(monkeypatch):
             "zoom": 2.0,
         }
 
-    monkeypatch.setattr("polydocbench.api.app.degrade_pdf_with_gt_document", fake_degrade_pdf_with_gt_document)
+    monkeypatch.setattr("polydocbench.api.app.noise_pdf_with_gt_document", fake_noise_pdf_with_gt_document)
     client = TestClient(app)
     response = client.post(
-        "/degrade/pdf-with-gt",
+        "/noise/pdf-with-gt",
         json={
             "pdf_path": "outputs/api/source.pdf",
             "gt_path": "outputs/api/source_gt.json",

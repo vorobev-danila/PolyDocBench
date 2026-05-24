@@ -3,10 +3,10 @@
 This tutorial shows the local workflow:
 
 ```text
-parse -> render -> degrade -> evaluate
+parse -> render -> noise -> evaluate
 ```
 
-Parsing and rendering are exposed through the CLI. Degradation and evaluation
+Parsing and rendering are exposed through the CLI. Noise and evaluation
 can be used from Python or through the FastAPI workflow.
 
 ## List Templates
@@ -54,7 +54,7 @@ The command writes:
 Generate scan-like JPEG variants without paired GT:
 
 ```python
-from polydocbench.degradation import pdf_to_noisy_images
+from polydocbench.noise import pdf_to_noisy_images
 
 result = pdf_to_noisy_images(
     pdf_path="outputs/wiki_formulas.pdf",
@@ -68,10 +68,10 @@ result = pdf_to_noisy_images(
 print(result["images"])
 ```
 
-Generate paired noisy images and transformed pixel-coordinate GT. This is the recommended mode when the degradation profile includes rotation or affine transforms:
+Generate paired noisy images and transformed pixel-coordinate GT. This is the recommended mode when the noise profile includes rotation or affine transforms:
 
 ```python
-from polydocbench.degradation import pdf_to_noisy_dataset
+from polydocbench.noise import pdf_to_noisy_dataset
 
 result = pdf_to_noisy_dataset(
     pdf_path="outputs/wiki_formulas.pdf",
@@ -93,13 +93,13 @@ outputs/wiki_formulas_dataset/medium_scan_0.jpg
 outputs/wiki_formulas_dataset/medium_scan_0_gt.json
 ```
 
-In the degraded GT:
+In the noisy GT:
 
 - `polygon` stores the transformed four-corner geometry;
 - `bbox` stores the horizontal box that encloses the polygon;
 - `metadata.source_bbox` stores the original PDF-coordinate bbox.
 
-## Visualize Degraded GT
+## Visualize Noisy GT
 
 Draw only transformed polygons as red lines:
 
