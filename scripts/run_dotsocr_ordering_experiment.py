@@ -12,6 +12,8 @@ from pathlib import Path
 from statistics import mean
 from typing import Any
 
+from dotenv import load_dotenv
+
 from polydocbench.eval import (
     evaluate_semantic_ordering,
     extract_dotsocr_blocks,
@@ -61,6 +63,7 @@ def build_parser() -> argparse.ArgumentParser:
 
 def main() -> int:
     _configure_console_encoding()
+    load_dotenv(Path(__file__).resolve().parents[1] / ".env")
     args = build_parser().parse_args()
     input_root = Path(args.input_dir)
     output_root = Path(args.output_dir)

@@ -26,6 +26,7 @@ ocr = [
 dotsocr = [
     "openai>=1.30.0",
     "plotly>=5.24.0",
+    "python-dotenv>=1.2.2",
 ]
 formula = [
     "svglib>=1.5.1,<1.6",
@@ -44,6 +45,7 @@ all = [
     "pytesseract>=0.3.10",
     "plotly>=5.24.0",
     "openai>=1.30.0",
+    "python-dotenv>=1.2.2",
     "httpx>=0.28.0",
     "pytest>=8.0.0",
     "fastapi>=0.110.0",

@@ -237,11 +237,13 @@ Install the client dependencies:
 uv pip install -e ".[dotsocr,noise,dev]"
 ```
 
-Set the API token in the PowerShell session. Do not store tokens in notebooks or source files:
+Create a local `.env` file in the project root. It is excluded by `.gitignore`; do not store tokens in notebooks or committed source files:
 
-```powershell
-$env:LITELLM_API_KEY = "sk-..."
+```dotenv
+LITELLM_API_KEY=sk-...
 ```
+
+The dots.ocr runner and `notebooks/dotsocr_ordering.ipynb` load this file automatically. Keep the file at `PolyDocBench/.env`, not inside `notebooks/`, so both workflows use the same configuration.
 
 Run a one-image smoke evaluation first:
 

@@ -903,6 +903,7 @@ all = [
     { name = "pymupdf" },
     { name = "pytesseract" },
     { name = "pytest" },
+    { name = "python-dotenv" },
     { name = "uvicorn", extra = ["standard"] },
 ]
 api = [
@@ -916,6 +917,7 @@ dev = [
 dotsocr = [
     { name = "openai" },
     { name = "plotly" },
+    { name = "python-dotenv" },
 ]
 formula = [
     { name = "svglib" },
@@ -952,6 +954,8 @@ requires-dist = [
     { name = "pytesseract", marker = "extra == 'ocr'", specifier = ">=0.3.10" },
     { name = "pytest", marker = "extra == 'all'", specifier = ">=8.0.0" },
     { name = "pytest", marker = "extra == 'dev'", specifier = ">=8.0.0" },
+    { name = "python-dotenv", marker = "extra == 'all'", specifier = ">=1.2.2" },
+    { name = "python-dotenv", marker = "extra == 'dotsocr'", specifier = ">=1.2.2" },
     { name = "pyyaml", specifier = ">=6.0.0" },
     { name = "reportlab", specifier = ">=4.0.0" },
     { name = "requests", specifier = ">=2.32.0" },
