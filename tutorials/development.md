@@ -5,7 +5,7 @@ This guide covers local development, tests, CI, and contribution flow.
 ## Install Development Dependencies
 
 ```powershell
-uv pip install -e ".[api,noise,formula,dev]"
+uv pip install -e ".[api,noise,ocr,dotsocr,formula,dev]"
 ```
 
 ## Run Tests

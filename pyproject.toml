@@ -21,6 +21,11 @@ noise = [
 ]
 ocr = [
     "pytesseract>=0.3.10",
+    "plotly>=5.24.0",
+]
+dotsocr = [
+    "openai>=1.30.0",
+    "plotly>=5.24.0",
 ]
 formula = [
     "svglib>=1.5.1,<1.6",
@@ -37,6 +42,8 @@ all = [
     "opencv-python>=4.9.0",
     "pymupdf>=1.24.0",
     "pytesseract>=0.3.10",
+    "plotly>=5.24.0",
+    "openai>=1.30.0",
     "httpx>=0.28.0",
     "pytest>=8.0.0",
     "fastapi>=0.110.0",

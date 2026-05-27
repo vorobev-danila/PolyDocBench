@@ -1,0 +1,137 @@
+"""Interactive reporting for semantic reading-order experiments."""
+
+from __future__ import annotations
+
+from collections import defaultdict
+from pathlib import Path
+from statistics import mean
+from typing import Any
+
+
+def write_ordering_dashboard(output_path: str | Path, rows: list[dict[str, Any]]) -> Path:
+    """Write a self-contained Plotly dashboard for dots.ocr ordering metrics."""
+    try:
+        import plotly.graph_objects as go
+        from plotly.subplots import make_subplots
+    except ImportError as exc:
+        raise RuntimeError('Install visualization dependencies with: uv pip install -e ".[dotsocr]"') from exc
+
+    output_path = Path(output_path)
+    output_path.parent.mkdir(parents=True, exist_ok=True)
+    if not rows:
+        figure = go.Figure()
+        figure.add_annotation(text="No ordering metrics were generated.", showarrow=False, font={"size": 18})
+        figure.update_layout(title="PolyDocBench dots.ocr Ordering Dashboard", template="plotly_white")
+        figure.write_html(output_path, include_plotlyjs=True, full_html=True)
+        return output_path
+
+    profiles = _ordered_values(rows, "profile", ["light_scan", "medium_scan", "heavy_scan"])
+    languages = _ordered_values(rows, "language")
+    templates = _ordered_values(rows, "template", ["simple_article", "scientific_paper", "magazine_layout"])
+    colors = {"light_scan": "#2a9d8f", "medium_scan": "#e9c46a", "heavy_scan": "#e76f51"}
+    figure = make_subplots(
+        rows=3,
+        cols=2,
+        specs=[[{}, {}], [{}, {}], [{"type": "table", "colspan": 2}, None]],
+        subplot_titles=(
+            "Ordered WER by Language and Noise Profile",
+            "Pairwise Accuracy by Layout Template and Noise Profile",
+            "Token F1 by Language and Noise Profile",
+            "Matched Block Ratio by Layout Template and Noise Profile",
+            "Aggregated Ordering Metrics",
+        ),
+        row_heights=[0.28, 0.28, 0.44],
+        vertical_spacing=0.1,
+    )
+    charts = [
+        ("language", languages, "ordered_WER", 1, 1, "Ordered WER"),
+        ("template", templates, "pairwise_accuracy", 1, 2, "Pairwise accuracy"),
+        ("language", languages, "token_F1", 2, 1, "Token F1"),
+        ("template", templates, "matched_block_ratio", 2, 2, "Matched block ratio"),
+    ]
+    for profile in profiles:
+        for chart_index, (dimension, values, metric, row, col, label) in enumerate(charts):
+            figure.add_trace(
+                go.Bar(
+                    name=profile,
+                    legendgroup=profile,
+                    showlegend=chart_index == 0,
+                    x=values,
+                    y=_group_means(rows, dimension, values, metric, profile),
+                    marker_color=colors.get(profile),
+                    hovertemplate=f"%{{x}}<br>{label}=%{{y:.4f}}<extra>{profile}</extra>",
+                ),
+                row=row,
+                col=col,
+            )
+    summaries = _summary_rows(rows)
+    figure.add_trace(
+        go.Table(
+            header={
+                "values": ["Language", "Template", "Noise", "Samples", "Ordered WER", "Token F1", "Tau", "Coverage"],
+                "fill_color": "#213547",
+                "font": {"color": "white"},
+                "align": "left",
+            },
+            cells={
+                "values": [
+                    [row["language"] for row in summaries],
+                    [row["template"] for row in summaries],
+                    [row["profile"] for row in summaries],
+                    [row["count"] for row in summaries],
+                    [f'{row["ordered_WER"]:.4f}' for row in summaries],
+                    [f'{row["token_F1"]:.4f}' for row in summaries],
+                    [f'{row["kendall_tau"]:.4f}' for row in summaries],
+                    [f'{row["matched_block_ratio"]:.4f}' for row in summaries],
+                ],
+                "fill_color": "#f7f9fb",
+                "align": "left",
+            },
+        ),
+        row=3,
+        col=1,
+    )
+    figure.update_layout(
+        title={"text": f"PolyDocBench dots.ocr Ordering Dashboard<br><sup>{len(rows)} evaluated scans</sup>", "x": 0.02},
+        barmode="group",
+        template="plotly_white",
+        height=1280,
+        margin={"l": 55, "r": 35, "t": 100, "b": 35},
+        legend={"title": {"text": "Noise profile"}, "orientation": "h", "y": 1.04, "x": 0.62},
+    )
+    for _, _, _, row, col, label in charts:
+        figure.update_yaxes(title_text=label, row=row, col=col)
+    figure.write_html(output_path, include_plotlyjs=True, full_html=True)
+    return output_path
+
+
+def _ordered_values(rows: list[dict[str, Any]], key: str, preferred: list[str] | None = None) -> list[str]:
+    values = {str(row[key]) for row in rows}
+    preferred = preferred or []
+    return [value for value in preferred if value in values] + sorted(values - set(preferred))
+
+
+def _group_means(rows: list[dict[str, Any]], dimension: str, values: list[str], metric: str, profile: str) -> list[float | None]:
+    grouped: defaultdict[str, list[float]] = defaultdict(list)
+    for row in rows:
+        if row["profile"] == profile:
+            grouped[str(row[dimension])].append(float(row[metric]))
+    return [mean(grouped[value]) if grouped[value] else None for value in values]
+
+
+def _summary_rows(rows: list[dict[str, Any]]) -> list[dict[str, Any]]:
+    grouped: defaultdict[tuple[str, str, str], list[dict[str, Any]]] = defaultdict(list)
+    for row in rows:
+        grouped[(row["language"], row["template"], row["profile"])].append(row)
+    return [
+        {
+            "language": key[0],
+            "template": key[1],
+            "profile": key[2],
+            "count": len(group),
+            **{metric: mean(float(item[metric]) for item in group) for metric in (
+                "ordered_WER", "token_F1", "kendall_tau", "matched_block_ratio"
+            )},
+        }
+        for key, group in sorted(grouped.items())
+    ]

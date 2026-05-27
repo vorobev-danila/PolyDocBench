@@ -22,7 +22,7 @@ from typing import Any
 from urllib.parse import quote
 
 from polydocbench.noise import pdf_to_noisy_dataset
-from polydocbench.eval import evaluate_ocr_quality, extract_gt_lines, load_gt
+from polydocbench.eval import evaluate_ocr_quality, extract_gt_lines, load_gt, write_ocr_dashboard
 from polydocbench.eval.ocr import extract_tesseract_lines
 from polydocbench.layout import LayoutEngine
 from polydocbench.render import PDFRenderer
@@ -178,6 +178,8 @@ def build_parser() -> argparse.ArgumentParser:
     parser.add_argument("--article-limit-per-language", type=int, default=3, help="Max articles per language; use 0 for all")
     parser.add_argument("--tesseract-cmd", default=None, help="Path to tesseract executable")
     parser.add_argument("--list-articles", action="store_true", help="Print the configured article pool and exit")
+    parser.add_argument("--dashboard-only", action="store_true", help="Build dashboard.html from existing metrics.jsonl and exit")
+    parser.add_argument("--no-dashboard", action="store_true", help="Do not generate the HTML dashboard after evaluation")
     parser.add_argument("--reuse", action="store_true", help="Reuse existing parsed/rendered/noisy artifacts when possible")
     parser.add_argument("--fail-on-missing-tesseract-lang", action="store_true", help="Fail instead of skipping missing Tesseract languages")
     parser.add_argument("--debug-render", action="store_true", help="Render debug bboxes into PDFs")
@@ -195,6 +197,17 @@ def main() -> int:
         _print_articles()
         return 0
 
+    metrics_path = output_root / "metrics.jsonl"
+    summary_path = output_root / "summary.csv"
+    dashboard_path = output_root / "dashboard.html"
+
+    if args.dashboard_only:
+        metrics_rows = _read_metrics(metrics_path)
+        _write_summary(summary_path, metrics_rows)
+        write_ocr_dashboard(dashboard_path, metrics_rows)
+        print(f"Dashboard: {dashboard_path}")
+        return 0
+
     cases = _select_cases(args.languages, args.article_ids, args.article_limit_per_language)
     tesseract_cmd = _resolve_tesseract_cmd(args.tesseract_cmd)
     if tesseract_cmd is None:
@@ -205,8 +218,6 @@ def main() -> int:
     _configure_pytesseract(tesseract_cmd)
     available_langs = _available_tesseract_languages(tesseract_cmd)
 
-    metrics_path = output_root / "metrics.jsonl"
-    summary_path = output_root / "summary.csv"
     metrics_rows: list[dict[str, Any]] = []
 
     with metrics_path.open("w", encoding="utf-8") as metrics_file:
@@ -229,6 +240,9 @@ def main() -> int:
     _write_summary(summary_path, metrics_rows)
     print(f"Metrics: {metrics_path}")
     print(f"Summary: {summary_path}")
+    if not args.no_dashboard:
+        write_ocr_dashboard(dashboard_path, metrics_rows)
+        print(f"Dashboard: {dashboard_path}")
     return 0
 
 
@@ -467,6 +481,13 @@ def _parse_artifact_name(stem: str) -> tuple[str, int]:
         return profile, int(raw_variant)
     except ValueError:
         return stem, 0
+
+
+def _read_metrics(path: Path) -> list[dict[str, Any]]:
+    if not path.exists():
+        raise FileNotFoundError(f"Metrics file was not found: {path}")
+    with path.open("r", encoding="utf-8") as file:
+        return [json.loads(line) for line in file if line.strip()]
 
 
 def _write_summary(path: Path, rows: list[dict[str, Any]]) -> None:

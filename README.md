@@ -30,6 +30,7 @@ flowchart LR
     E --> F[OCR/model predictions]
     D --> G[Evaluation]
     F --> G
+    G --> H[Interactive dashboard]
 ```
 
 The project is useful for:
@@ -50,6 +51,8 @@ The project is useful for:
 - Scan-like noise profiles: `light_scan`, `medium_scan`, `heavy_scan`.
 - Transform-aware noisy GT for rotated/affine scan variants.
 - OCR quality and reading-order evaluation utilities.
+- Tesseract quality and remote dots.ocr reading-order experiment runners.
+- Interactive Plotly dashboards for OCR experiment comparisons.
 - CLI and FastAPI interfaces.
 - `uv`-first developer workflow.
 
@@ -70,6 +73,7 @@ flowchart TB
         D[Noise]
         M[OCR/model predictions]
         E[Evaluation]
+        V[Dashboard]
     end
 
     subgraph Interfaces
@@ -84,6 +88,7 @@ flowchart TB
     D --> M
     G --> E
     M --> E
+    E --> V
     C --> P
     C --> L
     C --> R
@@ -101,7 +106,7 @@ More details: [Architecture Tutorial](tutorials/architecture.md).
 git clone https://github.com/vorobev-danila/PolyDocBench.git
 cd PolyDocBench
 uv sync
-uv pip install -e ".[api,noise,dev]"
+uv pip install -e ".[api,noise,formula,dev]"
 ```
 
 Render a bundled example:
@@ -155,7 +160,7 @@ The detailed documentation is split into focused tutorials:
 | [Architecture](tutorials/architecture.md) | Components, data flow, module responsibilities |
 | [Data Format](tutorials/data-format.md) | Source JSON, GT JSON, schema versions |
 | [Configuration](tutorials/configuration.md) | Layout templates, render config, JSON snippets |
-| [Experiments](tutorials/experiments.md) | Multilingual Tesseract OCR benchmark workflow |
+| [Experiments](tutorials/experiments.md) | Tesseract quality and dots.ocr reading-order workflows |
 | [Development](tutorials/development.md) | Tests, CI, project structure, contribution flow |
 
 ## Project Structure
@@ -186,7 +191,7 @@ docker-compose.yml
 ## Development Workflow
 
 ```powershell
-uv pip install -e ".[api,noise,formula,dev]"
+uv pip install -e ".[api,noise,ocr,dotsocr,formula,dev]"
 uv run python -m pytest -q -p no:cacheprovider
 ```
 
