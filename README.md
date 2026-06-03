@@ -50,8 +50,8 @@ The project is useful for:
 - Text justification and centered graphical elements.
 - Scan-like noise profiles: `light_scan`, `medium_scan`, `heavy_scan`.
 - Transform-aware noisy GT for rotated/affine scan variants.
-- OCR quality and reading-order evaluation utilities.
-- Tesseract quality and remote dots.ocr reading-order experiment runners.
+- OCR quality, reading-order, and structure evaluation utilities.
+- Tesseract quality, remote dots.ocr reading-order, and Docling structure experiment runners.
 - Interactive Plotly dashboards for OCR experiment comparisons.
 - CLI and FastAPI interfaces.
 - `uv`-first developer workflow.
@@ -160,7 +160,7 @@ The detailed documentation is split into focused tutorials:
 | [Architecture](tutorials/architecture.md) | Components, data flow, module responsibilities |
 | [Data Format](tutorials/data-format.md) | Source JSON, GT JSON, schema versions |
 | [Configuration](tutorials/configuration.md) | Layout templates, render config, JSON snippets |
-| [Experiments](tutorials/experiments.md) | Tesseract quality and dots.ocr reading-order workflows |
+| [Experiments](tutorials/experiments.md) | Tesseract quality, dots.ocr reading-order, and Docling structure workflows |
 | [Development](tutorials/development.md) | Tests, CI, project structure, contribution flow |
 
 ## Project Structure
@@ -170,7 +170,7 @@ polydocbench/
   api/           # FastAPI application and workflow services
   noise/         # PDF-to-scan rendering and noise profiles
   document/      # Shared document model and normalization
-  eval/          # OCR quality, geometry, and ordering metrics
+  eval/          # OCR quality, ordering, structure, matching, and dashboards
   gt/            # Ground-truth export, schema, validation, reading order
   layout/        # Layout engine, line breaking, placement, templates
   render/        # PDF rendering, debug overlays, element renderers
@@ -191,7 +191,7 @@ docker-compose.yml
 ## Development Workflow
 
 ```powershell
-uv pip install -e ".[api,noise,ocr,dotsocr,formula,dev]"
+uv pip install -e ".[api,noise,ocr,dotsocr,structure,formula,dev]"
 uv run python -m pytest -q -p no:cacheprovider
 ```
 

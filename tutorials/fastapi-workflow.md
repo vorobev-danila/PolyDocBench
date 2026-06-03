@@ -28,6 +28,7 @@ http://127.0.0.1:8000/docs
 | `POST` | `/noise/pdf-with-gt` | Generate noisy images with transformed pixel-coordinate GT |
 | `POST` | `/evaluate/quality` | Evaluate OCR text/geometry quality |
 | `POST` | `/evaluate/ordering` | Evaluate predicted reading order |
+| `POST` | `/evaluate/structure` | Evaluate predicted document structure |
 
 ## Parse Request
 
@@ -98,6 +99,30 @@ Use `/noise/pdf-with-gt` when geometric transforms should also update GT:
         "height": 14
       },
       "confidence": 0.95
+    }
+  ]
+}
+```
+
+## Evaluate Structure
+
+```json
+{
+  "gt_path": "outputs/api/history_of_russia_gt.json",
+  "page_number": 1,
+  "iou_threshold": 0.5,
+  "predicted_elements": [
+    {
+      "id": "docling_1",
+      "type": "paragraph",
+      "text": "recognized block text",
+      "bbox": {
+        "x": 50,
+        "y": 120,
+        "width": 300,
+        "height": 80
+      },
+      "reading_order": 1
     }
   ]
 }

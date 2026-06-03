@@ -5,7 +5,7 @@ This guide covers local development, tests, CI, and contribution flow.
 ## Install Development Dependencies
 
 ```powershell
-uv pip install -e ".[api,noise,ocr,dotsocr,formula,dev]"
+uv pip install -e ".[api,noise,ocr,dotsocr,structure,formula,dev]"
 ```
 
 ## Run Tests
@@ -41,7 +41,7 @@ polydocbench/
   api/           # FastAPI application and workflow services
   noise/   # PDF-to-scan rendering and noise profiles
   document/      # Shared document model and normalization
-  eval/          # OCR quality, geometry, and ordering metrics
+  eval/          # OCR quality, ordering, structure, matching, and dashboards
   gt/            # Ground-truth export, schema, validation, reading order
   layout/        # Layout engine, line breaking, placement, templates
   render/        # PDF rendering, debug overlays, element renderers

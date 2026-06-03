@@ -9,6 +9,7 @@ PolyDocBench uses a `uv`-first workflow.
 - Windows, Linux, or macOS
 - Optional: Tesseract OCR for OCR quality experiments
 - Optional: access token and gateway connectivity for remote dots.ocr reading-order experiments
+- Optional: Docling for local structure extraction experiments
 
 Install `uv` if it is not available:
 
@@ -40,10 +41,16 @@ For remote dots.ocr reading-order evaluation through an OpenAI-compatible gatewa
 uv pip install -e ".[dotsocr]"
 ```
 
+For Docling structure evaluation:
+
+```powershell
+uv pip install -e ".[structure]"
+```
+
 For the full research stack:
 
 ```powershell
-uv pip install -e ".[api,noise,ocr,dotsocr,formula,dev]"
+uv pip install -e ".[api,noise,ocr,dotsocr,structure,formula,dev]"
 ```
 
 ## Verify Installation

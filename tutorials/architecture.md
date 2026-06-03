@@ -55,7 +55,8 @@ flowchart TB
         E1[OCR quality]
         E2[Ordering metrics]
         E3[Geometry matching]
-        E4[Dashboard reporting]
+        E4[Structure metrics]
+        E5[Dashboard reporting]
     end
 
     S1 --> M1
@@ -68,7 +69,10 @@ flowchart TB
     G1 --> E1
     G1 --> E2
     G1 --> E3
-    E1 --> E4
+    G1 --> E4
+    E1 --> E5
+    E2 --> E5
+    E4 --> E5
 ```
 
 ## Module Responsibilities
@@ -81,5 +85,5 @@ flowchart TB
 | `polydocbench.render` | PDF rendering and debug overlays |
 | `polydocbench.gt` | Ground-truth export, schema, validation, reading order |
 | `polydocbench.noise` | PDF-to-image conversion and scan noise profiles |
-| `polydocbench.eval` | Tesseract quality, semantic-block ordering, geometry/text matching, dashboard reporting |
+| `polydocbench.eval` | Tesseract quality, semantic-block ordering, Docling structure evaluation, matching, dashboard reporting |
 | `polydocbench.api` | FastAPI workflows over the pipeline |

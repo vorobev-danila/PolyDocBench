@@ -28,6 +28,10 @@ dotsocr = [
     "plotly>=5.24.0",
     "python-dotenv>=1.2.2",
 ]
+structure = [
+    "docling>=2.70.0",
+    "plotly>=5.24.0",
+]
 formula = [
     "svglib>=1.5.1,<1.6",
 ]
@@ -46,6 +50,7 @@ all = [
     "plotly>=5.24.0",
     "openai>=1.30.0",
     "python-dotenv>=1.2.2",
+    "docling>=2.70.0",
     "httpx>=0.28.0",
     "pytest>=8.0.0",
     "fastapi>=0.110.0",

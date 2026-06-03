@@ -7,7 +7,7 @@ from datetime import datetime
 from pathlib import Path
 from typing import Any
 
-from polydocbench.eval import evaluate_ordering, extract_gt_lines, load_gt
+from polydocbench.eval import evaluate_ordering, evaluate_structure, extract_gt_lines, extract_gt_structure_elements, load_gt
 from polydocbench.eval.quality import evaluate_ocr_quality
 from polydocbench.layout import LayoutEngine
 from polydocbench.render import PDFRenderer
@@ -183,6 +183,17 @@ def evaluate_ordering_from_gt(
         num_columns=num_columns,
         iou_threshold=iou_threshold,
     )
+
+
+def evaluate_structure_from_gt(
+    gt_path: str | Path,
+    predicted_elements: list[dict[str, Any]],
+    page_number: int = 1,
+    iou_threshold: float = 0.5,
+) -> dict[str, float | int]:
+    gt_elements = extract_gt_structure_elements(load_gt(gt_path), page_number=page_number)
+    metrics, _ = evaluate_structure(gt_elements, predicted_elements, iou_threshold=iou_threshold)
+    return metrics
 
 
 def _default_output_path(label: str, suffix: str) -> Path:

@@ -72,3 +72,33 @@ def test_api_noise_with_gt_endpoint(monkeypatch):
 
     assert response.status_code == 200
     assert response.json()["artifacts"][0]["gt_path"] == "outputs/api/light_scan_0_gt.json"
+
+
+def test_api_structure_evaluation_endpoint(monkeypatch):
+    def fake_evaluate_structure_from_gt(**kwargs):
+        assert kwargs["gt_path"] == "outputs/api/source_gt.json"
+        assert kwargs["predicted_elements"][0]["type"] == "paragraph"
+        return {"structure_score": 1.0, "detection_F1": 1.0, "type_accuracy": 1.0, "mean_iou": 1.0}
+
+    monkeypatch.setattr("polydocbench.api.app.evaluate_structure_from_gt", fake_evaluate_structure_from_gt)
+    client = TestClient(app)
+    response = client.post(
+        "/evaluate/structure",
+        json={
+            "gt_path": "outputs/api/source_gt.json",
+            "page_number": 1,
+            "iou_threshold": 0.5,
+            "predicted_elements": [
+                {
+                    "id": "pred_1",
+                    "type": "paragraph",
+                    "text": "recognized block",
+                    "bbox": {"x": 0, "y": 0, "width": 50, "height": 20},
+                    "reading_order": 1,
+                }
+            ],
+        },
+    )
+
+    assert response.status_code == 200
+    assert response.json()["structure_score"] == 1.0

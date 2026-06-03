@@ -12,6 +12,16 @@ from .dotsocr import extract_dotsocr_blocks, parse_dotsocr_blocks_response
 from .block_matching import BlockMatch, extract_visible_gt_blocks, match_semantic_blocks
 from .ordered_text import evaluate_semantic_ordering, join_ordered_text, token_bag_scores
 from .ordering_dashboard import write_ordering_dashboard
+from .docling_adapter import extract_docling_structure, parse_docling_structure
+from .structure import (
+    StructureMatch,
+    evaluate_structure,
+    extract_gt_structure_elements,
+    match_structure_elements,
+    normalize_structure_type,
+    structure_matches_to_dicts,
+)
+from .structure_dashboard import write_structure_dashboard
 
 __all__ = [
     "LineMatch",
@@ -36,4 +46,13 @@ __all__ = [
     "evaluate_semantic_ordering",
     "join_ordered_text",
     "token_bag_scores",
+    "extract_docling_structure",
+    "parse_docling_structure",
+    "StructureMatch",
+    "evaluate_structure",
+    "extract_gt_structure_elements",
+    "match_structure_elements",
+    "normalize_structure_type",
+    "structure_matches_to_dicts",
+    "write_structure_dashboard",
 ]
