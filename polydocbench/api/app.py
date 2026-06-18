@@ -70,8 +70,8 @@ class PredictedLinePayload(BaseModel):
     page_number: int | None = None
 
     def as_line_dict(self) -> dict[str, Any]:
-        data = self.dict(exclude_none=True)
-        data["bbox"] = self.bbox.dict()
+        data = self.model_dump(exclude_none=True)
+        data["bbox"] = self.bbox.model_dump()
         return data
 
 
@@ -95,8 +95,8 @@ class PredictedStructureElementPayload(BaseModel):
     reading_order: int | None = None
 
     def as_element_dict(self) -> dict[str, Any]:
-        data = self.dict(exclude_none=True)
-        data["bbox"] = self.bbox.dict()
+        data = self.model_dump(exclude_none=True)
+        data["bbox"] = self.bbox.model_dump()
         return data
 
 

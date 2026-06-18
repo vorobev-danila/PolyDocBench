@@ -180,7 +180,7 @@ polydocbench/
 configs/         # Layout and render configuration
 examples/        # Example source JSON files
 notebooks/       # Research notebooks and experiments
-scripts/         # Small manual workflows
+scripts/         # Reproducible Tesseract, dots.ocr, and Docling experiment runners
 tests/           # Pytest suite
 tutorials/       # Extended user and developer guides
 outputs/         # Generated artifacts, ignored by git

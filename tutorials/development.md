@@ -39,7 +39,7 @@ CI runs on every push and pull request to `main` using GitHub Actions:
 ```text
 polydocbench/
   api/           # FastAPI application and workflow services
-  noise/   # PDF-to-scan rendering and noise profiles
+  noise/         # PDF-to-scan rendering and noise profiles
   document/      # Shared document model and normalization
   eval/          # OCR quality, ordering, structure, matching, and dashboards
   gt/            # Ground-truth export, schema, validation, reading order
@@ -51,7 +51,7 @@ polydocbench/
 configs/         # Layout and render configuration
 examples/        # Example source JSON files
 notebooks/       # Research notebooks and experiments
-scripts/         # Small manual workflows
+scripts/         # Reproducible Tesseract, dots.ocr, and Docling experiment runners
 tests/           # Pytest suite
 tutorials/       # Extended user and developer guides
 outputs/         # Generated artifacts, ignored by git

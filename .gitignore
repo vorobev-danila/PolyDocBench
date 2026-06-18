@@ -5,6 +5,8 @@ __pycache__/
 *.py[cod]
 test.py
 *.egg-info/
+build/
+dist/
 
 .venv/
 .env
@@ -12,6 +14,7 @@ test.py
 output/
 outputs/
 out_scans/
+Отчетность/
 
 document_*.pdf
 document_*_gt.json

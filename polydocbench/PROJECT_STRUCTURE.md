@@ -8,7 +8,8 @@ This package is organized around the research pipeline:
 4. `render`: render layout results into PDFs/images.
 5. `gt`: validate and export ground-truth annotations.
 6. `noise`: generate synthetic scans from clean rendered documents.
-7. `eval`: evaluate OCR quality, geometry matching, and reading order.
+7. `eval`: evaluate OCR quality, reading order, document structure, geometry
+   matching, and generate experiment dashboards.
 
 Canonical project-level directories:
 
@@ -17,8 +18,9 @@ Canonical project-level directories:
 - `notebooks`: exploratory research notebooks; reusable logic should move into
   `polydocbench`.
 - `outputs`: generated PDFs, GT JSON, scans, and temporary experiment outputs.
-- `scripts`: small manual examples built on the public `polydocbench` API.
-- `tests`: pytest coverage for parser, layout, rendering, GT, evaluation, and CLI.
+- `scripts`: reproducible Tesseract, dots.ocr, and Docling experiment runners.
+- `tests`: pytest coverage for parser, layout, rendering, GT, noise, evaluation,
+  API, CLI, and experiment configuration.
 
 The public implementation lives in `polydocbench`; root-level wrappers have
 been removed.

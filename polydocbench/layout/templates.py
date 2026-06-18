@@ -27,4 +27,8 @@ def resolve_template_path(path: str | Path = DEFAULT_TEMPLATE_PATH) -> Path:
     if config_path.exists():
         return config_path
 
+    project_path = Path(__file__).resolve().parents[2] / config_path
+    if project_path.exists():
+        return project_path
+
     return config_path
