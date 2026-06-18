@@ -11,6 +11,9 @@ outputs
 out_scans
 output
 notebooks
+Отчетность
+build
+dist
 test.py
 
 Dockerfile

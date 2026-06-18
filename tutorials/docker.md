@@ -14,6 +14,10 @@ The image installs these optional dependency groups:
 - `noise`
 - `formula`
 
+Dependencies are installed from `uv.lock` with `--frozen`, so local and
+container builds use the same resolved versions. The runtime stage contains
+only the installed environment and application assets.
+
 This supports the main pipeline:
 
 ```text
@@ -32,6 +36,14 @@ Open:
 http://127.0.0.1:8000/docs
 ```
 
+Check the built-in API healthcheck:
+
+```powershell
+docker compose ps
+```
+
+The service should transition to `healthy` after startup.
+
 The compose file mounts local `outputs/` into `/app/outputs`, so generated PDFs, GT JSON files, image caches, and noisy scans remain available on the host machine.
 
 ## Run CLI Commands
@@ -39,13 +51,13 @@ The compose file mounts local `outputs/` into `/app/outputs`, so generated PDFs,
 List templates:
 
 ```powershell
-docker compose run --rm polydocbench-api python -m polydocbench list-templates
+docker compose run --rm polydocbench-api polydocbench list-templates
 ```
 
 Render a bundled example:
 
 ```powershell
-docker compose run --rm polydocbench-api python -m polydocbench render examples/wiki_formulas.json -o outputs/wiki_formulas.pdf --template simple_article
+docker compose run --rm polydocbench-api polydocbench render examples/wiki_formulas.json -o outputs/wiki_formulas.pdf --template simple_article
 ```
 
 ## Run Noise from the Container
