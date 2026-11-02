@@ -18,6 +18,19 @@ def build_parser() -> argparse.ArgumentParser:
     parse_wiki.add_argument("-o", "--output", required=True, help="Output JSON path")
     parse_wiki.add_argument("--debug", action="store_true", help="Print parser debug messages")
 
+    capture_wiki = subparsers.add_parser(
+        "capture-wiki", help="Capture a revision-bound Wikipedia source and raw MediaWiki evidence"
+    )
+    capture_wiki.add_argument("url", help="Wikipedia article URL or permanent oldid URL")
+    capture_wiki.add_argument("-o", "--output-dir", required=True, help="New or empty source directory")
+    capture_wiki.add_argument("--revision-id", type=int, default=None, help="Optional positive MediaWiki revision ID")
+
+    verify_wiki = subparsers.add_parser(
+        "verify-wiki-source", help="Verify a captured Wikipedia source without network access"
+    )
+    verify_wiki.add_argument("source_dir")
+    verify_wiki.add_argument("--reparse", action="store_true", help="Also require the current parser/environment to reproduce source.json")
+
     templates = subparsers.add_parser("list-templates", help="List available layout templates")
     templates.add_argument("--config", default="configs/layout_templates.yaml", help="Template config path")
 
@@ -67,6 +80,22 @@ def main(argv: list[str] | None = None) -> int:
             parser.error(data["error"])
         wiki_parser.save_to_file(data, args.output)
         print(f"Parsed '{data.get('title', '')}' with {len(data.get('content', []))} top-level items -> {args.output}")
+        return 0
+
+    if args.command == "capture-wiki":
+        from polydocbench.sources import capture_wikipedia_source
+
+        result = capture_wikipedia_source(args.url, args.output_dir, revision_id=args.revision_id)
+        print(f"Source: {result['source_path']}")
+        print(f"Revision: {result['revision_id']}")
+        print(f"Snapshot: {result['snapshot_id']}")
+        return 0
+
+    if args.command == "verify-wiki-source":
+        from polydocbench.sources import verify_wikipedia_source
+
+        evidence = verify_wikipedia_source(args.source_dir, reparse=args.reparse)
+        print(f"Wikipedia source verified: revision={evidence.inputs.revision_id} snapshot={evidence.inputs.snapshot_id}")
         return 0
 
     if args.command == "list-templates":

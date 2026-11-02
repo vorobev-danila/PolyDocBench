@@ -22,6 +22,7 @@ http://127.0.0.1:8000/docs
 | `GET` | `/health` | Server health check |
 | `GET` | `/templates` | List layout templates |
 | `POST` | `/parse/wikipedia` | Parse Wikipedia page to source JSON |
+| `POST` | `/parse/wikipedia-snapshot` | Capture a fixed revision with raw MediaWiki evidence |
 | `POST` | `/render` | Render JSON to PDF and GT |
 | `GET` | `/noise/profiles` | List noise profiles |
 | `POST` | `/noise/pdf` | Generate noisy scan images from PDF |
@@ -39,6 +40,20 @@ http://127.0.0.1:8000/docs
   "debug": false
 }
 ```
+
+For a revision-bound capture, use `POST /parse/wikipedia-snapshot` with a new
+or empty output directory:
+
+```json
+{
+  "url": "https://en.wikipedia.org/wiki/ASCII",
+  "output_dir": "outputs/api/sources/en/ascii",
+  "revision_id": null
+}
+```
+
+The endpoint refuses to overwrite source evidence. Offline verification is a
+CLI operation; see [Wikipedia Revisions And Benchmark Splits](source-revisions-and-splits.md).
 
 ## Render Request
 

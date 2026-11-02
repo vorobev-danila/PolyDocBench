@@ -39,6 +39,12 @@ technical_report/
   inputs/
     source.original.json
     source.json
+    source_evidence/           # only for a revision-bound Wikipedia source
+      source.json
+      source_provenance.json
+      query.json
+      parse.json
+      page.html
     layout.original.yaml
     layout.json
     render.json
@@ -58,6 +64,9 @@ technical_report/
   references point to local assets. The same source-items/flattening helpers
   as the normal loader choose the active content/elements branch. Original
   source files are not modified.
+- When the source declares a verified Wikipedia snapshot, the complete raw
+  response/HTML/source evidence package and snapshot ID are copied into the
+  render bundle. A declaration without valid evidence aborts capture.
 - Original layout configuration and the effective selected template, with
   strict layout enabled. Unknown template names fail instead of falling back.
 - Effective render settings actually consumed by this mode, original render
@@ -113,12 +122,12 @@ Use a new experiment output root; Wikipedia capture and Tesseract still require
 the usual setup from [Experiments](experiments.md):
 
 ```powershell
-uv run python scripts/run_tesseract_ocr_experiment.py --output-dir outputs/experiments/tesseract_snapshots --languages en --article-ids history_russia --templates scientific_paper --page-scope first --profiles clean light_scan medium_scan heavy_scan --variants 1 --snapshot-inputs --allow-asset-downloads
+uv run python scripts/run_tesseract_ocr_experiment.py --output-dir outputs/experiments/tesseract_snapshots --languages en --article-ids history_russia --templates scientific_paper --page-scope first --profiles clean light_scan medium_scan heavy_scan --variants 1 --pin-source-revisions --snapshot-inputs --allow-asset-downloads
 ```
 
-`--snapshot-inputs` changes the render stage only. `--allow-asset-downloads` grants
-graphic capture permission; the initial Wikipedia parsing still follows the
-runner's existing network workflow. Do not combine snapshot mode with debug PDFs.
+`--pin-source-revisions` fixes the source stage; `--snapshot-inputs` fixes the
+render stage. `--allow-asset-downloads` grants graphic capture permission.
+Do not combine snapshot mode with debug PDFs.
 
 `--reuse --snapshot-inputs` requires a valid saved render bundle and matching
 source/template/body-font request. It keeps the frozen configuration/resources,
@@ -149,11 +158,10 @@ executed from the bundle. Restore the matching trusted version and environment
 before replay. Hashes provide integrity against a trusted saved baseline, not
 digital signatures or an attestation against a party rewriting all evidence.
 
-Still unresolved: Wikipedia revision verification, source-family review,
-development/test assignment, font/media/code licensing decisions, annotation
-quality audit, and independent release reproduction. The inventory therefore
-retains `generation_reproducibility: "not_established"`, source/split gaps and
-`font_and_asset_rights_not_verified`. A render bundle does not close M1/M2.
+Still unresolved: human source-family review, font/media/code licensing
+decisions, annotation quality audit, and independent release reproduction.
+Revision-bound capture and split tooling do not approve those decisions. A
+render bundle therefore does not by itself close M1/M2.
 
 ## Tests
 

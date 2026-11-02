@@ -26,6 +26,7 @@ from polydocbench.layout import LayoutEngine
 from polydocbench.layout.templates import DEFAULT_TEMPLATE_PATH, resolve_template_path
 from polydocbench.render import PDFRenderer
 from polydocbench.render.config import RenderConfig
+from polydocbench.sources.snapshots import PROVENANCE_NAME as SOURCE_PROVENANCE_NAME, verify_wikipedia_source
 
 from .files import FileFingerprint, fingerprint_file, json_sha256
 
@@ -37,7 +38,7 @@ PROVENANCE_NAME = "document_provenance.json"
 
 class SnapshotFile(FileFingerprint):
     role: Literal["original_source", "prepared_source", "original_config", "layout_config", "render_config",
-                  "font", "asset", "license", "generator_code", "toolchain"]
+                  "font", "asset", "license", "generator_code", "toolchain", "source_evidence"]
 
 
 class AssetReference(BaseModel):
@@ -61,12 +62,13 @@ class RenderInputSnapshot(BaseModel):
     generator_revision: str | None
     generator_dirty: bool | None
     source_url: str
-    source_revision_status: Literal["not_verified"]
+    source_revision_status: Literal["not_verified", "response_bound"]
+    source_snapshot_id: str | None = None
     rights_review_status: Literal["not_reviewed"]
 
     @model_validator(mode="after")
     def validate_seal(self) -> "RenderInputSnapshot":
-        if self.snapshot_id != json_sha256(self.model_dump(exclude={"snapshot_id"})):
+        if self.snapshot_id != json_sha256(self.model_dump(exclude={"snapshot_id"}, exclude_unset=True)):
             raise ValueError("Render snapshot ID does not match its input records")
         by_path = {file.path: file for file in self.files}
         if len(by_path) != len(self.files):
@@ -85,6 +87,8 @@ class RenderInputSnapshot(BaseModel):
                 raise ValueError("Asset reference is outside the sealed asset files")
         if not any(file.role == "generator_code" for file in self.files):
             raise ValueError("Generator source snapshot is missing")
+        if (self.source_revision_status == "response_bound") != (self.source_snapshot_id is not None):
+            raise ValueError("Response-bound sources require a source snapshot ID")
         return self
 
 
@@ -356,6 +360,24 @@ def capture_render_snapshot(
     root.mkdir(parents=True, exist_ok=True)
     files, references = {}, []
     _copy_file(root, source_path, "inputs/source.original.json", "original_source", files)
+    source_revision_status = "not_verified"
+    source_snapshot_id = None
+    if data.get("metadata", {}).get("wikipedia_snapshot_id"):
+        source_evidence = verify_wikipedia_source(source_path.parent)
+        if source_evidence.source.sha256 != files["inputs/source.original.json"].sha256:
+            raise ValueError("Wikipedia source evidence does not match the selected source JSON")
+        evidence_paths = [source_path.parent / SOURCE_PROVENANCE_NAME]
+        evidence_paths.extend(source_path.parent / item.path for item in (
+            source_evidence.source,
+            source_evidence.inputs.query_response,
+            source_evidence.inputs.parse_response,
+            source_evidence.inputs.html,
+        ))
+        for evidence_path in evidence_paths:
+            _copy_file(root, evidence_path, f"inputs/source_evidence/{evidence_path.name}",
+                       "source_evidence", files)
+        source_revision_status = "response_bound"
+        source_snapshot_id = source_evidence.inputs.snapshot_id
     _copy_file(root, layout_path, "inputs/layout.original.yaml", "original_config", files)
     items = document.source_items()
     prepared = {"schema_version": document.schema_version, "title": document.title, "url": document.url,
@@ -399,15 +421,17 @@ def capture_render_snapshot(
                "files": [file.model_dump() for _, file in sorted(files.items())],
                "assets": [reference.model_dump() for reference in references], "fonts": fonts,
                "environment": _environment(), "generator_revision": revision, "generator_dirty": dirty,
-               "source_url": str(data.get("url", "")), "source_revision_status": "not_verified",
+               "source_url": str(data.get("url", "")), "source_revision_status": source_revision_status,
                "rights_review_status": "not_reviewed"}
+    if source_snapshot_id is not None:
+        payload["source_snapshot_id"] = source_snapshot_id
     snapshot = RenderInputSnapshot(snapshot_id=json_sha256(payload), **payload)
-    _write_json(root / "render_inputs.json", snapshot.model_dump())
+    _write_json(root / "render_inputs.json", snapshot.model_dump(exclude_unset=True))
     result = _render_inputs(root, snapshot, root)
     provenance = RenderProvenance(schema_version="0.1", inputs=snapshot,
                                   pdf=fingerprint_file(root, Path(result["pdf_path"])),
                                   gt=fingerprint_file(root, Path(result["gt_path"])))
-    _write_json(root / PROVENANCE_NAME, provenance.model_dump())
+    _write_json(root / PROVENANCE_NAME, provenance.model_dump(exclude_unset=True))
     return {**result, "provenance_path": str(root / PROVENANCE_NAME), "render_snapshot_id": snapshot.snapshot_id}
 
 
@@ -424,6 +448,13 @@ def verify_render_snapshot(root: str | Path, *, check_outputs: bool = True) -> R
         actual = fingerprint_file(root, root / file.path)
         if actual.model_dump() != file.model_dump(include={"path", "sha256", "size_bytes"}):
             raise ValueError(f"Render snapshot file differs: {file.path}")
+    if provenance.inputs.source_revision_status == "response_bound":
+        evidence_root = root / "inputs/source_evidence"
+        source_evidence = verify_wikipedia_source(evidence_root)
+        original_source = next(file for file in provenance.inputs.files if file.role == "original_source")
+        if (source_evidence.inputs.snapshot_id != provenance.inputs.source_snapshot_id
+                or source_evidence.source.sha256 != original_source.sha256):
+            raise ValueError("Render snapshot does not preserve its Wikipedia source evidence")
     if check_outputs:
         gt = _json(root / provenance.gt.path)
         if gt.get("metadata", {}).get("render_snapshot_id") != provenance.inputs.snapshot_id:

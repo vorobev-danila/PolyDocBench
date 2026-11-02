@@ -6,7 +6,8 @@ import argparse
 import json
 from pathlib import Path
 
-from polydocbench.benchmark import DatasetManifest, build_manifest, load_benchmark_spec, verify_manifest
+from polydocbench.benchmark import (DatasetManifest, SplitPlan, apply_split_plan, build_manifest,
+                                    load_benchmark_spec, verify_manifest)
 
 
 def build_parser() -> argparse.ArgumentParser:
@@ -17,6 +18,7 @@ def build_parser() -> argparse.ArgumentParser:
     parser.add_argument("--templates", nargs="+", default=None)
     parser.add_argument("--spec", default="configs/benchmark_icdar2027.json", help="Draft research targets, not generation settings")
     parser.add_argument("--verify", type=Path, help="Verify an existing manifest instead of rebuilding it")
+    parser.add_argument("--split-plan", type=Path, help="Apply a frozen reviewed source-family split plan")
     parser.add_argument("--strict", action="store_true", help="Also fail on incomplete historical provenance")
     return parser
 
@@ -24,8 +26,8 @@ def build_parser() -> argparse.ArgumentParser:
 def main(argv: list[str] | None = None) -> int:
     parser = build_parser()
     args = parser.parse_args(argv)
-    if args.verify and (args.languages or args.templates):
-        parser.error("--verify checks the full saved manifest; filters are only supported when building")
+    if args.verify and (args.languages or args.templates or args.split_plan):
+        parser.error("--verify checks the full saved manifest; filters and --split-plan are only supported when building")
     root = Path(args.input_dir)
     if args.verify:
         manifest = DatasetManifest.model_validate_json(args.verify.read_text(encoding="utf-8"))
@@ -41,6 +43,9 @@ def main(argv: list[str] | None = None) -> int:
 
     spec = load_benchmark_spec(args.spec)
     manifest = build_manifest(root, languages=args.languages, templates=args.templates)
+    if args.split_plan:
+        plan = SplitPlan.model_validate_json(args.split_plan.read_text(encoding="utf-8"))
+        manifest = apply_split_plan(manifest, plan)
     output = Path(args.output_dir) if args.output_dir else root / "benchmark_inventory"
     output.mkdir(parents=True, exist_ok=True)
     manifest_path = output / "manifest.json"
@@ -51,7 +56,10 @@ def main(argv: list[str] | None = None) -> int:
     print(f"Inventory: discovered={manifest.discovered_count}, accepted={len(manifest.records)}, rejected={len(manifest.issues)}")
     print(f"Manifest: {manifest_path}")
     print(f"Report: {report_path}")
-    print("Generation reproducibility: NOT ESTABLISHED; splits and source families require review.")
+    if manifest.split_plan:
+        print(f"Reviewed family split: {manifest.split_plan.plan_id}")
+    else:
+        print("Generation reproducibility: NOT ESTABLISHED; splits and source families require review.")
     if not manifest.records or manifest.issues:
         return 1
     return _provenance_exit_code(manifest, args.strict)

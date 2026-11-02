@@ -30,6 +30,7 @@ from polydocbench.eval.quality import aggregate_ocr_counts
 from polydocbench.layout import LayoutEngine
 from polydocbench.render import PDFRenderer
 from polydocbench.sources.wikipedia import WikipediaParser
+from polydocbench.sources.snapshots import capture_wikipedia_source, verify_wikipedia_source
 
 
 @dataclass(frozen=True)
@@ -204,6 +205,8 @@ def build_parser() -> argparse.ArgumentParser:
     parser.add_argument("--verbose-layout", action="store_true", help="Show internal layout engine logs")
     parser.add_argument("--snapshot-inputs", action="store_true", help="Render with sealed source/config/font/asset/code snapshots")
     parser.add_argument("--allow-asset-downloads", action="store_true", help="Allow URL asset capture with --snapshot-inputs")
+    parser.add_argument("--pin-source-revisions", action="store_true",
+                        help="Capture exact MediaWiki revisions and raw API evidence; legacy sources are never relabelled")
     return parser
 
 
@@ -271,7 +274,23 @@ def _run_case(case: ArticleCase, args: argparse.Namespace, output_root: Path) ->
     case_dir.mkdir(parents=True, exist_ok=True)
 
     source_path = case_dir / "source.json"
-    if not args.reuse or not source_path.exists():
+    if args.pin_source_revisions:
+        if source_path.exists():
+            if not args.reuse:
+                raise RuntimeError(
+                    f"Pinned source directory already contains data: {case_dir}. Use --reuse to verify it or choose a new output directory."
+                )
+            evidence = verify_wikipedia_source(case_dir)
+            if evidence.inputs.requested_url != case.url:
+                raise RuntimeError(f"Captured source URL differs from the configured experiment URL: {case.url}")
+            print(f"[1/4] Parse Wikipedia: verified revision {evidence.inputs.revision_id}")
+        else:
+            if any(case_dir.iterdir()):
+                raise RuntimeError(f"Pinned source capture requires a new or empty case directory: {case_dir}")
+            print("[1/4] Capture pinned Wikipedia revision")
+            result = capture_wikipedia_source(case.url, case_dir)
+            print(f"      revision={result['revision_id']}, snapshot={result['snapshot_id'][:12]}")
+    elif not args.reuse or not source_path.exists():
         print("[1/4] Parse Wikipedia")
         parser = WikipediaParser(debug=False)
         source_data = parser.parse_from_url(case.url)

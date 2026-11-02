@@ -11,7 +11,7 @@ from polydocbench.eval import evaluate_ordering, evaluate_structure, extract_gt_
 from polydocbench.eval.quality import evaluate_ocr_quality
 from polydocbench.layout import LayoutEngine
 from polydocbench.render import PDFRenderer
-from polydocbench.sources import WikipediaParser
+from polydocbench.sources import WikipediaParser, capture_wikipedia_source
 
 
 DEFAULT_API_OUTPUT_DIR = Path("outputs/api")
@@ -37,6 +37,14 @@ def parse_wikipedia_to_file(
         "output_path": str(path),
         "data": data,
     }
+
+
+def capture_wikipedia_to_directory(
+    url: str,
+    output_dir: str | Path,
+    revision_id: int | None = None,
+) -> dict[str, Any]:
+    return capture_wikipedia_source(url, output_dir, revision_id=revision_id)
 
 
 def render_document(

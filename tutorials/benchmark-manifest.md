@@ -3,8 +3,9 @@
 The [ICDAR 2027 roadmap](icdar-2027-plan.md) defines the publication work.
 `configs/benchmark_icdar2027.json` is a Pydantic-validated **draft research target**,
 not an executable generation configuration. It targets 8,640 images; it does
-not claim that these images exist. All current inventory records remain
-`split: "unassigned"` with inferred, unreviewed article families.
+not claim that these images exist. Historical inventory records remain
+`split: "unassigned"` with inferred article families unless an explicitly
+reviewed split plan is supplied.
 
 ## Build An Inventory
 
@@ -44,7 +45,9 @@ Pass that same root, or its relocated copy, when verifying.
 - Content-addressed artifact ID based on identity and those five hashes.
 - Language, article, template, original PDF page, local image page, noise profile
   and variant; image dimensions, DPI and the recorded affine transform.
-- Source URL and declared schema versions. A URL is not a pinned source revision.
+- Source URL and declared schema versions. For new revision-bound captures, the
+  snapshot ID, page/revision IDs, Wikidata item candidate, raw response files,
+  HTML, and source sidecar are also verified and fingerprinted.
 - Accepted and rejected counts, rejection details, and missing provenance counts.
 
 The inventory validates source/GT schemas, declared image dimensions, pixel
@@ -73,6 +76,23 @@ Discovery starts from GT files in the documented tree. It does not discover
 orphan images, failed requests with no GT, or samples that were never generated.
 The draft matrix is not automatically compared with existing articles/templates.
 Do not interpret an accepted count as benchmark completeness or model success rate.
+
+## Reviewed Source Splits
+
+Create a draft family catalog from an inventory, review it manually, freeze a
+deterministic plan, and then apply it while rebuilding the manifest:
+
+```powershell
+uv run python scripts/prepare_benchmark_splits.py draft --manifest outputs/experiments/tesseract_quality/benchmark_inventory/manifest.json --output outputs/planning/source_families.draft.json
+uv run python scripts/prepare_benchmark_splits.py freeze --catalog outputs/planning/source_families.reviewed.json --output outputs/planning/split_plan.json --seed 42 --development-fraction 0.2
+uv run python scripts/build_benchmark_manifest.py --input-dir outputs/experiments/tesseract_quality --split-plan outputs/planning/split_plan.json
+```
+
+The freeze command refuses a draft catalog. Applying a plan requires exact
+coverage by `(language, article_id, source SHA-256)` and embeds the reviewed
+catalog and content-addressed plan in the manifest. Artifact IDs are unchanged
+by split assignment. See [Wikipedia Revisions And Benchmark Splits](source-revisions-and-splits.md)
+for the review boundary and leakage checks.
 
 ## Verify Recorded Files
 
@@ -108,11 +128,11 @@ failure; accepted records do not make the full selected inventory valid. Files
 are assumed quiescent during build/verification. Regenerating an inventory after
 tampering creates a new baseline, not proof of integrity against the old baseline.
 
-Isolated noise RNG, generation traces, clean controls and opt-in source/render
-snapshots are available for new artifacts. Valid render snapshots remove the
+Isolated noise RNG, generation traces, clean controls, revision-bound Wikipedia
+sources, reviewed split plans, and opt-in render snapshots are available for new artifacts. Valid render snapshots remove the
 configuration/resource recording gaps; a Git revision and paired noise trace
 also resolve their respective code/environment recording gaps. Rights remain
-unverified, even when license text was copied. Next work: source revisions,
-reviewed families/splits, rights, pilot timings and budget. Existing experiment
-runners are not yet switched to manifest-driven execution. Mechanically
+unverified, even when license text was copied. Human family review, rights,
+pilot timings, and budget remain required. The Tesseract runner can capture
+pinned sources, but experiment selection is not yet manifest-driven. Mechanically
 replayable documents are not a complete scientific benchmark release.

@@ -11,6 +11,7 @@ from polydocbench.api.services import (
     evaluate_ordering_from_gt,
     evaluate_quality_from_gt,
     evaluate_structure_from_gt,
+    capture_wikipedia_to_directory,
     noise_pdf_document,
     noise_pdf_with_gt_document,
     parse_wikipedia_to_file,
@@ -31,6 +32,12 @@ class ParseWikipediaRequest(BaseModel):
     url: str
     output_path: str | None = None
     debug: bool = False
+
+
+class CaptureWikipediaRequest(BaseModel):
+    url: str
+    output_dir: str
+    revision_id: int | None = Field(default=None, gt=0)
 
 
 class RenderRequest(BaseModel):
@@ -129,6 +136,18 @@ def parse_wikipedia(request: ParseWikipediaRequest) -> dict[str, Any]:
             url=request.url,
             output_path=request.output_path,
             debug=request.debug,
+        )
+    except Exception as exc:
+        raise HTTPException(status_code=400, detail=str(exc)) from exc
+
+
+@app.post("/parse/wikipedia-snapshot")
+def capture_wikipedia(request: CaptureWikipediaRequest) -> dict[str, Any]:
+    try:
+        return capture_wikipedia_to_directory(
+            url=request.url,
+            output_dir=request.output_dir,
+            revision_id=request.revision_id,
         )
     except Exception as exc:
         raise HTTPException(status_code=400, detail=str(exc)) from exc

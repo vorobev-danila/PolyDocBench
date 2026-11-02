@@ -2,7 +2,7 @@
 
 This package is organized around the research pipeline:
 
-1. `sources`: parse external sources such as Wikipedia into normalized source JSON.
+1. `sources`: parse Wikipedia into normalized JSON and capture revision-bound API/HTML evidence.
 2. `document`: shared document-level data structures.
 3. `layout`: convert normalized content into placed elements and pages.
 4. `render`: render layout results into PDFs/images.
@@ -15,7 +15,8 @@ This package is organized around the research pipeline:
 8. `benchmark`: typed draft research specifications and content-addressed
    inventories of historical experiment artifacts, with file integrity checks.
    `benchmark.files` shares portable fingerprints; `benchmark.render_snapshot`
-   seals source/config/font/asset/code inputs for opt-in render verification/replay.
+   seals source/config/font/asset/code inputs for opt-in render verification/replay;
+   `benchmark.splits` gates deterministic family-level splits on explicit review.
 
 Canonical project-level directories:
 

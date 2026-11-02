@@ -18,8 +18,10 @@ from pydantic import BaseModel, ConfigDict, Field, field_validator, model_valida
 from polydocbench.document.schema import validate_source_document
 from polydocbench.gt.schema import validate_gt_document
 from polydocbench.noise.provenance import NoiseGeneration, scan_image_path
+from polydocbench.sources.snapshots import PROVENANCE_NAME as SOURCE_PROVENANCE_NAME, verify_wikipedia_source
 from .files import FileFingerprint, fingerprint_file as _fingerprint, json_sha256 as _digest
 from .render_snapshot import PROVENANCE_NAME, verify_render_snapshot
+from .splits import SplitPlan
 
 
 class ManifestModel(BaseModel):
@@ -31,8 +33,8 @@ class ManifestRecord(ManifestModel):
     language: str
     article_id: str
     source_family: str
-    family_assignment: Literal["inferred_from_article_id"] = "inferred_from_article_id"
-    split: Literal["unassigned"] = "unassigned"
+    family_assignment: Literal["inferred_from_article_id", "reviewed_catalog"] = "inferred_from_article_id"
+    split: Literal["unassigned", "dev", "test"] = "unassigned"
     template: str
     source_page_number: int = Field(gt=0)
     image_page_number: Literal[1] = 1
@@ -52,6 +54,10 @@ class ManifestRecord(ManifestModel):
     transform_matrix: list[list[float]]
     noise_generation: NoiseGeneration | None = None
     render_snapshot_id: str | None = None
+    source_snapshot_id: str | None = None
+    source_page_id: int | None = None
+    source_revision_id: int | None = None
+    wikidata_item_id: str | None = None
     provenance_files: list[FileFingerprint] = Field(default_factory=list)
     provenance_gaps: list[str]
 
@@ -94,6 +100,7 @@ class DatasetManifest(ManifestModel):
     discovered_count: int = Field(ge=0)
     records: list[ManifestRecord]
     issues: list[InventoryIssue]
+    split_plan: SplitPlan | None = None
 
     @model_validator(mode="after")
     def check_counts_and_ids(self) -> "DatasetManifest":
@@ -102,6 +109,22 @@ class DatasetManifest(ManifestModel):
         identifiers = [record.artifact_id for record in self.records]
         if len(identifiers) != len(set(identifiers)):
             raise ValueError("Duplicate artifact IDs")
+        if self.split_plan is None:
+            if any(record.split != "unassigned" or record.family_assignment != "inferred_from_article_id"
+                   for record in self.records):
+                raise ValueError("Reviewed family/split assignments require an embedded split plan")
+        else:
+            expected = {
+                (member.language, member.article_id, member.source_sha256): (family.family_id, assignment.split)
+                for family in self.split_plan.catalog.families
+                for member in family.members
+                for assignment in self.split_plan.assignments
+                if assignment.family_id == family.family_id
+            }
+            for record in self.records:
+                actual = expected.get((record.language, record.article_id, record.source.sha256))
+                if actual != (record.source_family, record.split) or record.family_assignment != "reviewed_catalog":
+                    raise ValueError("Manifest records do not match the embedded split plan")
         return self
 
     def summary(self) -> dict:
@@ -111,6 +134,8 @@ class DatasetManifest(ManifestModel):
             "discovered": self.discovered_count, "accepted": len(self.records), "rejected": len(self.issues),
             "sources": len({record.source.path for record in self.records}),
             "render_snapshots": len({record.render_snapshot_id for record in self.records if record.render_snapshot_id}),
+            "source_snapshots": len({record.source_snapshot_id for record in self.records if record.source_snapshot_id}),
+            "split_plan_id": self.split_plan.plan_id if self.split_plan else None,
             "inferred_source_families": len({record.source_family for record in self.records}),
             "languages": dict(sorted(Counter(record.language for record in self.records).items())),
             "templates": dict(sorted(Counter(record.template for record in self.records).items())),
@@ -208,19 +233,38 @@ def _record(root: Path, gt_path: Path, fingerprint_cache: dict[Path, FileFingerp
         gaps.remove("generation_seed_not_recorded")
         gaps.remove("sampled_noise_parameters_not_recorded")
     provenance_files, render_snapshot_id = [], None
+    source_snapshot_id = source_page_id = source_revision_id = wikidata_item_id = None
+    source_provenance_path = case_dir / SOURCE_PROVENANCE_NAME
+    declares_source_snapshot = bool(source_data.get("metadata", {}).get("wikipedia_snapshot_id"))
+    if source_provenance_path.exists() or declares_source_snapshot:
+        source_evidence = verify_wikipedia_source(case_dir)
+        if source_evidence.source.sha256 != files["source"].sha256:
+            raise ValueError("Wikipedia provenance does not match source.json")
+        source_snapshot_id = source_evidence.inputs.snapshot_id
+        source_page_id = source_evidence.inputs.page_id
+        source_revision_id = source_evidence.inputs.revision_id
+        wikidata_item_id = source_evidence.inputs.wikidata_item_id
+        source_paths = [source_provenance_path]
+        source_paths.extend(case_dir / item.path for item in (
+            source_evidence.inputs.query_response,
+            source_evidence.inputs.parse_response,
+            source_evidence.inputs.html,
+        ))
+        provenance_files.extend(_fingerprint(root, path) for path in source_paths)
+        gaps.remove("source_revision_not_verified")
     if (template_dir / PROVENANCE_NAME).exists():
         if template_dir not in render_cache:
             evidence = verify_render_snapshot(template_dir)
             paths = [template_dir / PROVENANCE_NAME, template_dir / "render_inputs.json"]
             paths.extend(template_dir / file.path for file in evidence.inputs.files)
             render_cache[template_dir] = (evidence, [_fingerprint(root, path) for path in paths])
-        evidence, provenance_files = render_cache[template_dir]
+        evidence, render_files = render_cache[template_dir]
+        provenance_files.extend(render_files)
         original_source = next(file for file in evidence.inputs.files if file.role == "original_source")
         if (original_source.sha256 != files["source"].sha256 or evidence.pdf.sha256 != files["pdf"].sha256
                 or evidence.gt.sha256 != files["pdf_gt"].sha256):
             raise ValueError("Render provenance does not match the source/PDF/GT chain")
         render_snapshot_id = evidence.inputs.snapshot_id
-        payload["provenance_files"] = {file.path: file.sha256 for file in provenance_files}
         gaps.remove("render_configuration_not_snapshotted")
         gaps.remove("font_and_asset_provenance_not_recorded")
         gaps.append("font_and_asset_rights_not_verified")
@@ -234,6 +278,8 @@ def _record(root: Path, gt_path: Path, fingerprint_cache: dict[Path, FileFingerp
         gaps.append("source_schema_version_not_declared")
     if not image_gt.get("schema_version"):
         gaps.append("gt_schema_version_not_declared")
+    if provenance_files:
+        payload["provenance_files"] = {file.path: file.sha256 for file in provenance_files}
     return ManifestRecord(
         artifact_id=_digest(payload), language=language, article_id=article_id,
         source_family=article_id, template=template, source_page_number=page_number,
@@ -242,6 +288,8 @@ def _record(root: Path, gt_path: Path, fingerprint_cache: dict[Path, FileFingerp
         **files, width=width, height=height, dpi=metadata.get("dpi"),
         transform_matrix=transform.get("matrix"), noise_generation=generation,
         render_snapshot_id=render_snapshot_id, provenance_files=provenance_files, provenance_gaps=gaps,
+        source_snapshot_id=source_snapshot_id, source_page_id=source_page_id,
+        source_revision_id=source_revision_id, wikidata_item_id=wikidata_item_id,
     )
 
 

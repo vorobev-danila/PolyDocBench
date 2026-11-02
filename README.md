@@ -53,6 +53,8 @@ The project is useful for:
 - Scan-like noise profiles: `light_scan`, `medium_scan`, `heavy_scan`.
 - Opt-in lossless clean controls, isolated artifact seeds, sampled parameter traces and noise replay.
 - Opt-in sealed source/render inputs with font/image/code snapshots, integrity checks and offline replay.
+- Revision-bound Wikipedia capture with raw MediaWiki evidence and offline verification.
+- Reviewed source-family catalogs and deterministic leakage-resistant `dev`/`test` plans.
 - Transform-aware noisy GT for rotated/affine scan variants.
 - OCR quality, reading-order, and structure evaluation utilities.
 - Versioned OCR/reading-order evaluation with insertion-aware micro error rates and explicit order-pair coverage.
@@ -163,6 +165,7 @@ The detailed documentation is split into focused tutorials:
 | [CLI Workflow](tutorials/cli-workflow.md) | Parse, render, debug bboxes, noisy scans |
 | [Reproducible Noise](tutorials/reproducible-noise.md) | Clean controls, isolated seeds, actual parameters, replay and legacy migration |
 | [Render Snapshots](tutorials/render-snapshots.md) | Sealed source/config/font/image/code inputs, output hashes and offline render replay |
+| [Source Revisions And Splits](tutorials/source-revisions-and-splits.md) | Pinned Wikipedia revisions, family review, and deterministic dev/test assignment |
 | [FastAPI Workflow](tutorials/fastapi-workflow.md) | API startup, endpoints, request examples |
 | [Architecture](tutorials/architecture.md) | Components, data flow, module responsibilities |
 | [Data Format](tutorials/data-format.md) | Source JSON, GT JSON, schema versions |
@@ -180,14 +183,14 @@ The detailed documentation is split into focused tutorials:
 ```text
 polydocbench/
   api/           # FastAPI application and workflow services
-  benchmark/     # Draft benchmark specification and historical artifact inventory
+  benchmark/     # Specifications, artifact inventory, source families, and split plans
   noise/         # PDF-to-scan rendering and noise profiles
   document/      # Shared document model and normalization
   eval/          # OCR quality, ordering, structure, matching, and dashboards
   gt/            # Ground-truth export, schema, validation, reading order
   layout/        # Layout engine, line breaking, placement, templates
   render/        # PDF rendering, debug overlays, element renderers
-  sources/       # Source adapters, currently Wikipedia
+  sources/       # Wikipedia parsing and revision-bound source capture
   cli.py         # Command-line interface
 
 configs/         # Layout and render configuration

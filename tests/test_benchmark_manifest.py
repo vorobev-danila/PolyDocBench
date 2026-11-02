@@ -8,9 +8,13 @@ from PIL import Image
 from pydantic import ValidationError
 from reportlab.pdfgen import canvas
 
-from polydocbench.benchmark import DatasetManifest, build_manifest, load_benchmark_spec, verify_manifest
+from polydocbench.benchmark import (DatasetManifest, SourceFamilyCatalog, apply_split_plan, build_manifest,
+                                    draft_source_catalog, freeze_split_plan, load_benchmark_spec, verify_manifest)
 from polydocbench.benchmark.manifest import FileFingerprint
 from polydocbench.layout.templates import list_template_names
+from polydocbench.provenance import fingerprint_file, json_sha256
+from polydocbench.sources.snapshots import (PARSER_FILES, ROOT, WikipediaInputs, WikipediaProvenance,
+                                            _parser_environment)
 from scripts.build_benchmark_manifest import main
 
 
@@ -47,6 +51,16 @@ def _make_dataset(root: Path, *, language="en", variant=0) -> Path:
         "pages": [{"page_number": 1, "width": 40, "height": 20}],
     })
     return gt_path
+
+
+def _rename_source(root: Path, language: str, article_id: str):
+    original = root / language / "history_russia"
+    target = root / language / article_id
+    original.rename(target)
+    source = json.loads((target / "source.json").read_text(encoding="utf-8"))
+    source["title"] = article_id
+    source["url"] = f"https://{language}.wikipedia.org/wiki/{article_id}"
+    _write_json(target / "source.json", source)
 
 
 def test_draft_specification_counts_and_templates():
@@ -227,3 +241,104 @@ def test_cli_empty_selection_returns_failure_and_preserves_report(tmp_path):
     assert main(["--input-dir", str(tmp_path)]) == 1
     report = json.loads((tmp_path / "benchmark_inventory/inventory_report.json").read_text())
     assert report["discovered"] == report["accepted"] == 0
+
+
+def test_reviewed_family_split_is_deterministic_and_applies_to_all_variants(tmp_path):
+    for language, article_id in (("en", "history_russia"), ("ru", "linear_algebra"), ("fr", "cell_biology")):
+        _make_dataset(tmp_path, language=language, variant=0)
+        if article_id != "history_russia":
+            _rename_source(tmp_path, language, article_id)
+    page = tmp_path / "en/history_russia/scientific_paper/noisy/page_001"
+    shutil.copyfile(page / "medium_scan_0.jpg", page / "medium_scan_1.jpg")
+    gt = json.loads((page / "medium_scan_0_gt.json").read_text(encoding="utf-8"))
+    gt["metadata"]["variant"] = 1
+    _write_json(page / "medium_scan_1_gt.json", gt)
+
+    manifest = build_manifest(tmp_path)
+    draft = draft_source_catalog(manifest)
+    assert draft.review_status == "draft"
+    with pytest.raises(ValueError, match="Review"):
+        freeze_split_plan(draft)
+
+    reviewed = SourceFamilyCatalog.model_validate({
+        **draft.model_dump(),
+        "review_status": "reviewed",
+        "reviewed_by": "test-reviewer",
+        "reviewed_at": "2026-11-02T10:00:00Z",
+    })
+    plan = freeze_split_plan(reviewed, seed=7, development_fraction=0.34)
+    assert plan == freeze_split_plan(reviewed, seed=7, development_fraction=0.34)
+    assigned = apply_split_plan(manifest, plan)
+
+    assert assigned.split_plan == plan
+    assert {record.split for record in assigned.records} == {"dev", "test"}
+    for family in {record.source_family for record in assigned.records}:
+        assert len({record.split for record in assigned.records if record.source_family == family}) == 1
+    history = [record for record in assigned.records if record.article_id == "history_russia"]
+    assert len(history) == 2 and len({record.split for record in history}) == 1
+    assert all("source_family_not_reviewed" not in record.provenance_gaps for record in assigned.records)
+    assert all("split_not_assigned" not in record.provenance_gaps for record in assigned.records)
+
+
+def test_family_catalog_rejects_identity_leakage_across_families():
+    member = {
+        "language": "en", "article_id": "one", "source_sha256": "a" * 64,
+        "canonical_url": "https://en.wikipedia.org/wiki/One", "page_id": 10,
+        "wikidata_item_id": "Q42",
+    }
+    with pytest.raises(ValidationError, match="cross families"):
+        SourceFamilyCatalog.model_validate({
+            "families": [
+                {"family_id": "first", "members": [member]},
+                {"family_id": "second", "members": [{
+                    **member, "article_id": "two", "source_sha256": "b" * 64,
+                    "canonical_url": "https://en.wikipedia.org/wiki/Two",
+                }]},
+            ]
+        })
+
+
+def test_manifest_records_verified_wikipedia_revision_evidence(tmp_path):
+    _make_dataset(tmp_path)
+    case = tmp_path / "en/history_russia"
+    query = {"query": {"pages": [{
+        "pageid": 7, "ns": 0, "title": "Test", "pageprops": {"wikibase_item": "Q42"},
+        "revisions": [{"revid": 123, "timestamp": "2026-11-01T10:00:00Z", "sha1": "abc"}],
+    }]}}
+    html = '<div class="mw-parser-output"><p>A test document.</p></div>'
+    parsed = {"parse": {"pageid": 7, "title": "Test", "revid": 123, "text": html}}
+    _write_json(case / "query.json", query)
+    _write_json(case / "parse.json", parsed)
+    (case / "page.html").write_text(html, encoding="utf-8")
+    input_payload = {
+        "schema_version": "0.1", "method": "mediawiki_revision_parse",
+        "requested_url": "https://en.wikipedia.org/wiki/Test", "requested_revision_id": None,
+        "language": "en", "canonical_title": "Test", "canonical_url": "https://en.wikipedia.org/wiki/Test",
+        "permanent_url": "https://en.wikipedia.org/w/index.php?oldid=123", "page_id": 7,
+        "revision_id": 123, "revision_timestamp": "2026-11-01T10:00:00Z", "revision_sha1": "abc",
+        "wikidata_item_id": "Q42", "retrieved_at": "2026-11-02T10:00:00Z",
+        "query_response": fingerprint_file(case, case / "query.json").model_dump(),
+        "parse_response": fingerprint_file(case, case / "parse.json").model_dump(),
+        "html": fingerprint_file(case, case / "page.html").model_dump(),
+        "parser_files": [fingerprint_file(ROOT, ROOT / path).model_dump() for path in PARSER_FILES],
+        "parser_environment": _parser_environment(),
+    }
+    inputs = WikipediaInputs(snapshot_id=json_sha256(input_payload), **input_payload)
+    source_path = case / "source.json"
+    source = json.loads(source_path.read_text(encoding="utf-8"))
+    source["metadata"] = {"wikipedia_snapshot_id": inputs.snapshot_id,
+                          "wikipedia_provenance": "source_provenance.json"}
+    _write_json(source_path, source)
+    evidence = WikipediaProvenance(
+        schema_version="0.1", inputs=inputs, source=fingerprint_file(case, source_path)
+    )
+    _write_json(case / "source_provenance.json", evidence.model_dump())
+
+    manifest = build_manifest(tmp_path)
+    record = manifest.records[0]
+    assert record.source_revision_id == 123
+    assert record.source_page_id == 7
+    assert record.wikidata_item_id == "Q42"
+    assert record.source_snapshot_id == inputs.snapshot_id
+    assert "source_revision_not_verified" not in record.provenance_gaps
+    assert verify_manifest(manifest, tmp_path) == []

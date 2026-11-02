@@ -15,6 +15,9 @@ Opt into sealed source/config/font/image/code inputs with `--snapshot-inputs`.
 URL images additionally require `--allow-asset-downloads`. Use a new output
 directory; legacy renders are not retrospectively sealed. See
 [Render Snapshots](render-snapshots.md) for exact replay and provenance limits.
+Add `--pin-source-revisions` for new publication runs so each source directory
+contains its MediaWiki revision evidence. See
+[Wikipedia Revisions And Benchmark Splits](source-revisions-and-splits.md).
 
 This guide describes the first OCR benchmark loop:
 
@@ -86,7 +89,9 @@ The script runs:
 
 ## Wikipedia Article Pool
 
-The experiment contains `10` verified Wikipedia pages per language. Print the full configured URL list:
+The experiment contains `10` configured Wikipedia pages per language. Their URLs
+were checked when introduced, but availability is not permanent and does not pin
+content. Print the full configured URL list:
 
 ```powershell
 uv run python scripts\run_tesseract_ocr_experiment.py --list-articles
@@ -108,6 +113,16 @@ Available article IDs:
 | `milky_way` | astronomy |
 
 The configured URLs were checked for HTTP `200` responses before being added to the workflow.
+
+For a new revision-bound run:
+
+```powershell
+uv run python scripts\run_tesseract_ocr_experiment.py --output-dir outputs\experiments\tesseract_pinned --languages en --article-ids history_russia --profiles clean medium_scan --pin-source-revisions
+```
+
+Reuse requires `--reuse --pin-source-revisions`; the saved evidence is verified
+offline before rendering. A plain historical `source.json` is never relabelled
+as revision-bound.
 
 ## Run A Subset
 

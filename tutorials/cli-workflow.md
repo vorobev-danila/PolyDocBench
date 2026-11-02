@@ -21,6 +21,16 @@ uv run python -m polydocbench list-templates
 uv run python -m polydocbench parse-wiki "https://simple.wikipedia.org/wiki/History_of_Russia" -o outputs\history_of_russia.json
 ```
 
+For publication datasets, capture an exact MediaWiki revision and verify its
+saved responses instead of relying on the mutable latest page:
+
+```powershell
+uv run python -m polydocbench capture-wiki "https://en.wikipedia.org/wiki/ASCII" -o outputs\sources\en\ascii
+uv run python -m polydocbench verify-wiki-source outputs\sources\en\ascii --reparse
+```
+
+See [Wikipedia Revisions And Benchmark Splits](source-revisions-and-splits.md).
+
 ## Render PDF and Ground Truth
 
 ```powershell

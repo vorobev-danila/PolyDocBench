@@ -63,6 +63,8 @@ M1 progress:
 
 - [x] Store a validated draft matrix in `configs/benchmark_icdar2027.json`.
 - [x] Add typed artifact inventory, SHA-256 fingerprints, verification and gap reports.
+- [x] Add revision-bound Wikipedia capture, offline response verification and render-bundle linkage.
+- [x] Add review-gated source-family catalogs and deterministic family-level split plans.
 - [ ] Review source families, source revisions, content/media rights and code license.
 - [ ] Select the pilot subset and measure inference time, memory, failures and cost.
 - [ ] Approve or reduce the main experiment matrix using the measured budget.
@@ -217,7 +219,8 @@ acceptance, complete camera-ready, archival release, registration and presentati
 
 Keep the historical inventory as a baseline. Use [render snapshots](render-snapshots.md)
 and [reproducible noise](reproducible-noise.md) in a separate pilot directory.
-Review source revisions/media rights and families, and measure a pilot budget. Parameter sweeps,
+Use [revision-bound sources and reviewed splits](source-revisions-and-splits.md) for new data.
+Human-review source families/media rights and measure a pilot budget. Parameter sweeps,
 GT audits and publication evaluation remain open. Do not silently relabel old
 artifacts as newly reproducible samples.
 
