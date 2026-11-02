@@ -3,6 +3,9 @@
 .ipynb_checkpoints
 .pytest_cache
 .venv
+.env
+.env.*
+!.env.example
 *.egg-info
 __pycache__
 *.py[cod]
@@ -11,6 +14,7 @@ outputs
 out_scans
 output
 notebooks
+PDB
 Отчетность
 build
 dist

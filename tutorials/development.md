@@ -63,6 +63,30 @@ Dockerfile       # Container image for API and CLI usage
 docker-compose.yml
 ```
 
+## Workspace Hygiene
+
+The supported implementation is `polydocbench/`; runnable workflows are in
+`scripts/`, and the four current research notebooks are in `notebooks/`.
+
+- Keep source fixtures and required assets/fonts in their versioned directories.
+- Keep generated data in ignored `outputs/`. In particular, retain experiment
+  sources, predictions, metrics and sealed validation snapshots needed for replay.
+- `outputs/archive/` holds local historical notebooks/diagrams that are not
+  supported implementations. The former root `PDB/` folder was archived there,
+  along with old root notebook checkpoints, instead of discarding unique notes.
+- Python bytecode, pytest/Jupyter caches, `outputs/test_runs/`, old Docker smoke
+  files and packaging-check wheels are disposable. Test runs can recreate them.
+- Do not remove `.venv/`, `.env`, `.git/`, required font/image caches, private
+  reports or research datasets as part of generic cache cleanup.
+- Root `*.egg-info/` is generated build metadata. Remove it only after checking
+  that the environment has valid installed distribution metadata and imports.
+- Avoid `git clean -fdx`: it would include ignored credentials and research data.
+
+After cleanup, run tests with `PYTHONDONTWRITEBYTECODE=1` and the existing
+`-p no:cacheprovider` option to avoid recreating Python/pytest caches. CLI subprocesses
+inherit the environment variable. Tests still generate disposable files under
+`outputs/test_runs/`; these may be removed again after the suite finishes.
+
 ## Recommended Maintenance Improvements
 
 - Add `ruff` for linting and import ordering.

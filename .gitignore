@@ -10,11 +10,20 @@ dist/
 
 .venv/
 .env
+.env.*
+!.env.example
 
 output/
 outputs/
 out_scans/
 Отчетность/
+/PDB/
+
+# Notebook scan inputs and previews belong under outputs/, not next to code.
+/notebooks/*.jpg
+/notebooks/*.jpeg
+/notebooks/*.png
+/notebooks/*.pdf
 
 document_*.pdf
 document_*_gt.json
