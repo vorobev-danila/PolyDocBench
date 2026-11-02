@@ -8,6 +8,7 @@ This directory contains focused guides for using and developing PolyDocBench.
 - [Docker](docker.md)
 - [CLI Workflow](cli-workflow.md)
 - [Reproducible Noise](reproducible-noise.md)
+- [Render Snapshots](render-snapshots.md)
 - [FastAPI Workflow](fastapi-workflow.md)
 - [Architecture](architecture.md)
 - [Data Format](data-format.md)

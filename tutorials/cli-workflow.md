@@ -40,6 +40,11 @@ uv run python -m polydocbench render examples\wiki_formulas.json -o outputs\wiki
 
 ## Complex Document Example
 
+For sealed benchmark inputs and offline replay, use the separate
+`render-snapshot`, `verify-render-snapshot`, and `replay-render-snapshot`
+commands described in [Render Snapshots](render-snapshots.md). Normal `render`
+keeps its existing behavior.
+
 For a network-free example with tables, captions and full-width inserts:
 
 ```powershell

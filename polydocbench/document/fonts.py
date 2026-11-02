@@ -4,6 +4,8 @@ from __future__ import annotations
 
 from pathlib import Path
 from threading import RLock
+from contextlib import contextmanager
+from contextvars import ContextVar
 
 from reportlab.pdfbase import pdfmetrics
 from reportlab.pdfbase.ttfonts import TTFont
@@ -11,13 +13,23 @@ from reportlab.pdfbase.ttfonts import TTFont
 
 FALLBACK_FONT = "PolyDocBenchSymbols"
 _FONT_LOCK = RLock()
+_FALLBACK_PATH: ContextVar[Path | None] = ContextVar("polydocbench_fallback_path", default=None)
+
+
+@contextmanager
+def font_fallback_scope(path: str | Path):
+    token = _FALLBACK_PATH.set(Path(path))
+    try:
+        yield
+    finally:
+        _FALLBACK_PATH.reset(token)
 
 
 def _register_fallback():
     with _FONT_LOCK:
         if FALLBACK_FONT not in pdfmetrics.getRegisteredFontNames():
             relative = Path("fonts/NotoSansSymbols2/NotoSansSymbols2-Regular.ttf")
-            path = relative if relative.is_file() else Path(__file__).resolve().parents[2] / relative
+            path = _FALLBACK_PATH.get() or (relative if relative.is_file() else Path(__file__).resolve().parents[2] / relative)
             if not path.is_file():
                 raise ValueError(f"Bundled symbol fallback font is missing: {relative}")
             pdfmetrics.registerFont(TTFont(FALLBACK_FONT, str(path)))

@@ -20,9 +20,9 @@ render:
 
     dejavu:
       family: "DejaVuSans"
-      path: "C:/Users/user/Desktop/PolyDocBench/DejaVu Sans/DejaVuSans.ttf"
-      bold_path: "C:/Users/user/Desktop/PolyDocBench/DejaVu Sans/DejaVuSans-Bold.ttf"
-      italic_path: "C:/Users/user/Desktop/PolyDocBench/DejaVu Sans/DejaVuSans-Oblique.ttf"
+      path: "DejaVu Sans/DejaVuSans.ttf"
+      bold_path: "DejaVu Sans/DejaVuSans-Bold.ttf"
+      italic_path: "DejaVu Sans/DejaVuSans-Oblique.ttf"
       embedded: true
 
     helvetica:

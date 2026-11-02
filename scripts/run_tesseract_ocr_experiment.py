@@ -202,6 +202,8 @@ def build_parser() -> argparse.ArgumentParser:
     parser.add_argument("--fail-on-missing-tesseract-lang", action="store_true", help="Fail instead of skipping missing Tesseract languages")
     parser.add_argument("--debug-render", action="store_true", help="Render debug bboxes into PDFs")
     parser.add_argument("--verbose-layout", action="store_true", help="Show internal layout engine logs")
+    parser.add_argument("--snapshot-inputs", action="store_true", help="Render with sealed source/config/font/asset/code snapshots")
+    parser.add_argument("--allow-asset-downloads", action="store_true", help="Allow URL asset capture with --snapshot-inputs")
     return parser
 
 
@@ -309,16 +311,35 @@ def _run_template_case(
     if not args.reuse or not pdf_path.exists() or not gt_path.exists():
         print("[2/4] Render PDF + GT")
         font_path = Path(args.font)
-        layout = _run_quietly(
-            lambda: LayoutEngine(font_path=font_path if font_path.exists() else None).layout_document(
-                source_path,
-                template_name=template_name,
-            ),
-            quiet=not args.verbose_layout,
-        )
-        _run_quietly(lambda: PDFRenderer(debug=args.debug_render).render(layout, pdf_path), quiet=not args.verbose_layout)
-        print(f"      pages={len(layout.pages)}, elements={len(layout.elements)}, pdf={pdf_path.name}, gt={gt_path.name}")
+        if getattr(args, "snapshot_inputs", False):
+            from polydocbench.benchmark import capture_render_snapshot
+
+            if args.debug_render:
+                raise ValueError("Snapshot benchmark rendering does not allow debug overlays")
+            result = _run_quietly(lambda: capture_render_snapshot(
+                source_path, template_dir, template=template_name, font_path=font_path,
+                allow_downloads=args.allow_asset_downloads), quiet=not args.verbose_layout)
+            print(f"      pages={result['page_count']}, snapshot={result['render_snapshot_id']}")
+        else:
+            layout = _run_quietly(
+                lambda: LayoutEngine(font_path=font_path if font_path.exists() else None).layout_document(
+                    source_path,
+                    template_name=template_name,
+                ),
+                quiet=not args.verbose_layout,
+            )
+            _run_quietly(lambda: PDFRenderer(debug=args.debug_render).render(layout, pdf_path), quiet=not args.verbose_layout)
+            print(f"      pages={len(layout.pages)}, elements={len(layout.elements)}, pdf={pdf_path.name}, gt={gt_path.name}")
     else:
+        if getattr(args, "snapshot_inputs", False):
+            from polydocbench.benchmark import verify_render_snapshot
+
+            evidence = verify_render_snapshot(template_dir)
+            original = next(file for file in evidence.inputs.files if file.role == "original_source")
+            if (original.sha256 != file_sha256(source_path) or evidence.inputs.template != template_name
+                    or next(file for file in evidence.inputs.files
+                            if file.path == evidence.inputs.fonts["DejaVuSans"]).sha256 != file_sha256(args.font)):
+                raise ValueError("Snapshot reuse does not match the requested source/template/body font")
         print(f"[2/4] Render PDF + GT: reuse {pdf_path}, {gt_path}")
 
     page_count = _count_gt_pages(gt_path)

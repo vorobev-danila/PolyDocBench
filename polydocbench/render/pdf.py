@@ -49,7 +49,7 @@ class PDFRenderer:
         output_pdf.parent.mkdir(parents=True, exist_ok=True)
 
         layout_dict = layout_result.to_dict()
-        pdf_canvas = canvas.Canvas(str(output_pdf), pagesize=A4)
+        pdf_canvas = canvas.Canvas(str(output_pdf), pagesize=A4, invariant=self.config.get("render.pdf.invariant", None))
         self._set_metadata(pdf_canvas)
 
         if self.debug_mode:

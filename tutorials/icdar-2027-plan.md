@@ -83,8 +83,9 @@ M2 progress:
 - [x] Actual sampled parameter trace, input/output hashes, noise environment versions and replay checks.
 - [x] Opt-in clean lossless control with pixel-coordinate GT; PNG/JPEG reader support in runners and inventory.
 - [x] Requested-pair reuse validation and explicit refusal of historical untraced noise in the Tesseract generator.
+- [x] Opt-in sealed source/config/font/asset/code inputs, output binding, integrity checks and exact render replay.
 - [ ] Configurable isolated parameter sweeps and calibrated scenarios.
-- [ ] Full source/render provenance, GT audit, fixed publication metrics and model baselines.
+- [ ] Source revision/rights review, GT audit, fixed publication metrics and model baselines.
 
 Noise smoke evidence: an existing scientific-paper PDF was copied into
 `outputs/validation/noise_v02`, leaving historical data intact. Clean/light/
@@ -214,8 +215,21 @@ acceptance, complete camera-ready, archival release, registration and presentati
 
 ## Current Next Step
 
-Keep the historical inventory as a baseline. Use [reproducible noise](reproducible-noise.md)
-in a separate pilot directory, then review source/media rights and families,
-complete source/render snapshots, and measure a pilot budget. Parameter sweeps,
+Keep the historical inventory as a baseline. Use [render snapshots](render-snapshots.md)
+and [reproducible noise](reproducible-noise.md) in a separate pilot directory.
+Review source revisions/media rights and families, and measure a pilot budget. Parameter sweeps,
 GT audits and publication evaluation remain open. Do not silently relabel old
 artifacts as newly reproducible samples.
+
+Render snapshot smoke evidence: the local complex-document fixture was rendered
+with `research_illustrated`, `technical_report` and `financial_report` under
+`outputs/validation/sealed_pipeline`. Each render replay matched its captured
+PDF/GT hashes at the code state used for that capture. Twelve derived clean/
+light/medium/heavy scan pairs passed inventory and dependency-file verification.
+The final financial-report render also replayed all four noise traces. Historical
+162-scan hashes still verify. These are engineering checks, not model benchmark
+results; revision/family/split/rights review remains open.
+
+After each tested engineering milestone, commit the scoped changes and push the
+active project branch. Do not publish `.env`, reports, generated experiment data
+or unrelated working folders; do not force-push to bypass remote changes.

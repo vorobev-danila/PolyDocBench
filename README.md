@@ -52,6 +52,7 @@ The project is useful for:
 - Text justification and centered graphical elements.
 - Scan-like noise profiles: `light_scan`, `medium_scan`, `heavy_scan`.
 - Opt-in lossless clean controls, isolated artifact seeds, sampled parameter traces and noise replay.
+- Opt-in sealed source/render inputs with font/image/code snapshots, integrity checks and offline replay.
 - Transform-aware noisy GT for rotated/affine scan variants.
 - OCR quality, reading-order, and structure evaluation utilities.
 - Versioned OCR/reading-order evaluation with insertion-aware micro error rates and explicit order-pair coverage.
@@ -161,6 +162,7 @@ The detailed documentation is split into focused tutorials:
 | [Docker](tutorials/docker.md) | Build image, run API, execute CLI in a container |
 | [CLI Workflow](tutorials/cli-workflow.md) | Parse, render, debug bboxes, noisy scans |
 | [Reproducible Noise](tutorials/reproducible-noise.md) | Clean controls, isolated seeds, actual parameters, replay and legacy migration |
+| [Render Snapshots](tutorials/render-snapshots.md) | Sealed source/config/font/image/code inputs, output hashes and offline render replay |
 | [FastAPI Workflow](tutorials/fastapi-workflow.md) | API startup, endpoints, request examples |
 | [Architecture](tutorials/architecture.md) | Components, data flow, module responsibilities |
 | [Data Format](tutorials/data-format.md) | Source JSON, GT JSON, schema versions |

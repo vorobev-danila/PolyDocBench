@@ -6,11 +6,10 @@ Historical settings cannot be recovered from the currently installed generator.
 
 from __future__ import annotations
 
-import hashlib
 import json
 import math
 from collections import Counter
-from pathlib import Path, PurePosixPath
+from pathlib import Path
 from typing import Literal
 
 from PIL import Image
@@ -19,24 +18,12 @@ from pydantic import BaseModel, ConfigDict, Field, field_validator, model_valida
 from polydocbench.document.schema import validate_source_document
 from polydocbench.gt.schema import validate_gt_document
 from polydocbench.noise.provenance import NoiseGeneration, scan_image_path
+from .files import FileFingerprint, fingerprint_file as _fingerprint, json_sha256 as _digest
+from .render_snapshot import PROVENANCE_NAME, verify_render_snapshot
 
 
 class ManifestModel(BaseModel):
     model_config = ConfigDict(extra="forbid", allow_inf_nan=False)
-
-
-class FileFingerprint(ManifestModel):
-    path: str
-    sha256: str = Field(pattern=r"^[0-9a-f]{64}$")
-    size_bytes: int = Field(ge=0)
-
-    @field_validator("path")
-    @classmethod
-    def validate_relative_path(cls, value: str) -> str:
-        path = PurePosixPath(value)
-        if not path.parts or path.is_absolute() or ".." in path.parts or "\\" in value or ":" in value:
-            raise ValueError("File paths must be relative POSIX paths inside the dataset root")
-        return value
 
 
 class ManifestRecord(ManifestModel):
@@ -64,6 +51,8 @@ class ManifestRecord(ManifestModel):
     dpi: int = Field(gt=0)
     transform_matrix: list[list[float]]
     noise_generation: NoiseGeneration | None = None
+    render_snapshot_id: str | None = None
+    provenance_files: list[FileFingerprint] = Field(default_factory=list)
     provenance_gaps: list[str]
 
     @field_validator("transform_matrix")
@@ -76,11 +65,14 @@ class ManifestRecord(ManifestModel):
         return value
 
     def identity_payload(self) -> dict:
-        return {
+        payload = {
             "language": self.language, "article_id": self.article_id, "template": self.template,
             "page": self.source_page_number, "profile": self.profile, "variant": self.variant,
             "files": {name: getattr(self, name).sha256 for name in FILE_FIELDS},
         }
+        if self.provenance_files:
+            payload["provenance_files"] = {file.path: file.sha256 for file in self.provenance_files}
+        return payload
 
     @model_validator(mode="after")
     def check_identity(self) -> "ManifestRecord":
@@ -118,6 +110,7 @@ class DatasetManifest(ManifestModel):
             "generation_reproducibility": self.generation_reproducibility,
             "discovered": self.discovered_count, "accepted": len(self.records), "rejected": len(self.issues),
             "sources": len({record.source.path for record in self.records}),
+            "render_snapshots": len({record.render_snapshot_id for record in self.records if record.render_snapshot_id}),
             "inferred_source_families": len({record.source_family for record in self.records}),
             "languages": dict(sorted(Counter(record.language for record in self.records).items())),
             "templates": dict(sorted(Counter(record.template for record in self.records).items())),
@@ -138,21 +131,6 @@ HISTORICAL_PROVENANCE_GAPS = [
 ]
 
 
-def _digest(value: dict) -> str:
-    encoded = json.dumps(value, sort_keys=True, separators=(",", ":"), ensure_ascii=False, allow_nan=False)
-    return hashlib.sha256(encoded.encode("utf-8")).hexdigest()
-
-
-def _fingerprint(root: Path, path: Path) -> FileFingerprint:
-    resolved = path.resolve()
-    relative = resolved.relative_to(root)
-    digest = hashlib.sha256()
-    with resolved.open("rb") as file:
-        for chunk in iter(lambda: file.read(1024 * 1024), b""):
-            digest.update(chunk)
-    return FileFingerprint(path=relative.as_posix(), sha256=digest.hexdigest(), size_bytes=resolved.stat().st_size)
-
-
 def _read_json(path: Path) -> dict:
     value = json.loads(path.read_text(encoding="utf-8"))
     if not isinstance(value, dict):
@@ -160,7 +138,7 @@ def _read_json(path: Path) -> dict:
     return value
 
 
-def _record(root: Path, gt_path: Path, fingerprint_cache: dict[Path, FileFingerprint]) -> ManifestRecord:
+def _record(root: Path, gt_path: Path, fingerprint_cache: dict[Path, FileFingerprint], render_cache: dict) -> ManifestRecord:
     language, article_id, template, _, page_dir, filename = gt_path.relative_to(root).parts
     page_number = int(page_dir.removeprefix("page_"))
     stem = filename.removesuffix("_gt.json")
@@ -229,6 +207,29 @@ def _record(root: Path, gt_path: Path, fingerprint_cache: dict[Path, FileFingerp
             raise ValueError("Noise trace identity/transform does not match the paired GT")
         gaps.remove("generation_seed_not_recorded")
         gaps.remove("sampled_noise_parameters_not_recorded")
+    provenance_files, render_snapshot_id = [], None
+    if (template_dir / PROVENANCE_NAME).exists():
+        if template_dir not in render_cache:
+            evidence = verify_render_snapshot(template_dir)
+            paths = [template_dir / PROVENANCE_NAME, template_dir / "render_inputs.json"]
+            paths.extend(template_dir / file.path for file in evidence.inputs.files)
+            render_cache[template_dir] = (evidence, [_fingerprint(root, path) for path in paths])
+        evidence, provenance_files = render_cache[template_dir]
+        original_source = next(file for file in evidence.inputs.files if file.role == "original_source")
+        if (original_source.sha256 != files["source"].sha256 or evidence.pdf.sha256 != files["pdf"].sha256
+                or evidence.gt.sha256 != files["pdf_gt"].sha256):
+            raise ValueError("Render provenance does not match the source/PDF/GT chain")
+        render_snapshot_id = evidence.inputs.snapshot_id
+        payload["provenance_files"] = {file.path: file.sha256 for file in provenance_files}
+        gaps.remove("render_configuration_not_snapshotted")
+        gaps.remove("font_and_asset_provenance_not_recorded")
+        gaps.append("font_and_asset_rights_not_verified")
+        if evidence.inputs.generator_revision is not None:
+            gaps.remove("generator_revision_not_recorded")
+        if generation is not None:
+            gaps.remove("generation_environment_not_recorded")
+    elif pdf_gt.metadata.get("render_snapshot_id"):
+        raise ValueError("PDF GT declares an input snapshot but its provenance file is missing")
     if not source_data.get("schema_version"):
         gaps.append("source_schema_version_not_declared")
     if not image_gt.get("schema_version"):
@@ -239,7 +240,8 @@ def _record(root: Path, gt_path: Path, fingerprint_cache: dict[Path, FileFingerp
         profile=profile, variant=variant, source_url=source.url,
         source_schema_version=source_data.get("schema_version"), gt_schema_version=image_gt.get("schema_version"),
         **files, width=width, height=height, dpi=metadata.get("dpi"),
-        transform_matrix=transform.get("matrix"), noise_generation=generation, provenance_gaps=gaps,
+        transform_matrix=transform.get("matrix"), noise_generation=generation,
+        render_snapshot_id=render_snapshot_id, provenance_files=provenance_files, provenance_gaps=gaps,
     )
 
 
@@ -252,13 +254,14 @@ def build_manifest(
         raise ValueError("Dataset root must be a directory")
     records, issues = [], []
     cache: dict[Path, FileFingerprint] = {}
+    render_cache = {}
     identifiers = set()
     for gt_path in sorted(root.glob("*/*/*/noisy/page_*/*_gt.json")):
         parts = gt_path.relative_to(root).parts
         if (languages and parts[0] not in languages) or (templates and parts[2] not in templates):
             continue
         try:
-            record = _record(root, gt_path, cache)
+            record = _record(root, gt_path, cache, render_cache)
             if record.artifact_id in identifiers:
                 raise ValueError("Duplicate artifact identity in selected inventory")
             identifiers.add(record.artifact_id)
@@ -275,8 +278,7 @@ def verify_manifest(manifest: DatasetManifest, input_root: str | Path) -> list[I
     issues = []
     checked = set()
     for record in manifest.records:
-        for name in FILE_FIELDS:
-            expected = getattr(record, name)
+        for expected in [getattr(record, name) for name in FILE_FIELDS] + record.provenance_files:
             key = (expected.path, expected.sha256, expected.size_bytes)
             if key in checked:
                 continue

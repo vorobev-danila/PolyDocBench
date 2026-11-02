@@ -17,6 +17,9 @@ class FormulaRenderer(ImageRenderer):
         if self.render_image(element):
             return
 
+        if element.get("metadata", {}).get("require_asset"):
+            raise RuntimeError("Could not render the formula asset required by the input snapshot")
+
         self._render_text_fallback(element)
 
     def _render_text_fallback(self, element: dict) -> None:

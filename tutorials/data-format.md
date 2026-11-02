@@ -235,6 +235,11 @@ For affine transforms, PolyDocBench transforms all four bbox corners and stores:
 
 ## Versioning Policy
 
+Opt-in render bundles use a separate render-input/provenance schema `0.1`.
+Their GT records `metadata.render_snapshot_id`; dependency hashes live in
+`render_inputs.json` and `document_provenance.json`, not in a guessed historical
+source version. See [Render Snapshots](render-snapshots.md).
+
 New scan GT also embeds `metadata.noise_generation`: trace schema `0.1`, noise
 pipeline `0.2`, per-artifact and operation seeds, sampled parameters, input/output
 hashes and noise-library versions. This additive metadata does not change GT

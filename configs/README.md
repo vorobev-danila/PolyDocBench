@@ -14,6 +14,12 @@ Supported table/image/region options are documented in
 [Complex Layouts](../tutorials/complex-layouts.md). New profiles use strict
 placement so unsupported content is reported rather than silently skipped.
 
+Font paths in `render_config.yaml` are repository-relative. To capture the exact
+selected layout, effective rendering settings, fonts and images for a benchmark,
+use [Render Snapshots](../tutorials/render-snapshots.md). Ordinary `render` does
+not automatically load this YAML; its renderer uses code defaults unless a
+configuration is supplied through the Python renderer or snapshot mode.
+
 ## Publication Benchmark Specification
 
 `benchmark_icdar2027.json` is a validated draft research matrix, not a renderer or

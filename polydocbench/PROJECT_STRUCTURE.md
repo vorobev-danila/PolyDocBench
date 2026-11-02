@@ -14,6 +14,8 @@ This package is organized around the research pipeline:
    matching, and generate experiment dashboards.
 8. `benchmark`: typed draft research specifications and content-addressed
    inventories of historical experiment artifacts, with file integrity checks.
+   `benchmark.files` shares portable fingerprints; `benchmark.render_snapshot`
+   seals source/config/font/asset/code inputs for opt-in render verification/replay.
 
 Canonical project-level directories:
 

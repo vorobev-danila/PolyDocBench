@@ -11,6 +11,11 @@ Add `clean` to `--profiles` for a lossless control. Requested-pair filtering,
 reuse checks, PNG support and migration are described in
 [Reproducible Noise](reproducible-noise.md).
 
+Opt into sealed source/config/font/image/code inputs with `--snapshot-inputs`.
+URL images additionally require `--allow-asset-downloads`. Use a new output
+directory; legacy renders are not retrospectively sealed. See
+[Render Snapshots](render-snapshots.md) for exact replay and provenance limits.
+
 This guide describes the first OCR benchmark loop:
 
 ```text

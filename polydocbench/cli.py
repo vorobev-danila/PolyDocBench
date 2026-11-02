@@ -28,6 +28,21 @@ def build_parser() -> argparse.ArgumentParser:
     render.add_argument("--font", default="DejaVu Sans/DejaVuSans.ttf", help="Font path")
     render.add_argument("--debug", action="store_true", help="Render debug bboxes")
 
+    snapshot = subparsers.add_parser("render-snapshot", help="Seal source/config/fonts/assets/code and render a benchmark document")
+    snapshot.add_argument("json_path")
+    snapshot.add_argument("-o", "--output-dir", required=True, help="New or empty document directory")
+    snapshot.add_argument("--template", default="simple_article")
+    snapshot.add_argument("--layout-config", default="configs/layout_templates.yaml")
+    snapshot.add_argument("--render-config", default=None)
+    snapshot.add_argument("--font", default="DejaVu Sans/DejaVuSans.ttf")
+    snapshot.add_argument("--allow-downloads", action="store_true", help="Allow explicit URL asset capture; subsequent render is local")
+
+    verify = subparsers.add_parser("verify-render-snapshot", help="Verify sealed render inputs and PDF/GT hashes")
+    verify.add_argument("snapshot_dir")
+    replay = subparsers.add_parser("replay-render-snapshot", help="Verify and rerender sealed inputs with matching code/environment")
+    replay.add_argument("snapshot_dir")
+    replay.add_argument("-o", "--output-dir", required=True, help="New or empty replay directory")
+
     overlay = subparsers.add_parser("draw-gt-overlay", help="Draw noisy-image GT polygons and/or bboxes over an image")
     overlay.add_argument("image_path", help="Input noisy image path")
     overlay.add_argument("gt_path", help="Input noisy-image GT JSON path")
@@ -86,6 +101,31 @@ def main(argv: list[str] | None = None) -> int:
             line_width=args.line_width,
         )
         print(f"Overlay: {output_path}")
+        return 0
+
+    if args.command == "render-snapshot":
+        from polydocbench.benchmark import capture_render_snapshot
+
+        result = capture_render_snapshot(args.json_path, args.output_dir, template=args.template,
+                                         layout_config_path=args.layout_config, render_config_path=args.render_config,
+                                         font_path=args.font, allow_downloads=args.allow_downloads)
+        print(f"PDF: {result['pdf_path']}")
+        print(f"GT: {result['gt_path']}")
+        print(f"Provenance: {result['provenance_path']}")
+        return 0
+
+    if args.command == "verify-render-snapshot":
+        from polydocbench.benchmark import verify_render_snapshot
+
+        evidence = verify_render_snapshot(args.snapshot_dir)
+        print(f"Render snapshot verified: {evidence.inputs.snapshot_id}")
+        return 0
+
+    if args.command == "replay-render-snapshot":
+        from polydocbench.benchmark import replay_render_snapshot
+
+        result = replay_render_snapshot(args.snapshot_dir, args.output_dir)
+        print(f"Byte-identical PDF/GT replay verified: {result['render_snapshot_id']}")
         return 0
 
     parser.error(f"Unknown command: {args.command}")

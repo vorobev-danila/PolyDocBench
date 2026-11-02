@@ -52,6 +52,13 @@ coordinate convention, profile/variant identity, matrix shape/finite values and
 presence of the source page in PDF GT. Missing images or parent files are errors,
 not skipped samples. Shared parent files are hashed once during each build.
 
+Opt-in [Render Snapshots](render-snapshots.md) add `document_provenance.json`
+beside `document.pdf`. The importer validates that sidecar and its sealed inputs,
+checks that the outer source JSON matches the captured original, and records
+all dependency fingerprints in `provenance_files`. Missing sidecars for GT that
+declares a snapshot are errors. Replay code/environment checks remain separate
+from ordinary file-integrity verification.
+
 New pipeline 0.2 scans can include a validated `noise_generation` trace. The
 inventory checks its PDF/GT/image hashes, source page, DPI, profile, variant and
 composed transform against the paired files. It embeds the trace and removes
@@ -101,7 +108,11 @@ failure; accepted records do not make the full selected inventory valid. Files
 are assumed quiescent during build/verification. Regenerating an inventory after
 tampering creates a new baseline, not proof of integrity against the old baseline.
 
-Isolated noise RNG, generation traces and clean controls are now available for
-new scans. Next work: reviewed families/splits, full source/render provenance,
-pilot timings and budget. Existing experiment runners are not yet switched to
-manifest-driven execution. Noise-only replay is not a complete benchmark release.
+Isolated noise RNG, generation traces, clean controls and opt-in source/render
+snapshots are available for new artifacts. Valid render snapshots remove the
+configuration/resource recording gaps; a Git revision and paired noise trace
+also resolve their respective code/environment recording gaps. Rights remain
+unverified, even when license text was copied. Next work: source revisions,
+reviewed families/splits, rights, pilot timings and budget. Existing experiment
+runners are not yet switched to manifest-driven execution. Mechanically
+replayable documents are not a complete scientific benchmark release.
