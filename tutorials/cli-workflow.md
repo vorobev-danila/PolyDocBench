@@ -66,6 +66,15 @@ Use `--template reference_sheet` for landscape pages. See
 
 ## Generate Noisy Scan Variants
 
+The CLI also supports paired noise generation and custom recipes directly:
+
+```powershell
+uv run python -m polydocbench noise outputs\wiki_formulas.pdf --gt outputs\wiki_formulas_gt.json -o outputs\noise_effects --profiles clean defocus_scan motion_scan sensor_noise faded_print shadow_scan duplex_scan
+```
+
+For a complete example gallery and fixed-parameter sweeps, see
+[Noise Effects](noise-effects.md).
+
 First render a PDF and GT pair:
 
 ```powershell

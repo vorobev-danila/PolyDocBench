@@ -65,6 +65,17 @@ def build_parser() -> argparse.ArgumentParser:
     overlay.add_argument("--bbox-color", default="blue", help="BBox line color")
     overlay.add_argument("--line-width", type=int, default=2, help="Overlay line width in pixels")
 
+    noise = subparsers.add_parser("noise", help="Generate scan noise with optional paired GT and custom recipes")
+    noise.add_argument("pdf_path")
+    noise.add_argument("--gt", default=None, help="Optional PDF GT JSON; enables paired pixel GT")
+    noise.add_argument("-o", "--output-dir", required=True)
+    noise.add_argument("--profiles", nargs="+", default=None)
+    noise.add_argument("--noise-config", default=None, help="JSON custom recipe configuration")
+    noise.add_argument("--page-index", type=int, default=0)
+    noise.add_argument("--dpi", type=int, default=200)
+    noise.add_argument("--variants", type=int, default=1)
+    noise.add_argument("--seed", type=int, default=42)
+
     return parser
 
 
@@ -72,6 +83,19 @@ def main(argv: list[str] | None = None) -> int:
     _configure_console_encoding()
     parser = build_parser()
     args = parser.parse_args(argv)
+
+    if args.command == "noise":
+        from polydocbench.noise import load_noise_config, pdf_to_noisy_dataset, pdf_to_noisy_images
+
+        options = dict(pdf_path=args.pdf_path, output_dir=args.output_dir, page_index=args.page_index,
+                       n_variants=args.variants, seed=args.seed, dpi=args.dpi, profiles=args.profiles,
+                       config=load_noise_config(args.noise_config) if args.noise_config else None)
+        result = pdf_to_noisy_dataset(gt_path=args.gt, **options) if args.gt else pdf_to_noisy_images(**options)
+        for artifact in result["artifacts"]:
+            print(f"{artifact['profile']}: {artifact['image_path']}")
+            if "gt_path" in artifact:
+                print(f"GT: {artifact['gt_path']}")
+        return 0
 
     if args.command == "parse-wiki":
         wiki_parser = WikipediaParser(debug=args.debug)

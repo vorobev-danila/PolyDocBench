@@ -1,6 +1,8 @@
 # Reproducible Scan Noise And Clean Controls
 
-Noise pipeline **0.2** isolates randomness per artifact and operation. It records
+Noise pipeline **0.3** extends the artifact-local RNG/replay protocol introduced
+in `0.2` with photometric effects and JSON recipes. See [Noise Effects](noise-effects.md)
+for the new profiles, CLI and visual gallery. It records
 actual sampled parameters and supports replay on the original raster. This is
 separate from source/GT schema `0.1`, trace schema `0.1`, and evaluation protocol
 `0.2`. A matching version number across these formats has no implied relationship.
@@ -44,6 +46,10 @@ with the same stem are ambiguous and reported instead of silently choosing one.
 
 ## Actual Operations
 
+This section lists the original light/medium/heavy operations, retained in 0.3.
+New isolated photometric effects and their default parameters are documented in
+[Noise Effects](noise-effects.md). Defaults still select the original three scenarios.
+
 | Operation | Sampled values | Fixed implementation in pipeline 0.2 |
 | --- | --- | --- |
 | `reduce_resolution` | scale uniformly from 0.4 to 0.8 | Downsample with area interpolation, restore original size with cubic interpolation; minimum dimension 1 |
@@ -59,8 +65,9 @@ this final encoding is recorded separately, not hidden in the operations list.
 
 These are **scenario bundles**, not calibrated monotonic severity levels.
 Different profiles use different random streams even for their shared operations.
-Isolated parameter sweeps and paired sampled parameters across profiles remain
-future experiment work. Morphology changes ink appearance; its identity geometry
+Fixed-parameter sweeps are now available through JSON recipes; paired sampled
+parameters across different profiles remain future experiment work.
+Morphology changes ink appearance; its identity geometry
 does not claim pixel-perfect ink segmentation GT.
 
 ## Seeds And Recorded Evidence
@@ -98,6 +105,10 @@ page and retain the original PDF page number in their result rows.
 
 `pdf_to_noisy_images` keeps the `images` return field and additionally returns
 artifact traces; each image gets a `*_noise.json` sidecar instead of paired GT.
+Custom 0.3 recipes additionally record `profile_definition`; these steps and their
+overrides enter artifact seed identity. New profiles/custom recipes use PNG,
+including noisy images. Final encoding must be read from the trace, not inferred
+from whether the profile is clean. Sensor RNG seeds are hexadecimal strings too.
 Source revision, renderer configuration, generator commit, asset/font provenance,
 licenses and reviewed splits are **not** established by a noise trace. The
 [inventory](benchmark-manifest.md) still reports those gaps.
@@ -128,7 +139,8 @@ assert replayed.transform_matrix == paired_gt["metadata"]["transform"]["matrix"]
 ```
 
 Replay validates the input and processed pixel hashes. It returns pixels before
-final file encoding; use PNG for clean and JPEG quality 95 for noisy scans.
+final file encoding; use the trace's `encoding`: PNG or JPEG quality 95.
+For new PNG profiles, use a `.png` target and `save(target, "PNG")` instead.
 Byte-identical results are tested in the same software environment, not promised
 across arbitrary OpenCV/Pillow/PyMuPDF versions or hardware. Differences raise a
 hash error; use the recorded environment to investigate them.
@@ -138,7 +150,7 @@ hash error; use the recorded environment to investigate them.
 Use a **new output directory** for the new noise version:
 
 ```powershell
-uv run python scripts/run_tesseract_ocr_experiment.py --output-dir outputs/experiments/tesseract_noise_v02 --languages en --article-ids history_russia --templates scientific_paper --page-scope first --profiles clean light_scan medium_scan heavy_scan --variants 1 --seed 42
+uv run python scripts/run_tesseract_ocr_experiment.py --output-dir outputs/experiments/tesseract_noise_v03 --languages en --article-ids history_russia --templates scientific_paper --page-scope first --profiles clean light_scan medium_scan heavy_scan --variants 1 --seed 42
 ```
 
 The runner evaluates only requested profile/variant pairs, not every stale file
@@ -179,6 +191,9 @@ the existing noise/API extras. See [FastAPI Workflow](fastapi-workflow.md).
 ## Migration And Tests
 
 The same integer seed does **not** recreate historical unversioned noisy scans.
+Version 0.3 also has different artifact seeds from 0.2. Stored 0.2 traces still
+validate/replay, but new generation and Tesseract reuse target 0.3; use a new
+directory. Parameter/GT schemas remain 0.1. The following 0.2 behavior is retained:
 Pipeline 0.2 changes seed streams and corrects RGB/BGR handling in JPEG noise.
 Preserve old artifacts/results, label them legacy, and do not pool releases as
 if they were the same conditions. Noise version is included in new metric rows.

@@ -241,7 +241,7 @@ Their GT records `metadata.render_snapshot_id`; dependency hashes live in
 source version. See [Render Snapshots](render-snapshots.md).
 
 New scan GT also embeds `metadata.noise_generation`: trace schema `0.1`, noise
-pipeline `0.2`, per-artifact and operation seeds, sampled parameters, input/output
+pipeline `0.2` or `0.3`, per-artifact and operation seeds, sampled parameters, input/output
 hashes and noise-library versions. This additive metadata does not change GT
 schema `0.1`. Clean uses a PNG and identity noise transform, but still requires
 PDF-to-pixel GT conversion. See [Reproducible Noise](reproducible-noise.md).

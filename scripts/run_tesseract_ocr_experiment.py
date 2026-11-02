@@ -21,7 +21,8 @@ from statistics import mean
 from typing import Any
 from urllib.parse import quote
 
-from polydocbench.noise import NOISE_PROFILES, NoiseGeneration, pdf_to_noisy_dataset, scan_image_path
+from polydocbench.noise import (NOISE_PIPELINE_VERSION, NOISE_PROFILES, NoiseGeneration,
+                                load_noise_config, pdf_to_noisy_dataset, scan_image_path)
 from polydocbench.noise.provenance import file_sha256
 from polydocbench.eval import evaluate_ocr_quality, extract_gt_lines, load_gt, write_ocr_dashboard
 from polydocbench.eval.ocr import extract_tesseract_lines
@@ -185,8 +186,9 @@ def build_parser() -> argparse.ArgumentParser:
         help="Layout templates to render",
     )
     parser.add_argument("--font", default="DejaVu Sans/DejaVuSans.ttf", help="Font path")
-    parser.add_argument("--profiles", nargs="+", choices=list(NOISE_PROFILES),
+    parser.add_argument("--profiles", nargs="+",
                         default=["light_scan", "medium_scan", "heavy_scan"], help="Noise scenarios, optionally including clean PNG")
+    parser.add_argument("--noise-config", default=None, help="JSON custom noise recipes")
     parser.add_argument("--variants", type=_positive_int, default=1, help="Variants per noisy profile; clean has one variant")
     parser.add_argument("--dpi", type=_positive_int, default=200, help="PDF rendering DPI for noising")
     parser.add_argument("--seed", type=_nonnegative_int, default=42, help="Noise master seed")
@@ -212,7 +214,13 @@ def build_parser() -> argparse.ArgumentParser:
 
 def main() -> int:
     _configure_console_encoding()
-    args = build_parser().parse_args()
+    parser = build_parser()
+    args = parser.parse_args()
+    if not args.dashboard_only:
+        config = load_noise_config(args.noise_config) if args.noise_config else None
+        known_profiles = set(NOISE_PROFILES) | (set(config.profiles) if config else set())
+        if unknown_profiles := sorted(set(args.profiles) - known_profiles):
+            parser.error(f"Unknown noise profiles: {', '.join(unknown_profiles)}")
     output_root = Path(args.output_dir)
     output_root.mkdir(parents=True, exist_ok=True)
 
@@ -381,6 +389,7 @@ def _run_template_case(
             seed=args.seed,
             dpi=args.dpi,
             profiles=args.profiles,
+            config=load_noise_config(args.noise_config) if args.noise_config else None,
         )
         generated_artifacts += len(noise_result["artifacts"])
         print(f"      page={page_index + 1}: artifacts={len(noise_result['artifacts'])}")
@@ -451,6 +460,7 @@ def _requested_gt_paths(page_dir: Path, profiles: list[str], variants: int) -> l
 
 def _can_reuse_noise_page(page_dir: Path, pdf_path: Path, gt_path: Path, page_index: int, args) -> bool:
     expected_pdf, expected_gt = file_sha256(pdf_path), file_sha256(gt_path)
+    config = load_noise_config(args.noise_config) if args.noise_config else None
     complete = True
     for path in _requested_gt_paths(page_dir, args.profiles, args.variants):
         if not path.exists():
@@ -461,10 +471,12 @@ def _can_reuse_noise_page(page_dir: Path, pdf_path: Path, gt_path: Path, page_in
         raw = metadata.get("noise_generation")
         if raw is None:
             raise ValueError(f"Cannot reuse legacy noise without a generation trace: {path}. "
-                             "Use a separate output directory for pipeline 0.2, or regenerate without --reuse.")
+                             "Use a separate output directory, or regenerate without --reuse.")
         trace = NoiseGeneration.model_validate(raw)
         profile, variant = _parse_artifact_name(path.stem.removesuffix("_gt"))
-        if (trace.master_seed != args.seed or trace.dpi != args.dpi or trace.source_page_number != page_index + 1
+        expected_definition = config.profiles.get(profile) if config else None
+        if (trace.noise_pipeline_version != NOISE_PIPELINE_VERSION or trace.profile_definition != expected_definition
+                or trace.master_seed != args.seed or trace.dpi != args.dpi or trace.source_page_number != page_index + 1
                 or trace.source_pdf_sha256 != expected_pdf or trace.source_gt_sha256 != expected_gt
                 or trace.profile != profile or trace.variant != variant
                 or metadata.get("profile") != profile or metadata.get("variant") != variant

@@ -62,7 +62,7 @@ all dependency fingerprints in `provenance_files`. Missing sidecars for GT that
 declares a snapshot are errors. Replay code/environment checks remain separate
 from ordinary file-integrity verification.
 
-New pipeline 0.2 scans can include a validated `noise_generation` trace. The
+Pipeline 0.2/0.3 scans can include a validated `noise_generation` trace. The
 inventory checks its PDF/GT/image hashes, source page, DPI, profile, variant and
 composed transform against the paired files. It embeds the trace and removes
 only the seed/parameter recording gaps. Historical records retain those gaps.

@@ -99,7 +99,7 @@ def test_api_clean_scan_uses_lossless_png_and_returns_trace(tmp_path):
     })
     assert response.status_code == 200
     data = response.json()
-    assert data["noise_pipeline_version"] == "0.2" and len(data["images"]) == 1
+    assert data["noise_pipeline_version"] == "0.3" and len(data["images"]) == 1
     assert data["images"][0].endswith("clean_0.png")
     assert NoiseGeneration.model_validate(data["artifacts"][0]["noise_generation"]).operations == []
 
@@ -132,6 +132,26 @@ def test_api_structure_evaluation_endpoint(monkeypatch):
 
     assert response.status_code == 200
     assert response.json()["structure_score"] == 1.0
+
+
+def test_api_accepts_custom_noise_recipes(tmp_path):
+    pytest.importorskip("cv2")
+    pytest.importorskip("fitz")
+    from reportlab.pdfgen import canvas
+
+    pdf_path = tmp_path / "custom.pdf"
+    pdf = canvas.Canvas(str(pdf_path), pagesize=(120, 80))
+    pdf.drawString(10, 40, "Custom recipe")
+    pdf.save()
+    response = TestClient(app).post("/noise/pdf", json={
+        "pdf_path": str(pdf_path), "output_dir": str(tmp_path / "scans"), "dpi": 72,
+        "variants": 1, "profiles": ["my_blur"],
+        "config": {"profiles": {"my_blur": [{"name": "defocus_blur", "parameters": {"sigma_pixels": 1.5}}]}},
+    })
+    assert response.status_code == 200
+    trace = response.json()["artifacts"][0]["noise_generation"]
+    assert trace["profile_definition"][0]["parameters"]["sigma_pixels"] == 1.5
+    assert response.json()["images"][0].endswith(".png")
 
 
 def test_api_quality_and_ordering_expose_protocol_and_nullable_scores(tmp_path):

@@ -8,6 +8,7 @@ This directory contains focused guides for using and developing PolyDocBench.
 - [Docker](docker.md)
 - [CLI Workflow](cli-workflow.md)
 - [Reproducible Noise](reproducible-noise.md)
+- [Configurable Scan Noise Effects](noise-effects.md)
 - [Render Snapshots](render-snapshots.md)
 - [Wikipedia Revisions And Benchmark Splits](source-revisions-and-splits.md)
 - [Frozen Pilot And Runtime Measurements](benchmark-pilot.md)

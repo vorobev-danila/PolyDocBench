@@ -1,0 +1,13 @@
+{
+  "schema_version": "0.1",
+  "profiles": {
+    "blur_mild": [{"name": "defocus_blur", "parameters": {"sigma_pixels": 0.8}}],
+    "blur_moderate": [{"name": "defocus_blur", "parameters": {"sigma_pixels": 1.6}}],
+    "blur_strong": [{"name": "defocus_blur", "parameters": {"sigma_pixels": 2.6}}],
+    "faded_camera": [
+      {"name": "faded_ink", "parameters": {"retained_contrast": 0.4}},
+      {"name": "motion_blur", "parameters": {"length_pixels": 9, "angle_degrees": 20}},
+      {"name": "sensor_noise", "parameters": {"sigma": 12}}
+    ]
+  }
+}

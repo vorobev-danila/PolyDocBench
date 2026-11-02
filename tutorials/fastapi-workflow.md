@@ -79,8 +79,10 @@ unavailable images or impossible/unsupported placements. Details:
 ## Noise Request
 
 Both noise endpoints support opt-in `clean` PNG controls and return pipeline
-version `0.2` with per-artifact generation traces. Defaults remain three noisy
+version `0.3` with per-artifact generation traces. Defaults remain three noisy
 profiles. Clean always has one variant. See [Reproducible Noise](reproducible-noise.md).
+New photometric profiles use PNG and preserve geometry. Both endpoints also
+accept a `config` object with named custom recipes; see [Noise Effects](noise-effects.md).
 
 ```json
 {

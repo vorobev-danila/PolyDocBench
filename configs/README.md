@@ -8,6 +8,10 @@ Current files:
 - `layout_templates.yaml` - page and typography templates for layout.
 - `render_config.yaml` - renderer configuration defaults.
 - `benchmark_icdar2027.json` - draft publication benchmark targets, not executable generation settings.
+- `noise_recipes.json` - custom blur sweeps and a faded-camera combination, loaded explicitly with `--noise-config`.
+
+Noise recipe schema, parameter units, replay and example gallery:
+[Noise Effects](../tutorials/noise-effects.md).
 
 The layout config contains the three original templates and five richer profiles.
 Supported table/image/region options are documented in

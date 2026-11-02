@@ -51,6 +51,8 @@ The project is useful for:
 - Ground-truth export with stable IDs, bboxes, and reading order.
 - Text justification and centered graphical elements.
 - Scan-like noise profiles: `light_scan`, `medium_scan`, `heavy_scan`.
+- Configurable defocus, motion blur, sensor noise, faded ink, local shadows, and duplex proxies.
+- JSON noise recipes, isolated parameter sweeps, and a local visual preview gallery.
 - Opt-in lossless clean controls, isolated artifact seeds, sampled parameter traces and noise replay.
 - Opt-in sealed source/render inputs with font/image/code snapshots, integrity checks and offline replay.
 - Revision-bound Wikipedia capture with raw MediaWiki evidence and offline verification.
@@ -165,6 +167,7 @@ The detailed documentation is split into focused tutorials:
 | [Docker](tutorials/docker.md) | Build image, run API, execute CLI in a container |
 | [CLI Workflow](tutorials/cli-workflow.md) | Parse, render, debug bboxes, noisy scans |
 | [Reproducible Noise](tutorials/reproducible-noise.md) | Clean controls, isolated seeds, actual parameters, replay and legacy migration |
+| [Noise Effects](tutorials/noise-effects.md) | New photometric scenarios, JSON recipes, CLI/API use, and visual examples |
 | [Render Snapshots](tutorials/render-snapshots.md) | Sealed source/config/font/image/code inputs, output hashes and offline render replay |
 | [Source Revisions And Splits](tutorials/source-revisions-and-splits.md) | Pinned Wikipedia revisions, family review, and deterministic dev/test assignment |
 | [Benchmark Pilot](tutorials/benchmark-pilot.md) | Frozen paired selection, model runtime, timeouts, local RSS, and budget limits |

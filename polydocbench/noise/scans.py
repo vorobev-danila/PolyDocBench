@@ -13,8 +13,10 @@ from typing import Any
 
 from polydocbench.gt.schema import validate_gt_document
 from polydocbench.noise.geometry import transform_gt_to_image_gt
+from polydocbench.noise.effects import apply_effect, sample_effect
 from polydocbench.noise.provenance import (
-    NOISE_PIPELINE_VERSION, PARAMETER_MODELS, PROFILE_OPERATIONS, NoiseGeneration, NoiseOperation,
+    LEGACY_PROFILE_OPERATIONS, NOISE_PIPELINE_VERSION, PARAMETER_MODELS, PROFILE_OPERATIONS,
+    NoiseGeneration, NoiseOperation, NoiseRecipeConfig, NoiseStep,
     derive_seed, file_sha256, pixel_sha256,
 )
 
@@ -75,7 +77,7 @@ def _sample_parameters(name: str, image: ImageArray, rng: random.Random, **overr
         return {"mode": overrides.get("mode") or rng.choice(["erode", "dilate"])}
     if name == "jpeg_artifacts":
         return {"quality": rng.randint(*overrides.get("quality_range", (30, 70)))}
-    raise ValueError(f"Unsupported noise operation: {name}")
+    return sample_effect(name, rng, overrides.get("dpi", 200))
 
 
 def _apply_parameters(image: ImageArray, name: str, parameters: dict) -> NoiseResult:
@@ -100,12 +102,14 @@ def _apply_parameters(image: ImageArray, name: str, parameters: dict) -> NoiseRe
         kernel = np.ones((2, 2), np.uint8)
         function = cv2.erode if values["mode"] == "erode" else cv2.dilate
         output = cv2.cvtColor(function(binary, kernel, iterations=1), cv2.COLOR_GRAY2RGB)
-    else:
+    elif name == "jpeg_artifacts":
         success, encoded = cv2.imencode(".jpg", cv2.cvtColor(image, cv2.COLOR_RGB2BGR),
                                        [int(cv2.IMWRITE_JPEG_QUALITY), values["quality"]])
         if not success:
             raise RuntimeError("JPEG encoding failed")
         output = cv2.cvtColor(cv2.imdecode(encoded, cv2.IMREAD_COLOR), cv2.COLOR_BGR2RGB)
+    else:
+        output = apply_effect(image, name, values)
     return NoiseResult(image=output, transform_matrix=_matrix_to_list(matrix))
 
 
@@ -137,16 +141,45 @@ def jpeg_artifacts(image: ImageArray, quality_range=(30, 70), *, rng=None) -> Im
     return _single(image, "jpeg_artifacts", rng, quality_range=quality_range).image
 
 
+def defocus_blur(image: ImageArray, *, rng=None) -> ImageArray:
+    return _single(image, "defocus_blur", rng).image
+
+
+def motion_blur(image: ImageArray, *, rng=None) -> ImageArray:
+    return _single(image, "motion_blur", rng).image
+
+
+def sensor_noise(image: ImageArray, *, rng=None) -> ImageArray:
+    return _single(image, "sensor_noise", rng).image
+
+
+def faded_ink(image: ImageArray, *, rng=None) -> ImageArray:
+    return _single(image, "faded_ink", rng).image
+
+
+def local_shadow(image: ImageArray, *, rng=None) -> ImageArray:
+    return _single(image, "local_shadow", rng).image
+
+
+def bleed_through(image: ImageArray, *, rng=None) -> ImageArray:
+    return _single(image, "bleed_through", rng).image
+
+
 NOISE_PROFILES: dict[str, list[NoiseFn]] = {
     "clean": [],
     "light_scan": [reduce_resolution, illumination_gradient, jpeg_artifacts],
     "medium_scan": [reduce_resolution, random_affine, illumination_gradient, jpeg_artifacts],
     "heavy_scan": [reduce_resolution, random_affine, illumination_gradient, ink_morphology, jpeg_artifacts],
+    "defocus_scan": [defocus_blur], "motion_scan": [motion_blur], "sensor_noise": [sensor_noise],
+    "faded_print": [faded_ink], "shadow_scan": [local_shadow], "duplex_scan": [bleed_through],
+    "camera_capture": [defocus_blur, motion_blur, local_shadow, sensor_noise, jpeg_artifacts],
 }
 _BUILTINS = {function: name for name, function in (
     ("reduce_resolution", reduce_resolution), ("random_affine", random_affine),
     ("illumination_gradient", illumination_gradient), ("ink_morphology", ink_morphology),
     ("jpeg_artifacts", jpeg_artifacts),
+    ("defocus_blur", defocus_blur), ("motion_blur", motion_blur), ("sensor_noise", sensor_noise),
+    ("faded_ink", faded_ink), ("local_shadow", local_shadow), ("bleed_through", bleed_through),
 )}
 
 
@@ -155,7 +188,7 @@ def apply_pipeline(image: ImageArray, pipeline: list[NoiseFn], *, seed: int | st
 
 
 def apply_pipeline_with_transform(
-    image: ImageArray, pipeline: list[NoiseFn], *, seed: int | str | None = None,
+    image: ImageArray, pipeline: list[NoiseFn | NoiseStep], *, seed: int | str | None = None, dpi: int = 200,
 ) -> NoiseResult:
     """Use local operation streams; unknown custom callables are explicitly untracked."""
     np = _require_numpy()
@@ -165,14 +198,22 @@ def apply_pipeline_with_transform(
     output, cumulative = image.copy(), np.eye(3, dtype=float)
     operations, occurrences, complete = [], {}, True
     for function in pipeline:
-        name = _BUILTINS.get(function)
+        step = function if isinstance(function, NoiseStep) else None
+        name = step.name if step else _BUILTINS.get(function)
         if name is None:
             output, complete = function(output), False
             continue
         occurrence = occurrences.get(name, 0)
         occurrences[name] = occurrence + 1
         operation_seed = derive_seed(local_seed, name, occurrence)
-        parameters = _sample_parameters(name, output, random.Random(int(operation_seed, 16)))
+        parameters = _sample_parameters(name, output, random.Random(int(operation_seed, 16)), dpi=dpi)
+        if step:
+            parameters.update(step.parameters)
+            if name == "random_affine":
+                height, width = output.shape[:2]
+                matrix = _require_cv2().getRotationMatrix2D((width / 2, height / 2), parameters["angle_degrees"], 1.0)
+                matrix[0, 1] += parameters["shear"]
+                parameters["matrix"] = _matrix_to_list(matrix)
         result = _apply_parameters(output, name, parameters)
         output = result.image
         cumulative = _to_homogeneous(result.transform_matrix) @ cumulative
@@ -195,7 +236,7 @@ def replay_noise(image: ImageArray, generation: NoiseGeneration | dict) -> Noise
     return NoiseResult(output, _matrix_to_list(cumulative[:2]), generation.operations)
 
 
-def _validate_generation_args(n_variants, seed, dpi, profiles):
+def _validate_generation_args(n_variants, seed, dpi, profiles, config):
     if isinstance(seed, bool) or not isinstance(seed, int) or seed < 0:
         raise ValueError("seed must be a nonnegative integer")
     if isinstance(n_variants, bool) or not isinstance(n_variants, int) or n_variants < 1:
@@ -205,10 +246,13 @@ def _validate_generation_args(n_variants, seed, dpi, profiles):
     selected = list(DEFAULT_NOISE_PROFILES) if profiles is None else list(profiles)
     if not selected or len(set(selected)) != len(selected):
         raise ValueError("profiles must be nonempty and unique")
-    unknown = sorted(set(selected) - set(NOISE_PROFILES))
+    custom = config.profiles if config else {}
+    unknown = sorted(set(selected) - (set(NOISE_PROFILES) | set(custom)))
     if unknown:
         raise ValueError(f"Unknown noise profiles: {', '.join(unknown)}")
     for profile in selected:
+        if profile in custom:
+            continue
         if profile not in PROFILE_OPERATIONS or [
             _BUILTINS.get(function) for function in NOISE_PROFILES[profile]
         ] != PROFILE_OPERATIONS[profile]:
@@ -216,16 +260,23 @@ def _validate_generation_args(n_variants, seed, dpi, profiles):
     return selected
 
 
-def _generate_scans(pdf_path, gt_path, output_dir, page_index, n_variants, seed, dpi, profiles):
+def _generate_scans(pdf_path, gt_path, output_dir, page_index, n_variants, seed, dpi, profiles, config=None):
     from PIL import Image
 
-    selected = _validate_generation_args(n_variants, seed, dpi, profiles)
+    config = None if config is None else NoiseRecipeConfig.model_validate(config)
+    selected = _validate_generation_args(n_variants, seed, dpi, profiles, config)
     source_gt = None if gt_path is None else json.loads(Path(gt_path).read_text(encoding="utf-8"))
     if source_gt is not None:
         validated = validate_gt_document(source_gt)
         if page_index + 1 not in {page.page_number for page in validated.pages}:
             raise ValueError("Selected PDF page is absent from source GT")
     base_image, zoom = render_pdf_page(pdf_path, page_index=page_index, dpi=dpi)
+    # Resolve and validate partial recipe overrides before creating output files.
+    if config:
+        for profile in selected:
+            for step in config.profiles.get(profile, []):
+                values = _sample_parameters(step.name, base_image, random.Random(0), dpi=dpi)
+                PARAMETER_MODELS[step.name].model_validate({**values, **step.parameters})
     raster_hash = pixel_sha256(base_image)
     pdf_hash = file_sha256(pdf_path)
     gt_hash = None if gt_path is None else file_sha256(gt_path)
@@ -235,18 +286,23 @@ def _generate_scans(pdf_path, gt_path, output_dir, page_index, n_variants, seed,
     output_path.mkdir(parents=True, exist_ok=True)
     artifacts = []
     for profile in selected:
+        definition = config.profiles.get(profile) if config else None
         for index in range(1 if profile == "clean" else n_variants):
-            artifact_seed = derive_seed(seed, NOISE_PIPELINE_VERSION, raster_hash, page_index + 1, dpi, profile, index)
-            result = apply_pipeline_with_transform(base_image, NOISE_PROFILES[profile], seed=artifact_seed)
+            identity = [NOISE_PIPELINE_VERSION, raster_hash, page_index + 1, dpi, profile, index]
+            if definition:
+                identity.append([step.model_dump() for step in definition])
+            artifact_seed = derive_seed(seed, *identity)
+            result = apply_pipeline_with_transform(base_image, definition or NOISE_PROFILES[profile],
+                                                    seed=artifact_seed, dpi=dpi)
             if not result.trace_complete:
                 raise ValueError("Exported profiles must contain only tracked built-in noise operations")
-            suffix = ".png" if profile == "clean" else ".jpg"
+            suffix = ".jpg" if profile in LEGACY_PROFILE_OPERATIONS and profile != "clean" else ".png"
             image_path = output_path / f"{profile}_{index}{suffix}"
             alternative = image_path.with_suffix(".jpg" if suffix == ".png" else ".png")
             if alternative.exists():
                 raise ValueError(f"Conflicting scan format exists: {alternative}")
             image = Image.fromarray(result.image)
-            if profile == "clean":
+            if suffix == ".png":
                 image.save(image_path, "PNG")
             else:
                 image.save(image_path, "JPEG", quality=95)
@@ -256,8 +312,9 @@ def _generate_scans(pdf_path, gt_path, output_dir, page_index, n_variants, seed,
                 source_page_number=page_index + 1, dpi=dpi, profile=profile, variant=index,
                 source_pdf_sha256=pdf_hash, source_gt_sha256=gt_hash, raster_sha256=raster_hash,
                 processed_pixels_sha256=pixel_sha256(result.image), image_sha256=file_sha256(image_path),
-                operations=result.operations, encoding="PNG" if profile == "clean" else "JPEG-quality-95",
+                operations=result.operations, encoding="PNG" if suffix == ".png" else "JPEG-quality-95",
                 environment=environment,
+                profile_definition=definition,
             )
             artifact = {"profile": profile, "variant": index, "image_path": str(image_path),
                         "transform_matrix": result.transform_matrix, "noise_generation": generation.model_dump()}
@@ -281,18 +338,20 @@ def _generate_scans(pdf_path, gt_path, output_dir, page_index, n_variants, seed,
 def pdf_to_noisy_images(
     pdf_path: str | Path, output_dir: str | Path, page_index: int = 0, n_variants: int = 3,
     seed: int = 42, dpi: int = 200, profiles: list[str] | None = None,
+    config: NoiseRecipeConfig | dict | None = None,
 ) -> dict[str, object]:
     """Save scan files and noise trace sidecars; clean PNG is opt-in."""
-    result = _generate_scans(pdf_path, None, output_dir, page_index, n_variants, seed, dpi, profiles)
+    result = _generate_scans(pdf_path, None, output_dir, page_index, n_variants, seed, dpi, profiles, config)
     return {**result, "images": [artifact["image_path"] for artifact in result["artifacts"]]}
 
 
 def pdf_to_noisy_dataset(
     pdf_path: str | Path, gt_path: str | Path, output_dir: str | Path, page_index: int = 0,
     n_variants: int = 3, seed: int = 42, dpi: int = 200, profiles: list[str] | None = None,
+    config: NoiseRecipeConfig | dict | None = None,
 ) -> dict[str, object]:
     """Save scans, pixel GT and generation traces with artifact-local randomness."""
-    return _generate_scans(pdf_path, gt_path, output_dir, page_index, n_variants, seed, dpi, profiles)
+    return _generate_scans(pdf_path, gt_path, output_dir, page_index, n_variants, seed, dpi, profiles, config)
 
 
 def _to_homogeneous(matrix: list[list[float]]):

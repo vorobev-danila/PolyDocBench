@@ -313,7 +313,7 @@ def test_tesseract_runner_evaluates_only_requested_profiles_and_supports_clean(d
     rows = _run_template_case(case, args, source.parent, source, "scientific_paper")
     assert seen == [".png", ".jpg"]
     assert [row["profile"] for row in rows] == ["clean", "medium_scan"]
-    assert all(row["noise_pipeline_version"] == "0.2" for row in rows)
+    assert all(row["noise_pipeline_version"] == "0.3" for row in rows)
 
 
 def test_shared_scan_resolution_rejects_ambiguous_formats(tmp_path):

@@ -17,7 +17,7 @@ from polydocbench.api.services import (
     parse_wikipedia_to_file,
     render_document,
 )
-from polydocbench.noise import NOISE_PROFILES
+from polydocbench.noise import NOISE_PROFILES, NoiseRecipeConfig
 from polydocbench.layout.templates import list_template_names
 
 
@@ -55,7 +55,8 @@ class NoisePdfRequest(BaseModel):
     variants: int = Field(default=1, ge=1, description="Variants per noisy profile; clean always produces only clean_0.png")
     seed: int = Field(default=42, ge=0, strict=True)
     dpi: int = Field(default=200, ge=36)
-    profiles: list[str] | None = Field(default=None, min_length=1, description="Optional clean control plus light/medium/heavy; default: three noisy profiles")
+    profiles: list[str] | None = Field(default=None, min_length=1, description="Built-in or configured profiles; default: light/medium/heavy")
+    config: NoiseRecipeConfig | None = None
 
 
 class NoisePdfWithGtRequest(NoisePdfRequest):
@@ -178,6 +179,7 @@ def noise_pdf(request: NoisePdfRequest) -> dict[str, Any]:
             seed=request.seed,
             dpi=request.dpi,
             profiles=request.profiles,
+            config=request.config,
         )
     except Exception as exc:
         raise HTTPException(status_code=400, detail=str(exc)) from exc
@@ -195,6 +197,7 @@ def noise_pdf_with_gt(request: NoisePdfWithGtRequest) -> dict[str, Any]:
             seed=request.seed,
             dpi=request.dpi,
             profiles=request.profiles,
+            config=request.config,
         )
     except Exception as exc:
         raise HTTPException(status_code=400, detail=str(exc)) from exc

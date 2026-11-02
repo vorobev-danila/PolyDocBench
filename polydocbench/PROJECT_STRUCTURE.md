@@ -10,6 +10,8 @@ This package is organized around the research pipeline:
 6. `noise`: generate synthetic scans from clean rendered documents.
    `noise.provenance` defines versioned generation traces and seed derivation;
    `noise.scans` applies/replays operations without mutating global RNG state.
+   `noise.effects` implements geometry-preserving photometric effects; custom
+   recipes and their validated overrides are embedded in generation traces.
 7. `eval`: evaluate OCR quality, reading order, document structure, geometry
    matching, and generate experiment dashboards.
 8. `benchmark`: typed draft research specifications and content-addressed

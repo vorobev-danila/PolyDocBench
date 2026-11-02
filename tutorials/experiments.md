@@ -10,11 +10,15 @@ accounting, use the separate [Benchmark Pilot](benchmark-pilot.md) workflow.
 It consumes an inventory and uses the same task evaluators without changing
 the existing experiment runners or their historical results.
 
-New noise generation uses pipeline `0.2`. Use a separate output directory for
+New noise generation uses pipeline `0.3`. Use a separate output directory for
 new runs; the same seed no longer recreates historical unversioned scans.
 Add `clean` to `--profiles` for a lossless control. Requested-pair filtering,
 reuse checks, PNG support and migration are described in
 [Reproducible Noise](reproducible-noise.md).
+
+Photometric profiles and configurable fixed-parameter sweeps are available through
+`--noise-config configs/noise_recipes.json` and selected custom names in
+`--profiles`. See [Noise Effects](noise-effects.md) for runnable commands and previews.
 
 Opt into sealed source/config/font/image/code inputs with `--snapshot-inputs`.
 URL images additionally require `--allow-asset-downloads`. Use a new output

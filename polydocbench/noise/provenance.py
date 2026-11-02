@@ -7,10 +7,10 @@ import json
 from pathlib import Path
 from typing import Annotated, Any, Literal
 
-from pydantic import BaseModel, ConfigDict, Field, ValidationInfo, field_validator, model_validator
+from pydantic import BaseModel, ConfigDict, Field, TypeAdapter, ValidationInfo, field_validator, model_validator
 
 
-NOISE_PIPELINE_VERSION = "0.2"
+NOISE_PIPELINE_VERSION = "0.3"
 HexDigest = Annotated[str, Field(pattern=r"^[0-9a-f]{64}$")]
 PROFILE_OPERATIONS = {
     "clean": [],
@@ -18,6 +18,13 @@ PROFILE_OPERATIONS = {
     "medium_scan": ["reduce_resolution", "random_affine", "illumination_gradient", "jpeg_artifacts"],
     "heavy_scan": ["reduce_resolution", "random_affine", "illumination_gradient", "ink_morphology", "jpeg_artifacts"],
 }
+LEGACY_PROFILE_OPERATIONS = {name: list(operations) for name, operations in PROFILE_OPERATIONS.items()}
+PROFILE_OPERATIONS.update({
+    "defocus_scan": ["defocus_blur"], "motion_scan": ["motion_blur"],
+    "sensor_noise": ["sensor_noise"], "faded_print": ["faded_ink"],
+    "shadow_scan": ["local_shadow"], "duplex_scan": ["bleed_through"],
+    "camera_capture": ["defocus_blur", "motion_blur", "local_shadow", "sensor_noise", "jpeg_artifacts"],
+})
 
 
 def derive_seed(seed: int | str, *identity: Any) -> str:
@@ -77,14 +84,106 @@ class _Jpeg(_Parameters):
     quality: int = Field(ge=1, le=100, strict=True)
 
 
+class _Defocus(_Parameters):
+    sigma_pixels: float = Field(ge=0, le=12)
+
+
+class _Motion(_Parameters):
+    length_pixels: int = Field(ge=1, le=101, strict=True)
+    angle_degrees: float = Field(ge=-180, le=180)
+
+    @field_validator("length_pixels")
+    @classmethod
+    def odd_length(cls, value):
+        if value % 2 == 0:
+            raise ValueError("Motion kernel length must be odd")
+        return value
+
+
+class _Sensor(_Parameters):
+    sigma: float = Field(ge=0, le=64)
+    noise_seed: HexDigest
+
+
+class _Faded(_Parameters):
+    retained_contrast: float = Field(gt=0, le=1)
+
+
+class _Shadow(_Parameters):
+    strength: float = Field(ge=0, le=0.8)
+    center_x: float = Field(ge=0, le=1)
+    center_y: float = Field(ge=0, le=1)
+    radius_x: float = Field(gt=0, le=2)
+    radius_y: float = Field(gt=0, le=2)
+
+
+class _Bleed(_Parameters):
+    opacity: float = Field(ge=0, le=0.45)
+    sigma_pixels: float = Field(ge=0, le=12)
+    shift_x: int = Field(ge=-4096, le=4096, strict=True)
+    shift_y: int = Field(ge=-4096, le=4096, strict=True)
+    source: Literal["mirrored_self_page"]
+
+
 PARAMETER_MODELS = {"reduce_resolution": _Resolution, "illumination_gradient": _Illumination,
-                    "random_affine": _Affine, "ink_morphology": _Morphology, "jpeg_artifacts": _Jpeg}
+                    "random_affine": _Affine, "ink_morphology": _Morphology, "jpeg_artifacts": _Jpeg,
+                    "defocus_blur": _Defocus, "motion_blur": _Motion, "sensor_noise": _Sensor,
+                    "faded_ink": _Faded, "local_shadow": _Shadow, "bleed_through": _Bleed}
+NoiseName = Literal["reduce_resolution", "random_affine", "illumination_gradient", "ink_morphology", "jpeg_artifacts",
+                    "defocus_blur", "motion_blur", "sensor_noise", "faded_ink", "local_shadow", "bleed_through"]
+
+
+class NoiseStep(BaseModel):
+    """Recipe step: omitted values are sampled; explicit values are actual units, not ranges."""
+    model_config = ConfigDict(extra="forbid", allow_inf_nan=False)
+
+    name: NoiseName
+    parameters: dict[str, Any] = Field(default_factory=dict)
+
+    @field_validator("parameters")
+    @classmethod
+    def validate_overrides(cls, value, info):
+        if "name" not in info.data:
+            return value
+        model = PARAMETER_MODELS[info.data["name"]]
+        result = {}
+        for name, item in value.items():
+            if info.data["name"] == "random_affine" and name == "matrix":
+                raise ValueError("Recipes configure affine angle_degrees/shear; the matrix is computed from them")
+            if name not in model.model_fields:
+                raise ValueError(f"Unknown parameter for {info.data['name']}: {name}")
+            field = model.model_fields[name]
+            result[name] = TypeAdapter(Annotated[field.annotation, field]).validate_python(item)
+        return result
+
+
+class NoiseRecipeConfig(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+
+    schema_version: Literal["0.1"] = "0.1"
+    profiles: dict[str, list[NoiseStep]]
+
+    @field_validator("profiles")
+    @classmethod
+    def validate_profiles(cls, value):
+        import re
+
+        if not value:
+            raise ValueError("Custom profile configuration must not be empty")
+        for name, steps in value.items():
+            if not re.fullmatch(r"[a-z][a-z0-9_]{0,63}", name) or name in PROFILE_OPERATIONS or not steps:
+                raise ValueError("Custom profiles need a safe unique name, nonempty steps, and cannot replace built-ins")
+        return value
+
+
+def load_noise_config(path: str | Path) -> NoiseRecipeConfig:
+    return NoiseRecipeConfig.model_validate_json(Path(path).read_text(encoding="utf-8"))
 
 
 class NoiseOperation(BaseModel):
     model_config = ConfigDict(extra="forbid", allow_inf_nan=False)
 
-    name: Literal["reduce_resolution", "random_affine", "illumination_gradient", "ink_morphology", "jpeg_artifacts"]
+    name: NoiseName
     seed: HexDigest
     parameters: dict[str, Any]
 
@@ -100,13 +199,14 @@ class NoiseGeneration(BaseModel):
     model_config = ConfigDict(extra="forbid", allow_inf_nan=False)
 
     trace_schema_version: Literal["0.1"]
-    noise_pipeline_version: Literal["0.2"]
+    noise_pipeline_version: Literal["0.2", "0.3"]
     seed_derivation: Literal["sha256-json-v1"]
     master_seed: int = Field(ge=0, strict=True)
     artifact_seed: HexDigest
     source_page_number: int = Field(gt=0)
     dpi: int = Field(gt=0)
-    profile: Literal["clean", "light_scan", "medium_scan", "heavy_scan"]
+    profile: str = Field(pattern=r"^[a-z][a-z0-9_]{0,63}$")
+    profile_definition: list[NoiseStep] | None = None
     variant: int = Field(ge=0)
     source_pdf_sha256: HexDigest
     source_gt_sha256: HexDigest | None
@@ -131,12 +231,28 @@ class NoiseGeneration(BaseModel):
 
     @model_validator(mode="after")
     def validate_seed_and_profile(self) -> "NoiseGeneration":
-        expected = derive_seed(self.master_seed, NOISE_PIPELINE_VERSION, self.raster_sha256,
-                               self.source_page_number, self.dpi, self.profile, self.variant)
+        identity = [self.noise_pipeline_version, self.raster_sha256,
+                    self.source_page_number, self.dpi, self.profile, self.variant]
+        definitions = LEGACY_PROFILE_OPERATIONS if self.noise_pipeline_version == "0.2" else PROFILE_OPERATIONS
+        if self.profile_definition is not None:
+            if self.noise_pipeline_version != "0.3" or self.profile in PROFILE_OPERATIONS or not self.profile_definition:
+                raise ValueError("Only new, named custom profiles may declare recipe steps")
+            recipe = [step.model_dump() for step in self.profile_definition]
+            identity.append(recipe)
+            expected_names = [step.name for step in self.profile_definition]
+        elif self.profile in definitions:
+            expected_names = definitions[self.profile]
+        else:
+            raise ValueError("Unknown versioned profile or missing custom recipe definition")
+        expected = derive_seed(self.master_seed, *identity)
         if expected != self.artifact_seed:
             raise ValueError("Artifact seed does not match its recorded identity")
-        if [operation.name for operation in self.operations] != PROFILE_OPERATIONS[self.profile]:
+        if [operation.name for operation in self.operations] != expected_names:
             raise ValueError("Recorded operations do not match the versioned noise profile")
+        if self.profile_definition is not None:
+            for step, operation in zip(self.profile_definition, self.operations):
+                if any(operation.parameters.get(key) != value for key, value in step.parameters.items()):
+                    raise ValueError("Recorded operation differs from its recipe overrides")
         occurrences: dict[str, int] = {}
         for operation in self.operations:
             occurrence = occurrences.get(operation.name, 0)
@@ -146,8 +262,8 @@ class NoiseGeneration(BaseModel):
         if self.profile == "clean":
             if self.variant != 0 or self.encoding != "PNG" or self.processed_pixels_sha256 != self.raster_sha256:
                 raise ValueError("Clean control must be a single lossless, unmodified raster")
-        elif self.encoding != "JPEG-quality-95":
-            raise ValueError("Noisy scans must record their final JPEG encoding")
+        elif self.encoding != ("JPEG-quality-95" if self.profile in LEGACY_PROFILE_OPERATIONS else "PNG"):
+            raise ValueError("Final encoding does not match the versioned profile")
         return self
 
 

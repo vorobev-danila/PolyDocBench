@@ -87,7 +87,8 @@ M2 progress:
 - [x] Opt-in clean lossless control with pixel-coordinate GT; PNG/JPEG reader support in runners and inventory.
 - [x] Requested-pair reuse validation and explicit refusal of historical untraced noise in the Tesseract generator.
 - [x] Opt-in sealed source/config/font/asset/code inputs, output binding, integrity checks and exact render replay.
-- [ ] Configurable isolated parameter sweeps and calibrated scenarios.
+- [x] Configurable JSON operation recipes and isolated photometric parameter sweeps (noise 0.3).
+- [ ] Calibrate scenario severity and validate photometric realism/readability on development data.
 - [ ] Source revision/rights review, GT audit, fixed publication metrics and model baselines.
 
 Noise smoke evidence: an existing scientific-paper PDF was copied into
@@ -221,7 +222,7 @@ acceptance, complete camera-ready, archival release, registration and presentati
 Keep the historical inventory as a baseline. Use [render snapshots](render-snapshots.md)
 and [reproducible noise](reproducible-noise.md) in a separate pilot directory.
 Use [revision-bound sources and reviewed splits](source-revisions-and-splits.md) for new data.
-Human-review source families/media rights and measure a pilot budget. Parameter sweeps,
+Human-review source families/media rights and measure a pilot budget. Noise calibration,
 GT audits and publication evaluation remain open. Do not silently relabel old
 artifacts as newly reproducible samples.
 

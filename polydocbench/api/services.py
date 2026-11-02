@@ -12,6 +12,7 @@ from polydocbench.eval.quality import evaluate_ocr_quality
 from polydocbench.layout import LayoutEngine
 from polydocbench.render import PDFRenderer
 from polydocbench.sources import WikipediaParser, capture_wikipedia_source
+from polydocbench.noise.provenance import NoiseRecipeConfig
 
 
 DEFAULT_API_OUTPUT_DIR = Path("outputs/api")
@@ -83,6 +84,7 @@ def noise_pdf_document(
     seed: int = 42,
     dpi: int = 200,
     profiles: list[str] | None = None,
+    config: NoiseRecipeConfig | dict | None = None,
 ) -> dict[str, Any]:
     input_path = Path(pdf_path)
     if not input_path.exists():
@@ -107,6 +109,7 @@ def noise_pdf_document(
         seed=seed,
         dpi=dpi,
         profiles=profiles,
+        config=config,
     )
     return {
         "pdf_path": str(input_path),
@@ -127,6 +130,7 @@ def noise_pdf_with_gt_document(
     seed: int = 42,
     dpi: int = 200,
     profiles: list[str] | None = None,
+    config: NoiseRecipeConfig | dict | None = None,
 ) -> dict[str, Any]:
     input_pdf = Path(pdf_path)
     input_gt = Path(gt_path)
@@ -155,6 +159,7 @@ def noise_pdf_with_gt_document(
         seed=seed,
         dpi=dpi,
         profiles=profiles,
+        config=config,
     )
     return {
         "pdf_path": str(input_pdf),
