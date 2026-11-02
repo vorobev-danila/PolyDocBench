@@ -1,0 +1,29 @@
+{
+  "schema_version": "0.1",
+  "title": "Controlled Document Layouts",
+  "content": [
+    {"type": "heading", "level": 1, "text": "Controlled Document Layouts", "content": []},
+    {"type": "paragraph", "text": "Synthetic documents allow researchers to vary typography, page geometry and visual complexity while retaining exact annotations. This example combines paragraphs, a captioned figure and tables with merged headers. The chart contains illustrative values rather than measurements from an experiment."},
+    {"type": "paragraph", "text": "A useful benchmark must distinguish a change in page layout from a change in content. The same source can be rendered as a technical report, an illustrated paper or a landscape reference sheet. Ground truth should follow the visible fragments on each page rather than describing invisible or discarded source elements."},
+    {"type": "image", "src": "assets/benchmark_chart.png", "caption": "Figure 1. An illustrative progression of OCR errors across scan conditions. The plot is a local bitmap with a fixed aspect ratio; these values are not experimental findings."},
+    {"type": "heading", "level": 2, "text": "Experiment configurations", "content": []},
+    {"type": "table", "caption": "Table 1. Configuration matrix with merged headers and an intentionally empty cell.", "header_rows": 2, "column_weights": [1.8, 1, 1, 1], "rows": [
+      [{"text": "Layout", "rowspan": 2, "is_header": true}, {"text": "Noise conditions", "colspan": 3, "is_header": true}],
+      [{"text": "Light", "is_header": true}, {"text": "Medium", "is_header": true}, {"text": "Heavy", "is_header": true}],
+      [{"text": "Single column"}, {"text": "Included"}, {"text": "Included"}, {"text": "Included"}],
+      [{"text": "Two columns"}, {"text": "Included"}, {"text": "Included"}, {"text": "Included"}],
+      [{"text": "Three columns"}, {"text": "Included"}, {"text": ""}, {"text": "Included"}],
+      [{"text": "Landscape reference"}, {"text": "Included"}, {"text": "Included"}, {"text": "Included"}]
+    ]},
+    {"type": "paragraph", "text": "Tables are rendered as vector grids with ordinary searchable text. Every logical cell has a stable source identifier and every visible fragment has its own page coordinates. Captions remain attached to their figures, while full-width elements can interrupt a multi-column text flow."},
+    {"type": "table", "caption": "Table 2. Rendering checks and expected ground-truth behavior.", "column_weights": [1.2, 2.2, 2.4], "rows": [
+      [{"text": "Component", "is_header": true}, {"text": "Rendering behavior", "is_header": true}, {"text": "Annotation", "is_header": true}],
+      [{"text": "Merged cells"}, {"text": "Borders follow row and column spans."}, {"text": "A single cell bbox covers the merged region."}],
+      [{"text": "Long tables"}, {"text": "Row groups continue on the next page or column without splitting merged cells."}, {"text": "Repeated headers retain source-cell IDs but receive distinct visible IDs."}],
+      [{"text": "Figures"}, {"text": "Actual image dimensions determine the rendered aspect ratio."}, {"text": "The image bbox excludes its caption."}],
+      [{"text": "Captions"}, {"text": "Text wraps inside a measured allocation and remains with the figure."}, {"text": "Caption blocks and their text lines reference the owner."}],
+      [{"text": "Scan transforms"}, {"text": "The scan image can rotate and shear."}, {"text": "The same transform is applied to cells, text lines and captions."}]
+    ]},
+    {"type": "paragraph", "text": "Validate layouts and annotations offline before generating a multilingual corpus."}
+  ]
+}

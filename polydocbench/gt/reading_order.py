@@ -35,7 +35,8 @@ def _reading_order_key(element: DocumentElement) -> tuple[float, float, float, s
         return (float("inf"), float("inf"), float("inf"), element.id)
 
     source_index = element.metadata.get("source_index")
-    if source_index is not None and element.metadata.get("role") == "block":
-        return (element.bbox.page, float(source_index), 0.0, element.id)
+    if source_index is not None:
+        position = element.metadata.get("flow_order", element.metadata.get("line_index", 0))
+        return (element.bbox.page, float(source_index), float(position), element.id)
 
     return (element.bbox.page, element.bbox.x, -element.bbox.y, element.id)

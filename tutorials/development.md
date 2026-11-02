@@ -1,5 +1,9 @@
 # Development
 
+Real Wikipedia integration checks are opt-in and separate from offline pytest:
+see [Live Wikipedia Checks](live-wikipedia-check.md). The cached snapshots and
+PDF/GT diagnostics go under ignored `outputs/validation/wiki_tables/`.
+
 This guide covers local development, tests, CI, and contribution flow.
 
 ## Install Development Dependencies

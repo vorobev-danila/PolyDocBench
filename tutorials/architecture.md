@@ -87,3 +87,8 @@ flowchart TB
 | `polydocbench.noise` | PDF-to-image conversion and scan noise profiles |
 | `polydocbench.eval` | Tesseract quality, semantic-block ordering, Docling structure evaluation, matching, dashboard reporting |
 | `polydocbench.api` | FastAPI workflows over the pipeline |
+
+OCR and ordering metric semantics are versioned separately from document schemas
+in `polydocbench.eval.protocol`. Reporting pools OCR error/detection counts and
+preserves undefined ordering scores instead of substituting numeric values.
+See [Evaluation Protocol](evaluation-protocol.md).

@@ -9,10 +9,10 @@ import os
 import sys
 from dataclasses import dataclass
 from pathlib import Path
-from statistics import mean
 from typing import Any
 
 from dotenv import load_dotenv
+from polydocbench.noise import scan_image_path
 
 from polydocbench.eval import (
     evaluate_semantic_ordering,
@@ -23,6 +23,8 @@ from polydocbench.eval import (
 )
 from polydocbench.eval.dotsocr import DEFAULT_DOTSOCR_BASE_URL, DEFAULT_DOTSOCR_MODEL
 from polydocbench.eval.dotsocr import parse_dotsocr_blocks_response
+from polydocbench.eval.protocol import result_protocol_version
+from polydocbench.eval.reporting import format_metric, mean_available
 
 
 @dataclass(frozen=True)
@@ -124,7 +126,8 @@ def main() -> int:
                 f"[{index}/{len(artifacts)}] {artifact.language}/{artifact.article_id}/{artifact.template}/"
                 f"page_{artifact.page_number:03d}/{artifact.profile}_{artifact.variant}: "
                 f"ordered_WER={row['ordered_WER']:.3f} token_F1={row['token_F1']:.3f} "
-                f"pairwise={row['pairwise_accuracy']:.3f} coverage={row['matched_block_ratio']:.3f}"
+                f"pairwise={format_metric(row['pairwise_accuracy'], 3)} "
+                f"coverage={row['matched_block_ratio']:.3f} pairs={row['num_order_pairs']}"
             )
 
     _write_summary(summary_path, rows)
@@ -154,9 +157,6 @@ def discover_scan_artifacts(
         page_number = int(relative.parts[4].removeprefix("page_"))
         stem = gt_path.stem.removesuffix("_gt")
         profile, variant = _parse_artifact_name(stem)
-        image_path = gt_path.with_name(f"{stem}.jpg")
-        if not image_path.exists():
-            continue
         if languages and language not in languages:
             continue
         if article_ids and article_id not in article_ids:
@@ -167,6 +167,7 @@ def discover_scan_artifacts(
             continue
         if page_numbers and page_number not in page_numbers:
             continue
+        image_path = scan_image_path(gt_path)
         artifacts.append(ScanArtifact(language, article_id, template, page_number, profile, variant, image_path, gt_path))
     return artifacts
 
@@ -206,7 +207,8 @@ def _evaluate_artifact(
         prediction_path.parent.mkdir(parents=True, exist_ok=True)
         prediction_path.write_text(json.dumps(predicted_blocks, ensure_ascii=False, indent=2), encoding="utf-8")
 
-    gt_blocks = extract_visible_gt_blocks(load_gt(artifact.gt_path), page_number=1)
+    image_gt = load_gt(artifact.gt_path)
+    gt_blocks = extract_visible_gt_blocks(image_gt, page_number=1)
     metrics, matches = evaluate_semantic_ordering(
         gt_blocks,
         predicted_blocks,
@@ -238,8 +240,10 @@ def _evaluate_artifact(
         "article_id": artifact.article_id,
         "template": artifact.template,
         "page_number": artifact.page_number,
+        "image_page_number": 1,
         "profile": artifact.profile,
         "variant": artifact.variant,
+        "noise_pipeline_version": image_gt.get("metadata", {}).get("noise_generation", {}).get("noise_pipeline_version", "legacy"),
         "image_path": str(artifact.image_path),
         "gt_path": str(artifact.gt_path),
         "prediction_path": str(prediction_path),
@@ -265,10 +269,12 @@ def _read_metrics(path: Path) -> list[dict[str, Any]]:
 
 
 def _write_summary(path: Path, rows: list[dict[str, Any]]) -> None:
+    protocol_version = result_protocol_version(rows)
     fieldnames = [
-        "engine", "model", "language", "template", "profile", "article_count", "count",
+        "evaluation_protocol_version", "engine", "model", "language", "template", "profile", "article_count", "count",
         "mean_ordered_CER", "mean_ordered_WER", "mean_token_F1", "mean_kendall_tau",
         "mean_pairwise_accuracy", "mean_matched_block_ratio",
+        "valid_order_count", "num_order_pairs", "mean_order_pair_coverage",
     ]
     groups: dict[tuple[str, str, str], list[dict[str, Any]]] = {}
     for row in rows:
@@ -279,6 +285,7 @@ def _write_summary(path: Path, rows: list[dict[str, Any]]) -> None:
         for (language, template, profile), group in sorted(groups.items()):
             writer.writerow(
                 {
+                    "evaluation_protocol_version": protocol_version,
                     "engine": "dotsocr",
                     "model": group[0]["model"],
                     "language": language,
@@ -286,8 +293,12 @@ def _write_summary(path: Path, rows: list[dict[str, Any]]) -> None:
                     "profile": profile,
                     "article_count": len({row["article_id"] for row in group}),
                     "count": len(group),
+                    "valid_order_count": sum(row.get("pairwise_accuracy") is not None for row in group),
+                    "num_order_pairs": sum(row["num_order_pairs"] for row in group)
+                    if all("num_order_pairs" in row for row in group) else None,
+                    "mean_order_pair_coverage": mean_available(row.get("order_pair_coverage") for row in group),
                     **{
-                        f"mean_{metric}": mean(float(row[metric]) for row in group)
+                        f"mean_{metric}": mean_available(row[metric] for row in group)
                         for metric in (
                             "ordered_CER", "ordered_WER", "token_F1", "kendall_tau",
                             "pairwise_accuracy", "matched_block_ratio",

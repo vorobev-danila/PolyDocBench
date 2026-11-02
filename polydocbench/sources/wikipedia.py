@@ -19,6 +19,7 @@ Wikipedia elements does not require editing one very large method.
 
 from __future__ import annotations
 
+from copy import deepcopy
 import json
 import re
 from dataclasses import dataclass
@@ -125,6 +126,7 @@ class WikipediaParser:
         """Parse a Wikipedia HTML string."""
 
         self.soup = BeautifulSoup(html, "html.parser")
+        self.source_url = url
         content_root = self.soup.find("div", class_="mw-parser-output")
         if not isinstance(content_root, Tag):
             return {"error": "Wikipedia content container 'mw-parser-output' was not found"}
@@ -197,6 +199,9 @@ class WikipediaParser:
         return items
 
     def _extract_content_items(self, node: Tag) -> list[dict[str, Any]]:
+        if self._has_class(node, "gallery"):
+            return [image for child in node.find_all("li", recursive=False)
+                    if (image := self._extract_image(child))]
         if node.name == "p":
             return self._extract_paragraph_with_formulas(node)
         if node.name in {"ul", "ol"}:
@@ -229,7 +234,7 @@ class WikipediaParser:
                 items.append(formula)
 
         # Some Wikipedia language editions wrap display math in definition lists.
-        for child in node.find_all(["p", "ul", "ol", "table", "figure"], recursive=False):
+        for child in node.find_all(["p", "ul", "ol", "table", "figure", "div"], recursive=False):
             if not self._should_skip(child):
                 items.extend(self._extract_content_items(child))
 
@@ -267,16 +272,74 @@ class WikipediaParser:
 
     def _extract_table(self, node: Tag) -> dict[str, Any] | None:
         rows = []
-        for table_row in node.find_all("tr"):
+        table_rows = [row for row in node.find_all("tr") if row.find_parent("table") is node]
+        for row_index, table_row in enumerate(table_rows):
             cells = []
             for cell in table_row.find_all(["td", "th"], recursive=False):
-                text = self._clean_text(cell.get_text(" ", strip=True))
-                if text:
-                    cells.append({"text": text, "is_header": cell.name == "th"})
-            if cells:
-                rows.append(cells)
+                text = self._table_cell_text(cell)
+                def span(name: str) -> int:
+                    try:
+                        value = int(str(cell.get(name, 1)))
+                    except ValueError:
+                        return 1
+                    if name == "rowspan" and value == 0:
+                        group = table_row.parent
+                        return sum(row.parent is group for row in table_rows[row_index:])
+                    return min(1000, max(1, value))
 
-        return {"type": "table", "rows": rows} if rows else None
+                item = {"text": text, "is_header": cell.name == "th" or table_row.find_parent("thead") is not None,
+                        "rowspan": span("rowspan"), "colspan": span("colspan")}
+                if cell.get("scope") in {"row", "col", "rowgroup", "colgroup"}:
+                    item["scope"] = cell["scope"]
+                if cell.get("align") in {"left", "center", "right"}:
+                    item["align"] = cell["align"]
+                cells.append(item)
+            rows.append(cells)
+
+        if not any(rows):
+            return None
+        caption = node.find("caption", recursive=False)
+        result = {"type": "table", "rows": rows,
+                  "caption": self._clean_text(caption.get_text(" ", strip=True)) if caption else "",
+                  "table_kind": "infobox" if self._has_class(node, "infobox") else "data"}
+        header_rows = 0
+        for row in table_rows:
+            if row.find_parent("thead") is None:
+                break
+            header_rows += 1
+        if header_rows:
+            result["header_rows"] = header_rows
+        warnings = []
+        if node.find("table"):
+            warnings.append("Nested table text was flattened inside its parent cell")
+        if node.find("img"):
+            warnings.append("Images inside table cells are not rendered")
+        if warnings:
+            result["extraction_warnings"] = warnings
+        return result
+
+    def _table_cell_text(self, cell: Tag) -> str:
+        """Retain basic exponent/index semantics without misreading linked footnotes."""
+        clone = deepcopy(cell)
+        for reference in clone.select(".reference"):
+            reference.decompose()
+        superscripts = dict(zip("0123456789+-=()ni", "\u2070\u00b9\u00b2\u00b3\u2074\u2075\u2076\u2077\u2078\u2079\u207a\u207b\u207c\u207d\u207e\u207f\u2071"))
+        subscripts = dict(zip("0123456789+-=()ni", "\u2080\u2081\u2082\u2083\u2084\u2085\u2086\u2087\u2088\u2089\u208a\u208b\u208c\u208d\u208e\u2099\u1d62"))
+        for script in clone.find_all(["sup", "sub"]):
+            if script.find("a") or self._has_class(script, "reference"):
+                continue
+            text = "".join(script.get_text("", strip=True).split()).replace("\u2212", "-")
+            mapping = superscripts if script.name == "sup" else subscripts
+            if not text:
+                continue
+            if script.name == "sup" and re.fullmatch(r"[A-Za-z]\)", text):
+                script.replace_with(f"[{text[:-1]}]")
+                continue
+            rendered = "".join(mapping[character] for character in text) if all(character in mapping for character in text) else (
+                ("^(" if script.name == "sup" else "_(") + text + ")")
+            script.replace_with(rendered)
+        clone.smooth()
+        return self._clean_text(clone.get_text(" ", strip=True), remove_numeric_references=False).strip()
 
     def _extract_image(self, node: Tag) -> dict[str, Any] | None:
         image = node.find("img")
@@ -287,15 +350,26 @@ class WikipediaParser:
         if not src:
             return None
 
-        caption_node = node.find("figcaption") or node.find("div", class_="thumbcaption")
+        caption_node = (node.find("figcaption") or node.find("div", class_="thumbcaption")
+                        or node.find("div", class_="gallerytext"))
         caption = self._clean_text(caption_node.get_text(" ", strip=True)) if isinstance(caption_node, Tag) else ""
 
-        return {
+        result = {
             "type": "image",
-            "src": self._absolute_url(str(src), base="https://commons.wikimedia.org"),
+            "src": self._absolute_url(str(src), base=getattr(self, "source_url", "") or "https://commons.wikimedia.org"),
             "caption": caption,
             "alt": image.get("alt", ""),
         }
+        for attribute in ("width", "height"):
+            try:
+                value = int(str(image.get(attribute, 0)))
+            except ValueError:
+                value = 0
+            if value > 0:
+                result[f"pixel_{attribute}"] = value
+        if image.get("srcset"):
+            result["srcset"] = str(image["srcset"])
+        return result
 
     def _extract_formula(self, node: Tag) -> dict[str, Any] | None:
         mathml = None
@@ -492,9 +566,10 @@ class WikipediaParser:
         return WikipediaParser._clean_text(text)
 
     @staticmethod
-    def _clean_text(text: str) -> str:
+    def _clean_text(text: str, remove_numeric_references: bool = True) -> str:
         text = re.sub(r"\s+", " ", text).strip()
-        text = re.sub(r"\[\s*\d+\s*\]", "", text)
+        if remove_numeric_references:
+            text = re.sub(r"\[\s*\d+\s*\]", "", text)
         text = re.sub(r"\s+([,.;:!?])", r"\1", text)
         text = re.sub(r"([(])\s+", r"\1", text)
         text = re.sub(r"\s+([)])", r"\1", text)

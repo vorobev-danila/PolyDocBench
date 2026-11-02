@@ -6,7 +6,8 @@ from collections import Counter
 from typing import Any
 
 from .block_matching import BlockMatch, match_semantic_blocks
-from .ordering import kendall_tau, pairwise_accuracy
+from .ordering import evaluate_order_pairs
+from .protocol import EVALUATION_PROTOCOL_VERSION
 from .text_metrics import cer, normalize_text, wer
 
 
@@ -16,7 +17,7 @@ def evaluate_semantic_ordering(
     *,
     min_similarity: float = 0.3,
     max_gt_span: int = 3,
-) -> tuple[dict[str, float | int], list[BlockMatch]]:
+) -> tuple[dict[str, float | int | str | None], list[BlockMatch]]:
     """Evaluate OCR text in returned order and order of matched semantic blocks."""
     gt_text = join_ordered_text(gt_blocks)
     predicted_text = join_ordered_text(predicted_blocks)
@@ -28,15 +29,17 @@ def evaluate_semantic_ordering(
         max_gt_span=max_gt_span,
     )
     gt_order = [block["id"] for block in gt_blocks]
-    predicted_order = [gt_id for match in matches for gt_id in match.gt_ids]
-    matched_gt_ids = set(predicted_order)
+    predicted_groups = [match.gt_ids for match in matches]
+    matched_gt_ids = {gt_id for group in predicted_groups for gt_id in group}
     return (
         {
+            "evaluation_protocol_version": EVALUATION_PROTOCOL_VERSION,
+            "min_block_similarity": min_similarity,
+            "max_gt_span": max_gt_span,
             "ordered_CER": cer(gt_text, predicted_text),
             "ordered_WER": wer(gt_text, predicted_text),
             **token_scores,
-            "kendall_tau": kendall_tau(gt_order, predicted_order),
-            "pairwise_accuracy": pairwise_accuracy(gt_order, predicted_order),
+            **evaluate_order_pairs(gt_order, predicted_groups),
             "matched_block_ratio": len(matched_gt_ids) / max(1, len(gt_blocks)),
             "matched_prediction_ratio": len(matches) / max(1, len(predicted_blocks)),
             "num_gt_blocks": len(gt_blocks),

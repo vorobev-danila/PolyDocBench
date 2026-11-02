@@ -5,8 +5,9 @@ from __future__ import annotations
 from pathlib import Path
 
 from reportlab.pdfbase import pdfmetrics
-from reportlab.pdfbase.pdfmetrics import stringWidth
 from reportlab.pdfbase.ttfonts import TTFont
+
+from polydocbench.document.fonts import measure_text
 
 
 class FontManager:
@@ -47,9 +48,9 @@ class FontManager:
 
     def measure_text(self, text: str, font_name: str, font_size: float) -> float:
         try:
-            return stringWidth(text, font_name, font_size)
-        except Exception:
-            return stringWidth(text, "Helvetica", font_size)
+            return measure_text(text, font_name, font_size)
+        except KeyError:
+            return measure_text(text, "Helvetica", font_size)
 
     @staticmethod
     def _register_variant(font_config: dict, path_key: str, family: str) -> None:

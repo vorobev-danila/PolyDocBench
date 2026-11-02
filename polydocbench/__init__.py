@@ -1,3 +1,3 @@
 """PolyDocBench research utilities."""
 
-__all__ = ["document", "eval", "gt", "layout", "noise", "render", "sources"]
+__all__ = ["benchmark", "document", "eval", "gt", "layout", "noise", "render", "sources"]

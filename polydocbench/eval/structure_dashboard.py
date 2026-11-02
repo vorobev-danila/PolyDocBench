@@ -26,7 +26,7 @@ def write_structure_dashboard(output_path: str | Path, rows: list[dict[str, Any]
         figure.write_html(output_path, include_plotlyjs=True, full_html=True)
         return output_path
 
-    profiles = _ordered_values(rows, "profile", ["light_scan", "medium_scan", "heavy_scan"])
+    profiles = _ordered_values(rows, "profile", ["clean", "light_scan", "medium_scan", "heavy_scan"])
     languages = _ordered_values(rows, "language")
     templates = _ordered_values(rows, "template", ["simple_article", "scientific_paper", "magazine_layout"])
 
@@ -44,7 +44,7 @@ def write_structure_dashboard(output_path: str | Path, rows: list[dict[str, Any]
         row_heights=[0.28, 0.28, 0.44],
         vertical_spacing=0.1,
     )
-    colors = {"light_scan": "#2a9d8f", "medium_scan": "#e9c46a", "heavy_scan": "#e76f51"}
+    colors = {"clean": "#457b9d", "light_scan": "#2a9d8f", "medium_scan": "#e9c46a", "heavy_scan": "#e76f51"}
 
     for profile in profiles:
         color = colors.get(profile)

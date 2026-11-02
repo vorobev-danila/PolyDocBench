@@ -13,6 +13,7 @@ class LineMatch:
     gt: LineDict
     prediction: LineDict | None
     iou: float
+    prediction_index: int | None = None
 
 
 def match_lines(
@@ -41,7 +42,7 @@ def match_lines(
 
         if best_index is not None and best_iou >= iou_threshold:
             used_prediction_ids.add(best_index)
-            matches.append(LineMatch(gt, predicted_lines[best_index], best_iou))
+            matches.append(LineMatch(gt, predicted_lines[best_index], best_iou, best_index))
         else:
             matches.append(LineMatch(gt, None, 0.0))
 

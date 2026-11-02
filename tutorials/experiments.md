@@ -1,5 +1,16 @@
 # Experiments
 
+For publication-oriented corpus planning and an offline audit of existing
+artifacts, see [Benchmark Inventory](benchmark-manifest.md) and the
+[ICDAR 2027 roadmap](icdar-2027-plan.md). The current experiment runners do not
+yet execute the draft benchmark specification or assign dataset splits.
+
+New noise generation uses pipeline `0.2`. Use a separate output directory for
+new runs; the same seed no longer recreates historical unversioned scans.
+Add `clean` to `--profiles` for a lossless control. Requested-pair filtering,
+reuse checks, PNG support and migration are described in
+[Reproducible Noise](reproducible-noise.md).
+
 This guide describes the first OCR benchmark loop:
 
 ```text
@@ -206,9 +217,12 @@ outputs/experiments/tesseract_quality/
 
 `dashboard.html` is a standalone interactive Plotly report with:
 
-- CER and IoU comparisons by language and noise profile;
-- WER and matched-ratio comparisons by document template and noise profile;
+- pooled micro-CER and IoU comparisons by language and noise profile;
+- pooled micro-WER and line-F1 comparisons by document template and noise profile;
 - an aggregated results table for detailed inspection.
+
+Legacy result files retain the original CER/WER/matched-ratio charts. New reports
+show their evaluation protocol version and do not combine different versions.
 
 Open it locally after an experiment:
 
@@ -218,10 +232,28 @@ Start-Process outputs\experiments\tesseract_quality\dashboard.html
 
 ## Metric Notes
 
-- `CER`: character error rate, lower is better.
-- `WER`: word error rate, lower is better.
-- `IoU`: average matched line geometry overlap, higher is better.
+The `--templates` option also accepts `technical_report`, `research_illustrated`,
+`financial_report`, `magazine_feature`, and `reference_sheet`; defaults remain the
+three original templates. See [Complex Layouts](complex-layouts.md) for their
+content requirements and strict validation. Nested tables and images inside
+table cells are not supported by the new strict profiles. Curate compatible
+sources before starting a large run. Use a fresh output directory after renderer
+changes: `--reuse` can retain old source JSON/PDF/GT/scans and cannot restore table
+spans lost by an earlier parser.
+
+## OCR Metric Definitions
+
+- `CER` / `macro_CER`: mean character error rate over GT lines, lower is better.
+- `WER` / `macro_WER`: mean word error rate over GT lines, lower is better.
+- `micro_CER` / `micro_WER`: length-weighted errors including unmatched predictions.
+- `line_precision`, `line_recall`, `line_F1`: geometry-based line detection quality.
+- `IoU`: mean geometry overlap over all GT lines, with zero for unmatched lines.
 - `matched_ratio`: share of GT lines matched to OCR lines by IoU, higher is better.
+
+Protocol `0.2` preserves legacy CER/WER and adds insertion-aware micro metrics.
+Summary micro rates pool error counts and reference lengths, not page averages.
+See [Evaluation Protocol](evaluation-protocol.md) for empty-input conventions,
+segmentation limitations, and migrating saved predictions.
 
 For noisy scans, the script runs Tesseract in image-coordinate mode, so predicted bboxes are evaluated against the transformed noisy GT rather than the original PDF GT.
 
@@ -275,8 +307,14 @@ Metrics:
 
 - `ordered_CER` and `ordered_WER`: OCR text errors after concatenating semantic blocks in their reading order.
 - `token_F1`: recognized token overlap without order, useful to distinguish recognition loss from order errors.
-- `kendall_tau` and `pairwise_accuracy`: ordering of text-matched semantic blocks.
+- `kendall_tau` and `pairwise_accuracy`: ordering of matched GT pairs across distinct model blocks; `null` when no comparable pairs exist.
 - `matched_block_ratio`: GT block coverage; read it together with ordering scores.
+- `order_pair_coverage`: share of GT pairs whose order is observable across returned model blocks.
+
+Pairs within a single model block are unresolved, not automatically correct.
+Reports show undefined ordering scores as `N/A`; CSV means exclude them and
+include `valid_order_count`. These protocol `0.2` scores are not directly
+comparable with legacy scores that credited internal GT-span order.
 
 Results:
 

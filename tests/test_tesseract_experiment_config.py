@@ -1,4 +1,6 @@
-from scripts.run_tesseract_ocr_experiment import ARTICLE_CASES, _select_cases, _select_page_indices
+import pytest
+
+from scripts.run_tesseract_ocr_experiment import ARTICLE_CASES, _select_cases, _select_page_indices, build_parser
 
 
 def test_article_pool_contains_ten_articles_per_language():
@@ -29,3 +31,9 @@ def test_default_template_profile_matrix_has_nine_variants():
     profiles = ["light_scan", "medium_scan", "heavy_scan"]
 
     assert len(templates) * len(profiles) == 9
+
+
+@pytest.mark.parametrize("option,value", [("--variants", "0"), ("--dpi", "0"), ("--seed", "-1")])
+def test_invalid_noise_cli_settings_are_rejected_even_with_reuse(option, value):
+    with pytest.raises(SystemExit):
+        build_parser().parse_args(["--reuse", option, value])

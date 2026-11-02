@@ -7,6 +7,9 @@ from pathlib import Path
 from statistics import mean
 from typing import Any
 
+from .protocol import result_protocol_version
+from .reporting import format_metric, mean_available
+
 
 def write_ordering_dashboard(output_path: str | Path, rows: list[dict[str, Any]]) -> Path:
     """Write a self-contained Plotly dashboard for dots.ocr ordering metrics."""
@@ -17,6 +20,7 @@ def write_ordering_dashboard(output_path: str | Path, rows: list[dict[str, Any]]
         raise RuntimeError('Install visualization dependencies with: uv pip install -e ".[dotsocr]"') from exc
 
     output_path = Path(output_path)
+    protocol_version = result_protocol_version(rows)
     output_path.parent.mkdir(parents=True, exist_ok=True)
     if not rows:
         figure = go.Figure()
@@ -25,10 +29,10 @@ def write_ordering_dashboard(output_path: str | Path, rows: list[dict[str, Any]]
         figure.write_html(output_path, include_plotlyjs=True, full_html=True)
         return output_path
 
-    profiles = _ordered_values(rows, "profile", ["light_scan", "medium_scan", "heavy_scan"])
+    profiles = _ordered_values(rows, "profile", ["clean", "light_scan", "medium_scan", "heavy_scan"])
     languages = _ordered_values(rows, "language")
     templates = _ordered_values(rows, "template", ["simple_article", "scientific_paper", "magazine_layout"])
-    colors = {"light_scan": "#2a9d8f", "medium_scan": "#e9c46a", "heavy_scan": "#e76f51"}
+    colors = {"clean": "#457b9d", "light_scan": "#2a9d8f", "medium_scan": "#e9c46a", "heavy_scan": "#e76f51"}
     figure = make_subplots(
         rows=3,
         cols=2,
@@ -68,7 +72,7 @@ def write_ordering_dashboard(output_path: str | Path, rows: list[dict[str, Any]]
     figure.add_trace(
         go.Table(
             header={
-                "values": ["Language", "Template", "Noise", "Samples", "Ordered WER", "Token F1", "Tau", "Coverage"],
+                "values": ["Language", "Template", "Noise", "Samples", "Ordered WER", "Token F1", "Tau", "Valid Order Samples", "Block Coverage", "Pair Coverage"],
                 "fill_color": "#213547",
                 "font": {"color": "white"},
                 "align": "left",
@@ -81,8 +85,10 @@ def write_ordering_dashboard(output_path: str | Path, rows: list[dict[str, Any]]
                     [row["count"] for row in summaries],
                     [f'{row["ordered_WER"]:.4f}' for row in summaries],
                     [f'{row["token_F1"]:.4f}' for row in summaries],
-                    [f'{row["kendall_tau"]:.4f}' for row in summaries],
+                    [format_metric(row["kendall_tau"]) for row in summaries],
+                    [row["valid_order_count"] for row in summaries],
                     [f'{row["matched_block_ratio"]:.4f}' for row in summaries],
+                    [format_metric(row["order_pair_coverage"]) for row in summaries],
                 ],
                 "fill_color": "#f7f9fb",
                 "align": "left",
@@ -92,7 +98,7 @@ def write_ordering_dashboard(output_path: str | Path, rows: list[dict[str, Any]]
         col=1,
     )
     figure.update_layout(
-        title={"text": f"PolyDocBench dots.ocr Ordering Dashboard<br><sup>{len(rows)} evaluated scans</sup>", "x": 0.02},
+        title={"text": f"PolyDocBench dots.ocr Ordering Dashboard<br><sup>{len(rows)} evaluated scans; protocol {protocol_version}</sup>", "x": 0.02},
         barmode="group",
         template="plotly_white",
         height=1280,
@@ -114,7 +120,7 @@ def _ordered_values(rows: list[dict[str, Any]], key: str, preferred: list[str] |
 def _group_means(rows: list[dict[str, Any]], dimension: str, values: list[str], metric: str, profile: str) -> list[float | None]:
     grouped: defaultdict[str, list[float]] = defaultdict(list)
     for row in rows:
-        if row["profile"] == profile:
+        if row["profile"] == profile and row.get(metric) is not None:
             grouped[str(row[dimension])].append(float(row[metric]))
     return [mean(grouped[value]) if grouped[value] else None for value in values]
 
@@ -129,7 +135,9 @@ def _summary_rows(rows: list[dict[str, Any]]) -> list[dict[str, Any]]:
             "template": key[1],
             "profile": key[2],
             "count": len(group),
-            **{metric: mean(float(item[metric]) for item in group) for metric in (
+            "valid_order_count": sum(item.get("pairwise_accuracy") is not None for item in group),
+            "order_pair_coverage": mean_available(item.get("order_pair_coverage") for item in group),
+            **{metric: mean_available(item[metric] for item in group) for metric in (
                 "ordered_WER", "token_F1", "kendall_tau", "matched_block_ratio"
             )},
         }

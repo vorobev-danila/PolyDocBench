@@ -46,11 +46,15 @@ The project is useful for:
 - Multilingual Wikipedia parsing.
 - Template-based synthetic document layout.
 - PDF rendering with text, images, formulas, and debug bounding boxes.
+- Vector tables with merged cells, repeated headers, cell-level GT, and visible figure captions.
+- Eight page templates, including balanced multi-column inserts and landscape reference sheets.
 - Ground-truth export with stable IDs, bboxes, and reading order.
 - Text justification and centered graphical elements.
 - Scan-like noise profiles: `light_scan`, `medium_scan`, `heavy_scan`.
+- Opt-in lossless clean controls, isolated artifact seeds, sampled parameter traces and noise replay.
 - Transform-aware noisy GT for rotated/affine scan variants.
 - OCR quality, reading-order, and structure evaluation utilities.
+- Versioned OCR/reading-order evaluation with insertion-aware micro error rates and explicit order-pair coverage.
 - Tesseract quality, remote dots.ocr reading-order, and Docling structure experiment runners.
 - Interactive Plotly dashboards for OCR experiment comparisons.
 - CLI and FastAPI interfaces.
@@ -156,11 +160,17 @@ The detailed documentation is split into focused tutorials:
 | [Installation](tutorials/installation.md) | Prerequisites, `uv` setup, extras, Docker note |
 | [Docker](tutorials/docker.md) | Build image, run API, execute CLI in a container |
 | [CLI Workflow](tutorials/cli-workflow.md) | Parse, render, debug bboxes, noisy scans |
+| [Reproducible Noise](tutorials/reproducible-noise.md) | Clean controls, isolated seeds, actual parameters, replay and legacy migration |
 | [FastAPI Workflow](tutorials/fastapi-workflow.md) | API startup, endpoints, request examples |
 | [Architecture](tutorials/architecture.md) | Components, data flow, module responsibilities |
 | [Data Format](tutorials/data-format.md) | Source JSON, GT JSON, schema versions |
 | [Configuration](tutorials/configuration.md) | Layout templates, render config, JSON snippets |
+| [Complex Layouts](tutorials/complex-layouts.md) | Tables, captioned figures, full-width inserts, and landscape pages |
+| [Live Wikipedia Checks](tutorials/live-wikipedia-check.md) | Real-URL table checks, cached HTML snapshots, PDF/GT diagnostics |
 | [Experiments](tutorials/experiments.md) | Tesseract quality, dots.ocr reading-order, and Docling structure workflows |
+| [Evaluation Protocol](tutorials/evaluation-protocol.md) | Metric definitions, aggregation, undefined scores, and result versioning |
+| [Benchmark Inventory](tutorials/benchmark-manifest.md) | Draft dataset specification, artifact hashes, integrity checks and provenance gaps |
+| [ICDAR 2027 Plan](tutorials/icdar-2027-plan.md) | Publication roadmap, experiment design and milestone acceptance gates |
 | [Development](tutorials/development.md) | Tests, CI, project structure, contribution flow |
 
 ## Project Structure
@@ -168,6 +178,7 @@ The detailed documentation is split into focused tutorials:
 ```text
 polydocbench/
   api/           # FastAPI application and workflow services
+  benchmark/     # Draft benchmark specification and historical artifact inventory
   noise/         # PDF-to-scan rendering and noise profiles
   document/      # Shared document model and normalization
   eval/          # OCR quality, ordering, structure, matching, and dashboards

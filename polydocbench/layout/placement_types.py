@@ -6,7 +6,7 @@ from dataclasses import dataclass, field
 from enum import Enum
 from typing import Optional
 
-from polydocbench.document import BBox
+from polydocbench.document import BBox, DocumentElement
 
 
 class PlacementStatus(Enum):
@@ -46,6 +46,7 @@ class PlacementResult:
     total_height: float = 0.0
     column_index: Optional[int] = None
     message: str = ""
+    elements: list[DocumentElement] = field(default_factory=list)
 
     @property
     def line_count(self) -> int:

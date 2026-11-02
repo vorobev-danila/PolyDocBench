@@ -16,6 +16,7 @@ class LayoutResult:
     pages: list[Page] = field(default_factory=list)
     elements: list[DocumentElement] = field(default_factory=list)
     ground_truth: dict[str, Any] = field(default_factory=dict)
+    warnings: list[dict[str, Any]] = field(default_factory=list)
 
     def add_page(self, page: Page) -> None:
         self.pages.append(page)
@@ -62,6 +63,7 @@ class LayoutResult:
                 "page_count": len(self.pages),
                 "element_count": len(self.elements),
                 "timestamp": datetime.now().isoformat(),
+                "layout_warnings": self.warnings,
             },
             "reading_order": reading_order,
             "pages": pages_gt,

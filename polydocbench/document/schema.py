@@ -6,6 +6,8 @@ from typing import Any
 
 from pydantic import BaseModel, ConfigDict, Field, model_validator
 
+from .tables import TableCell, validate_table
+
 
 FORMAT_SCHEMA_VERSION = "0.1"
 
@@ -19,6 +21,7 @@ class SourceElement(BaseModel):
     text: str | None = None
     content: str | list["SourceElement"] | None = None
     items: list[dict[str, Any]] | None = None
+    rows: list[list[TableCell]] | None = None
 
     @model_validator(mode="after")
     def validate_required_payload(self) -> "SourceElement":
@@ -28,6 +31,8 @@ class SourceElement(BaseModel):
             raise ValueError("heading elements require 'text' or string 'content'")
         if self.type == "list" and self.items is None:
             raise ValueError("list elements require 'items'")
+        if self.type == "table":
+            validate_table(self.model_dump(exclude_none=True))
         return self
 
     def _has_text_payload(self) -> bool:

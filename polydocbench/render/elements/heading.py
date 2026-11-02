@@ -5,6 +5,7 @@ from __future__ import annotations
 from typing import Any
 
 from .base import BaseElementRenderer
+from polydocbench.document.fonts import draw_text
 
 
 class HeadingRenderer(BaseElementRenderer):
@@ -13,6 +14,8 @@ class HeadingRenderer(BaseElementRenderer):
             return
 
         dimensions = element.get("dimensions") or {}
+        if dimensions.get("render_lines_separately"):
+            return
         for line in dimensions.get("placed_lines", []):
             bbox = line.get("bbox")
             if not bbox:
@@ -29,7 +32,8 @@ class HeadingRenderer(BaseElementRenderer):
             try:
                 self.canvas.setFont(font_name, font_size)
             except Exception:
+                font_name = "Helvetica-Bold"
                 self.canvas.setFont("Helvetica-Bold", font_size)
 
-            self.canvas.drawString(bbox.get("x", 0), bbox.get("y", 0) + ascent, text)
+            draw_text(self.canvas, text, bbox.get("x", 0), bbox.get("y", 0) + ascent, font_name, font_size)
 

@@ -21,9 +21,12 @@ from statistics import mean
 from typing import Any
 from urllib.parse import quote
 
-from polydocbench.noise import pdf_to_noisy_dataset
+from polydocbench.noise import NOISE_PROFILES, NoiseGeneration, pdf_to_noisy_dataset, scan_image_path
+from polydocbench.noise.provenance import file_sha256
 from polydocbench.eval import evaluate_ocr_quality, extract_gt_lines, load_gt, write_ocr_dashboard
 from polydocbench.eval.ocr import extract_tesseract_lines
+from polydocbench.eval.protocol import result_protocol_version
+from polydocbench.eval.quality import aggregate_ocr_counts
 from polydocbench.layout import LayoutEngine
 from polydocbench.render import PDFRenderer
 from polydocbench.sources.wikipedia import WikipediaParser
@@ -157,6 +160,20 @@ def _wiki_url(code: str, title: str) -> str:
 ARTICLE_CASES = _build_article_cases()
 
 
+def _nonnegative_int(value: str) -> int:
+    number = int(value)
+    if number < 0:
+        raise argparse.ArgumentTypeError("Expected a nonnegative integer")
+    return number
+
+
+def _positive_int(value: str) -> int:
+    number = int(value)
+    if number < 1:
+        raise argparse.ArgumentTypeError("Expected a positive integer")
+    return number
+
+
 def build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(description="Run multilingual Tesseract OCR experiments.")
     parser.add_argument("--output-dir", default="outputs/experiments/tesseract_quality", help="Experiment output root")
@@ -167,10 +184,11 @@ def build_parser() -> argparse.ArgumentParser:
         help="Layout templates to render",
     )
     parser.add_argument("--font", default="DejaVu Sans/DejaVuSans.ttf", help="Font path")
-    parser.add_argument("--profiles", nargs="+", default=["light_scan", "medium_scan", "heavy_scan"], help="Noise profiles")
-    parser.add_argument("--variants", type=int, default=1, help="Variants per noise profile")
-    parser.add_argument("--dpi", type=int, default=200, help="PDF rendering DPI for noising")
-    parser.add_argument("--seed", type=int, default=42, help="Noise random seed")
+    parser.add_argument("--profiles", nargs="+", choices=list(NOISE_PROFILES),
+                        default=["light_scan", "medium_scan", "heavy_scan"], help="Noise scenarios, optionally including clean PNG")
+    parser.add_argument("--variants", type=_positive_int, default=1, help="Variants per noisy profile; clean has one variant")
+    parser.add_argument("--dpi", type=_positive_int, default=200, help="PDF rendering DPI for noising")
+    parser.add_argument("--seed", type=_nonnegative_int, default=42, help="Noise master seed")
     parser.add_argument("--page-scope", choices=["first", "half", "all"], default="first", help="Rendered pages to evaluate")
     parser.add_argument("--iou-threshold", type=float, default=0.3, help="Line matching IoU threshold")
     parser.add_argument("--languages", nargs="+", default=list(LANGUAGE_NAMES), help="Language codes to run")
@@ -311,7 +329,7 @@ def _run_template_case(
     generated_artifacts = 0
     for page_index in page_indices:
         page_dir = dataset_root / f"page_{page_index + 1:03d}"
-        if args.reuse and page_dir.exists() and list(page_dir.glob("*_gt.json")):
+        if args.reuse and _can_reuse_noise_page(page_dir, pdf_path, gt_path, page_index, args):
             print(f"      page={page_index + 1}: reuse {page_dir}")
             continue
         noise_result = pdf_to_noisy_dataset(
@@ -320,7 +338,7 @@ def _run_template_case(
             output_dir=page_dir,
             page_index=page_index,
             n_variants=args.variants,
-            seed=args.seed + page_index,
+            seed=args.seed,
             dpi=args.dpi,
             profiles=args.profiles,
         )
@@ -337,10 +355,8 @@ def _run_template_case(
         predictions_dir = predictions_root / f"page_{page_number:03d}"
         predictions_dir.mkdir(parents=True, exist_ok=True)
 
-        for artifact_gt_path in sorted(page_dir.glob("*_gt.json")):
-            image_path = artifact_gt_path.with_name(artifact_gt_path.name.replace("_gt.json", ".jpg"))
-            if not image_path.exists():
-                continue
+        for artifact_gt_path in _requested_gt_paths(page_dir, args.profiles, args.variants):
+            image_path = scan_image_path(artifact_gt_path)
 
             prediction_lines = extract_tesseract_lines(
                 image_path,
@@ -351,7 +367,9 @@ def _run_template_case(
             prediction_path = predictions_dir / f"{image_path.stem}_tesseract.json"
             prediction_path.write_text(json.dumps(prediction_lines, ensure_ascii=False, indent=2), encoding="utf-8")
 
-            gt_lines = extract_gt_lines(load_gt(artifact_gt_path), page_number=1)
+            image_gt = load_gt(artifact_gt_path)
+            gt_lines = extract_gt_lines(image_gt, page_number=1)
+            generation = image_gt.get("metadata", {}).get("noise_generation", {})
             metrics = evaluate_ocr_quality(gt_lines, prediction_lines, iou_threshold=args.iou_threshold)
             profile, variant = _parse_artifact_name(image_path.stem)
             row = {
@@ -365,6 +383,9 @@ def _run_template_case(
                 "page_number": page_number,
                 "profile": profile,
                 "variant": variant,
+                "noise_pipeline_version": generation.get("noise_pipeline_version", "legacy"),
+                "master_seed": generation.get("master_seed"),
+                "artifact_seed": generation.get("artifact_seed"),
                 "image_path": str(image_path),
                 "gt_path": str(artifact_gt_path),
                 "prediction_path": str(prediction_path),
@@ -375,11 +396,43 @@ def _run_template_case(
             print(
                 f"      page={page_number} {image_path.stem}: "
                 f"CER={row['CER']:.3f} WER={row['WER']:.3f} IoU={row['IoU']:.3f} matched={row['matched_ratio']:.3f}"
+                f" micro_CER={row['micro_CER']:.3f} line_F1={row['line_F1']:.3f}"
                 f" lines={row['predicted_lines']}/{row['gt_lines']}"
             )
             rows.append(row)
 
     return rows
+
+
+def _requested_gt_paths(page_dir: Path, profiles: list[str], variants: int) -> list[Path]:
+    return [page_dir / f"{profile}_{variant}_gt.json" for profile in profiles
+            for variant in range(1 if profile == "clean" else variants)]
+
+
+def _can_reuse_noise_page(page_dir: Path, pdf_path: Path, gt_path: Path, page_index: int, args) -> bool:
+    expected_pdf, expected_gt = file_sha256(pdf_path), file_sha256(gt_path)
+    complete = True
+    for path in _requested_gt_paths(page_dir, args.profiles, args.variants):
+        if not path.exists():
+            complete = False
+            continue
+        data = json.loads(path.read_text(encoding="utf-8"))
+        metadata = data.get("metadata", {})
+        raw = metadata.get("noise_generation")
+        if raw is None:
+            raise ValueError(f"Cannot reuse legacy noise without a generation trace: {path}. "
+                             "Use a separate output directory for pipeline 0.2, or regenerate without --reuse.")
+        trace = NoiseGeneration.model_validate(raw)
+        profile, variant = _parse_artifact_name(path.stem.removesuffix("_gt"))
+        if (trace.master_seed != args.seed or trace.dpi != args.dpi or trace.source_page_number != page_index + 1
+                or trace.source_pdf_sha256 != expected_pdf or trace.source_gt_sha256 != expected_gt
+                or trace.profile != profile or trace.variant != variant
+                or metadata.get("profile") != profile or metadata.get("variant") != variant
+                or metadata.get("dpi") != trace.dpi
+                or metadata.get("transform", {}).get("matrix") != trace.transform_matrix
+                or trace.image_sha256 != file_sha256(scan_image_path(path))):
+            raise ValueError(f"Cached noise does not match the requested configuration or file hashes: {path}")
+    return complete
 
 
 def _run_quietly(fn, quiet: bool):
@@ -491,7 +544,9 @@ def _read_metrics(path: Path) -> list[dict[str, Any]]:
 
 
 def _write_summary(path: Path, rows: list[dict[str, Any]]) -> None:
+    protocol_version = result_protocol_version(rows)
     fieldnames = [
+        "evaluation_protocol_version",
         "language",
         "language_name",
         "tesseract_lang",
@@ -503,6 +558,7 @@ def _write_summary(path: Path, rows: list[dict[str, Any]]) -> None:
         "mean_WER",
         "mean_IoU",
         "mean_matched_ratio",
+        "micro_CER", "micro_WER", "line_precision", "line_recall", "line_F1",
     ]
     groups: dict[tuple[str, str, str], list[dict[str, Any]]] = {}
     for row in rows:
@@ -513,8 +569,10 @@ def _write_summary(path: Path, rows: list[dict[str, Any]]) -> None:
         writer.writeheader()
         for (language, template, profile), group in sorted(groups.items()):
             first = group[0]
+            pooled = aggregate_ocr_counts(group)
             writer.writerow(
                 {
+                    "evaluation_protocol_version": protocol_version,
                     "language": language,
                     "language_name": first["language_name"],
                     "tesseract_lang": first["tesseract_lang"],
@@ -526,6 +584,9 @@ def _write_summary(path: Path, rows: list[dict[str, Any]]) -> None:
                     "mean_WER": mean(row["WER"] for row in group),
                     "mean_IoU": mean(row["IoU"] for row in group),
                     "mean_matched_ratio": mean(row["matched_ratio"] for row in group),
+                    **{key: pooled[key] for key in (
+                        "micro_CER", "micro_WER", "line_precision", "line_recall", "line_F1"
+                    )},
                 }
             )
 

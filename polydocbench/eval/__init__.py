@@ -5,7 +5,8 @@ from .gt import extract_gt_lines, load_gt
 from .matching import LineMatch, match_lines
 from .ocr import extract_tesseract_lines
 from .ordering import evaluate_ordering
-from .quality import evaluate_ocr_quality
+from .quality import aggregate_ocr_counts, evaluate_ocr_quality
+from .protocol import EVALUATION_PROTOCOL_VERSION
 from .text_metrics import cer, normalize_text, wer
 from .dashboard import write_ocr_dashboard
 from .dotsocr import extract_dotsocr_blocks, parse_dotsocr_blocks_response
@@ -24,6 +25,8 @@ from .structure import (
 from .structure_dashboard import write_structure_dashboard
 
 __all__ = [
+    "EVALUATION_PROTOCOL_VERSION",
+    "aggregate_ocr_counts",
     "LineMatch",
     "bbox_iou",
     "cer",

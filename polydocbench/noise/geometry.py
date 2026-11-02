@@ -123,6 +123,9 @@ def transform_gt_to_image_gt(
                     transformed.setdefault("metadata", {})["container_id"] = container.get("id", "")
                     container_elements.append(transformed)
 
+    visible_ids = {element["id"] for element in top_level_elements}
+    page_order = {key: [element_id for element_id in order if element_id in visible_ids]
+                  for key, order in source_gt.get("reading_order", {"blocks": [], "lines": []}).items()}
     noisy_gt = {
         "schema_version": FORMAT_SCHEMA_VERSION,
         "metadata": {
@@ -150,7 +153,7 @@ def transform_gt_to_image_gt(
             "width": output_width,
             "height": output_height,
         },
-        "reading_order": copy.deepcopy(source_gt.get("reading_order", {"blocks": [], "lines": []})),
+        "reading_order": page_order,
         "pages": [
             {
                 "page_number": 1,

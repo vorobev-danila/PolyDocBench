@@ -44,11 +44,11 @@ class RenderRequest(BaseModel):
 class NoisePdfRequest(BaseModel):
     pdf_path: str
     output_dir: str | None = None
-    page_index: int = 0
-    variants: int = 1
-    seed: int = 42
-    dpi: int = 200
-    profiles: list[str] | None = None
+    page_index: int = Field(default=0, ge=0)
+    variants: int = Field(default=1, ge=1, description="Variants per noisy profile; clean always produces only clean_0.png")
+    seed: int = Field(default=42, ge=0, strict=True)
+    dpi: int = Field(default=200, ge=36)
+    profiles: list[str] | None = Field(default=None, min_length=1, description="Optional clean control plus light/medium/heavy; default: three noisy profiles")
 
 
 class NoisePdfWithGtRequest(NoisePdfRequest):
@@ -182,7 +182,7 @@ def noise_pdf_with_gt(request: NoisePdfWithGtRequest) -> dict[str, Any]:
 
 
 @app.post("/evaluate/quality")
-def evaluate_quality(request: QualityEvaluationRequest) -> dict[str, float]:
+def evaluate_quality(request: QualityEvaluationRequest) -> dict[str, float | int | str]:
     try:
         return evaluate_quality_from_gt(
             gt_path=request.gt_path,
@@ -195,7 +195,7 @@ def evaluate_quality(request: QualityEvaluationRequest) -> dict[str, float]:
 
 
 @app.post("/evaluate/ordering")
-def evaluate_reading_order(request: OrderingEvaluationRequest) -> dict[str, float | int]:
+def evaluate_reading_order(request: OrderingEvaluationRequest) -> dict[str, float | int | str | None]:
     try:
         return evaluate_ordering_from_gt(
             gt_path=request.gt_path,

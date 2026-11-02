@@ -1,6 +1,8 @@
 from pathlib import Path
+import csv
+import json
 
-from scripts.run_dotsocr_ordering_experiment import _evaluate_artifact, discover_scan_artifacts
+from scripts.run_dotsocr_ordering_experiment import _evaluate_artifact, discover_scan_artifacts, main
 
 
 def test_discover_scan_artifacts_uses_pipeline_hierarchy(tmp_path: Path):
@@ -18,7 +20,17 @@ def test_discover_scan_artifacts_uses_pipeline_hierarchy(tmp_path: Path):
     assert artifacts[0].page_number == 1
 
 
-def test_reuse_parses_saved_plain_text_response_without_remote_request(tmp_path: Path):
+def test_discover_ordering_clean_png(tmp_path: Path):
+    page = tmp_path / "en/article/simple_article/noisy/page_002"
+    page.mkdir(parents=True)
+    (page / "clean_0_gt.json").write_text("{}", encoding="utf-8")
+    (page / "clean_0.png").write_bytes(b"image")
+    artifact = discover_scan_artifacts(tmp_path, profiles=["clean"])[0]
+    assert artifact.image_path.suffix == ".png"
+    assert artifact.profile == "clean" and artifact.page_number == 2
+
+
+def test_reuse_parses_saved_plain_text_response_without_remote_request(tmp_path: Path, monkeypatch, capsys):
     input_root = tmp_path / "input"
     output_root = tmp_path / "output"
     page_dir = input_root / "en" / "article" / "simple_article" / "noisy" / "page_001"
@@ -47,3 +59,16 @@ def test_reuse_parses_saved_plain_text_response_without_remote_request(tmp_path:
     result = _evaluate_artifact(artifact, args, input_root, output_root, api_key=None)
 
     assert result["ordered_WER"] == 0.0
+    assert result["pairwise_accuracy"] is None
+
+    monkeypatch.setattr("sys.argv", ["run_dotsocr_ordering_experiment.py", "--input-dir", str(input_root),
+                                     "--output-dir", str(output_root), "--reuse", "--no-dashboard"])
+    assert main() == 0
+    assert "pairwise=N/A" in capsys.readouterr().out
+    row = json.loads((output_root / "metrics.jsonl").read_text(encoding="utf-8"))
+    assert row["pairwise_accuracy"] is None
+    assert row["evaluation_protocol_version"] == "0.2"
+    with (output_root / "summary.csv").open(encoding="utf-8", newline="") as file:
+        summary = next(csv.DictReader(file))
+    assert summary["valid_order_count"] == "0"
+    assert summary["mean_pairwise_accuracy"] == ""

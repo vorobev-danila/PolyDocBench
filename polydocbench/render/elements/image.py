@@ -2,14 +2,11 @@
 
 from __future__ import annotations
 
-import hashlib
-import mimetypes
 from pathlib import Path
 from typing import Any
-from urllib.parse import urlparse
-
-import requests
 from reportlab.lib.utils import ImageReader
+
+from polydocbench.document.assets import resolve_image
 
 from .base import BaseElementRenderer
 
@@ -22,7 +19,9 @@ class ImageRenderer(BaseElementRenderer):
     def render(self, element: dict[str, Any]) -> None:
         if element.get("type") not in self.supported_types:
             return
-        self.render_image(element)
+        rendered = self.render_image(element)
+        if not rendered and element.get("metadata", {}).get("require_asset"):
+            raise RuntimeError(f"Could not draw prepared image: {self._get_image_source(element)}")
 
     def render_image(self, element: dict[str, Any]) -> bool:
         image_path = self._resolve_image_path(element)
@@ -101,47 +100,7 @@ class ImageRenderer(BaseElementRenderer):
         return ""
 
     def _download_to_cache(self, url: str) -> Path | None:
-        cache_dir = Path(self.config.get("render.images.cache_dir", "outputs/cache/images"))
-        cache_dir.mkdir(parents=True, exist_ok=True)
-
-        url_hash = hashlib.sha256(url.encode("utf-8")).hexdigest()
-        cache_path = self._find_cached_file(cache_dir, url_hash)
-        if cache_path.exists():
-            return cache_path
-
-        try:
-            response = requests.get(url, timeout=15, headers={"User-Agent": "PolyDocBench/0.1"})
-            response.raise_for_status()
-        except Exception:
-            return None
-
-        content_type = response.headers.get("content-type", "").split(";")[0].strip()
-        if content_type and not content_type.startswith("image/"):
-            return None
-
-        suffix = self._guess_suffix(url, content_type)
-        cache_path = cache_dir / f"{url_hash}{suffix}"
-        cache_path.write_bytes(response.content)
-        return cache_path
-
-    @staticmethod
-    def _find_cached_file(cache_dir: Path, url_hash: str) -> Path:
-        for cached_file in cache_dir.glob(f"{url_hash}.*"):
-            return cached_file
-        return cache_dir / f"{url_hash}.img"
-
-    @staticmethod
-    def _guess_suffix(url: str, content_type: str = "") -> str:
-        if content_type == "image/svg+xml":
-            return ".svg"
-
-        parsed = urlparse(url)
-        suffix = Path(parsed.path).suffix.lower()
-        if suffix in {".jpg", ".jpeg", ".png", ".gif", ".bmp", ".tif", ".tiff", ".svg"}:
-            return suffix
-
-        guessed = mimetypes.guess_extension(content_type or mimetypes.guess_type(url)[0] or "")
-        return guessed or ".img"
+        return resolve_image(url, self.config.get("render.images.cache_dir", "outputs/cache/images"))
 
     @staticmethod
     def _is_svg_file(path: Path) -> bool:

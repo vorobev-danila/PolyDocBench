@@ -35,6 +35,8 @@ def extract_visible_gt_blocks(gt_json: dict[str, Any], page_number: int = 1) -> 
             continue
         for container in page.get("containers", []):
             for element in container.get("elements", []):
+                if element.get("metadata", {}).get("owner_type") == "table":
+                    continue
                 if element.get("type") != "text_line" or not str(element.get("content", "")).strip():
                     continue
                 parent_id = element.get("metadata", {}).get("parent_id") or element["id"]

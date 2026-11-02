@@ -52,7 +52,20 @@ http://127.0.0.1:8000/docs
 }
 ```
 
+## Rich Render Profiles
+
+The render endpoint also accepts `technical_report`, `research_illustrated`,
+`financial_report`, `magazine_feature`, and `reference_sheet` in `template`.
+For an offline smoke run, use `examples/complex_document.json` as `json_path`.
+Rendering returns `layout_warnings`; new strict profiles fail with HTTP 400 on
+unavailable images or impossible/unsupported placements. Details:
+[Complex Layouts](complex-layouts.md).
+
 ## Noise Request
+
+Both noise endpoints support opt-in `clean` PNG controls and return pipeline
+version `0.2` with per-artifact generation traces. Defaults remain three noisy
+profiles. Clean always has one variant. See [Reproducible Noise](reproducible-noise.md).
 
 ```json
 {
@@ -103,6 +116,19 @@ Use `/noise/pdf-with-gt` when geometric transforms should also update GT:
   ]
 }
 ```
+
+## Evaluation Responses
+
+OCR quality responses include `evaluation_protocol_version: "0.2"`, legacy
+`CER`/`WER`, insertion-aware `micro_CER`/`micro_WER`, error counts, and
+`line_precision`/`line_recall`/`line_F1`.
+
+`POST /evaluate/ordering` accepts the quality request fields plus `num_columns`.
+This endpoint evaluates the existing geometric line-order heuristic. With fewer
+than two matched lines, `kendall_tau` and `pairwise_accuracy` are JSON `null`;
+`num_order_pairs` and `order_pair_coverage` describe available evidence.
+The dots.ocr semantic experiment is a separate workflow, not this endpoint.
+See [Evaluation Protocol](evaluation-protocol.md) for definitions and limitations.
 
 ## Evaluate Structure
 

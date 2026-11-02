@@ -77,6 +77,11 @@ def test_semantic_ordering_can_match_one_model_block_to_adjacent_gt_blocks():
     assert metrics["matched_block_ratio"] == 1.0
     assert matches[0].gt_ids == ["a", "b"]
     assert matches[0].similarity == 1.0
+    assert metrics["kendall_tau"] is None
+    assert metrics["pairwise_accuracy"] is None
+    assert metrics["num_order_pairs"] == 0
+    assert metrics["num_unresolved_pairs"] == 1
+    assert metrics["order_pair_coverage"] == 0.0
 
 
 def test_semantic_ordering_accepts_paragraph_level_dotsocr_response():
@@ -93,3 +98,27 @@ def test_semantic_ordering_accepts_paragraph_level_dotsocr_response():
 
     assert metrics["ordered_WER"] == 0.0
     assert metrics["pairwise_accuracy"] == 1.0
+
+
+def test_semantic_ordering_scores_only_pairs_between_returned_blocks():
+    gt = [{"id": "a", "text": "alpha unique paragraph"},
+          {"id": "b", "text": "beta different passage"},
+          {"id": "c", "text": "gamma distinct sentence"}]
+    predicted = [{"text": "alpha unique paragraph beta different passage"},
+                 {"text": "gamma distinct sentence"}]
+    metrics, matches = evaluate_semantic_ordering(gt, predicted)
+    assert matches[0].gt_ids == ["a", "b"]
+    assert metrics["evaluation_protocol_version"] == "0.2"
+    assert metrics["matched_block_ratio"] == 1.0
+    assert metrics["pairwise_accuracy"] == 1.0
+    assert metrics["num_order_pairs"] == 2
+    assert metrics["num_unresolved_pairs"] == 1
+
+
+def test_semantic_ordering_empty_predictions_do_not_imply_chance_accuracy():
+    metrics, matches = evaluate_semantic_ordering([{"id": "a", "text": "hello"}], [])
+    assert not matches
+    assert metrics["pairwise_accuracy"] is None
+    assert metrics["kendall_tau"] is None
+    assert metrics["matched_block_ratio"] == 0.0
+    assert metrics["ordered_WER"] == 1.0

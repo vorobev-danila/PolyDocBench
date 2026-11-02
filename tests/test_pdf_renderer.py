@@ -98,7 +98,7 @@ def test_formula_renderer_caches_extensionless_svg_urls(monkeypatch):
         def raise_for_status():
             return None
 
-    monkeypatch.setattr("polydocbench.render.elements.image.requests.get", lambda *args, **kwargs: Response())
+    monkeypatch.setattr("polydocbench.document.assets.requests.get", lambda *args, **kwargs: Response())
 
     renderer = FormulaRenderer(None, RenderConfig(), None)
     path = renderer._download_to_cache("https://wikimedia.org/api/rest_v1/media/math/render/svg/hash-without-extension")

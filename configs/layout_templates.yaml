@@ -142,6 +142,96 @@ templates:
     
     allowed_elements: ["heading", "paragraph", "image", "pull_quote", "sidebar"]
 
+  technical_report:
+    name: "Technical report"
+    description: "Single-column report with paginated tables and captioned figures"
+    layout_type: single_column
+    strict_layout: true
+    margins: &report_margins {top: 48, bottom: 48, left: 42, right: 42}
+    typography: &report_typography
+      font_family: DejaVuSans
+      body_size: 10
+      line_height: 1.25
+      first_line_indent: 0
+      paragraph_spacing: 10
+      heading_sizes: {h1: 18, h2: 14, h3: 12, h4: 11}
+    tables: &report_tables
+      font_size: 8
+      cell_padding: 5
+      repeat_headers: true
+      header_fill: "#e5eef6"
+      grid_color: "#9aa5b1"
+      grid_width: 0.4
+    images: &report_images
+      width_fraction: 0.9
+      max_height_fraction: 0.4
+      caption_size: 9
+
+  research_illustrated:
+    name: "Illustrated research paper"
+    description: "Two-column text interrupted by full-width tables and figures"
+    layout_type: two_column
+    strict_layout: true
+    balance_before_spans: true
+    margins: *report_margins
+    columns: {count: 2, gutter: 20}
+    typography:
+      <<: *report_typography
+      body_size: 9
+    tables:
+      <<: *report_tables
+      span_columns: all
+    images:
+      <<: *report_images
+      span_columns: all
+
+  financial_report:
+    name: "Financial report"
+    description: "Dense single-column tables with merged headers"
+    layout_type: single_column
+    strict_layout: true
+    margins: *report_margins
+    typography: *report_typography
+    tables:
+      <<: *report_tables
+      font_size: 8
+      cell_padding: 3
+      header_fill: "#e4efe9"
+      numeric_alignment: right
+    images: *report_images
+
+  magazine_feature:
+    name: "Magazine feature"
+    description: "Three-column text with full-width illustrated bands"
+    layout_type: three_column
+    strict_layout: true
+    balance_before_spans: true
+    margins: {top: 40, bottom: 40, left: 32, right: 32}
+    columns: {count: 3, gutter: 16}
+    typography:
+      <<: *report_typography
+      body_size: 9
+      line_height: 1.2
+    tables:
+      <<: *report_tables
+      span_columns: all
+    images:
+      <<: *report_images
+      span_columns: all
+      width_fraction: 1.0
+
+  reference_sheet:
+    name: "Landscape reference sheet"
+    description: "Landscape pages for wide comparison tables"
+    layout_type: single_column
+    strict_layout: true
+    page_width: 842
+    page_height: 595
+    margins: *report_margins
+    typography: *report_typography
+    tables: *report_tables
+    images: *report_images
+
 # Конфигурация по умолчанию
 defaults:
   template: "simple_article"

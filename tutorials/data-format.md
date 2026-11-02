@@ -58,9 +58,22 @@ Source JSON is the input consumed by the layout engine.
 | `list` | `items` | Converted to paragraph lines with markers |
 | `image` | `src`, `url`, `path`, or `image_src` | Extra metadata is preserved |
 | `formula` | `latex`, `mathml`, `image_src`, or alt text | Rendered through image fallback when available |
-| `table` | `rows` | Currently treated as a graphic/table-like block |
+| `table` | Nonempty `rows` | Vector grid, merged cells, captions and paginated fragments |
 
 Unknown element types are allowed and preserved. The layout engine can decide how to handle them.
+
+Table cells support `text`, `is_header`, positive `rowspan`/`colspan`, and optional
+`align` (`left`, `center`, `right`). Preserve genuinely empty cells as
+`{"text": ""}`; omit slots covered by merged cells. Table-level `header_rows`
+controls repetition and `column_weights` sets relative column widths.
+Header `scope` can be `row`, `col`, `rowgroup`, or `colgroup`.
+Numeric superscripts/subscripts in table HTML are retained as Unicode when
+possible; literal bracketed values such as `array[1]` are not removed as citations.
+See [Complex Layouts](complex-layouts.md) for a complete source example.
+
+Figures preserve actual file aspect ratio. Source `width`/`height` are PDF-point
+limits, whereas parser `pixel_width`/`pixel_height` describe the image resource.
+Visible captions become separate GT blocks rather than remaining metadata only.
 
 ## Processed Layout Input
 
@@ -151,6 +164,15 @@ Ground-truth JSON is exported after layout/render.
 }
 ```
 
+## Rich Layout Annotations
+
+Rich layouts add `table_cell` elements and page-local `table` fragments. Cell
+metadata contains `row_index`, `column_index`, spans, `parent_id`, `table_id`,
+`source_cell_id`, and `repeated_header`. Their ordinary text lines use
+`owner_type: "table"`. Caption blocks and lines use `caption_for` to link to the
+figure or table fragment. Multi-page paragraph fragments use `source_block_id`.
+All visible element IDs are unique. These additions retain schema `0.1`.
+
 ## Validate GT
 
 ```python
@@ -212,6 +234,16 @@ For affine transforms, PolyDocBench transforms all four bbox corners and stores:
 - `metadata.source_bbox`: original PDF-coordinate bbox.
 
 ## Versioning Policy
+
+New scan GT also embeds `metadata.noise_generation`: trace schema `0.1`, noise
+pipeline `0.2`, per-artifact and operation seeds, sampled parameters, input/output
+hashes and noise-library versions. This additive metadata does not change GT
+schema `0.1`. Clean uses a PNG and identity noise transform, but still requires
+PDF-to-pixel GT conversion. See [Reproducible Noise](reproducible-noise.md).
+
+Evaluation results use a separate `evaluation_protocol_version` (`0.2` for OCR
+quality and reading order). This does not change the source or GT schema version.
+See [Evaluation Protocol](evaluation-protocol.md) for metric definitions and migration.
 
 - `0.1` is the first explicit schema version.
 - Backward-compatible additions should keep the same major version.

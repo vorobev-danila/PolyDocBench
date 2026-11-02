@@ -31,6 +31,7 @@ COPY --from=builder /app/.venv /app/.venv
 COPY configs ./configs
 COPY examples ./examples
 COPY ["DejaVu Sans", "./DejaVu Sans"]
+COPY fonts ./fonts
 
 RUN mkdir -p outputs
 

@@ -62,6 +62,8 @@ def extract_gt_structure_elements(gt_json: dict[str, Any], page_number: int = 1)
             continue
         for container in page.get("containers", []):
             for element in container.get("elements", []):
+                if element.get("metadata", {}).get("owner_type") == "table":
+                    continue
                 element_type = str(element.get("type", "")).lower()
                 metadata = element.get("metadata", {})
                 parent_id = metadata.get("parent_id") or element.get("id", "")

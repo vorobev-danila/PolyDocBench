@@ -6,6 +6,7 @@ from pathlib import Path
 
 from polydocbench.layout.line_breaking import LineBreaker, TextLineInfo
 from polydocbench.layout.text_metrics import TextMetrics
+from polydocbench.document.fonts import fallback_line_metrics
 
 
 class BBoxCalculator:
@@ -37,7 +38,7 @@ class BBoxCalculator:
         max_word_length_before_split: int = 20,
         add_hyphen_on_force_split: bool = True,
     ) -> list[TextLineInfo]:
-        return self.line_breaker.split_into_lines(
+        lines = self.line_breaker.split_into_lines(
             text=text,
             max_width=max_width,
             font_size=font_size,
@@ -51,6 +52,7 @@ class BBoxCalculator:
             max_word_length_before_split=max_word_length_before_split,
             add_hyphen_on_force_split=add_hyphen_on_force_split,
         )
+        return self._apply_fallback_metrics(lines)
 
     def split_heading_into_lines(
         self,
@@ -59,12 +61,22 @@ class BBoxCalculator:
         font_size: float,
         line_height_ratio: float = 1.2,
     ) -> list[TextLineInfo]:
-        return self.line_breaker.split_heading_into_lines(
+        lines = self.line_breaker.split_heading_into_lines(
             text=text,
             max_width=max_width,
             font_size=font_size,
             line_height_ratio=line_height_ratio,
         )
+        return self._apply_fallback_metrics(lines)
+
+    def _apply_fallback_metrics(self, lines: list[TextLineInfo]) -> list[TextLineInfo]:
+        for line in lines:
+            metrics = fallback_line_metrics(line.text, line.font_family, line.font_size, line.height)
+            if metrics is not None:
+                line.height, line.ascent, line.descent = metrics
+                line.line_height = line.height
+        self.line_breaker._assign_y_offsets(lines)
+        return lines
 
     def measure_text_width(self, text: str, font_size: float) -> float:
         return self.metrics.measure_text_width(text, font_size)

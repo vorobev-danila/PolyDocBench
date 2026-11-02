@@ -24,6 +24,7 @@ from polydocbench.eval import (
     structure_matches_to_dicts,
     write_structure_dashboard,
 )
+from polydocbench.noise import scan_image_path
 
 
 @dataclass(frozen=True)
@@ -147,9 +148,6 @@ def discover_scan_artifacts(
         page_number = int(relative.parts[4].split("_", 1)[1])
         stem = gt_path.name.removesuffix("_gt.json")
         profile, variant = stem.rsplit("_", 1)
-        image_path = gt_path.with_name(f"{stem}.jpg")
-        if not image_path.exists():
-            continue
         if languages and language not in languages:
             continue
         if article_ids and article_id not in article_ids:
@@ -160,6 +158,7 @@ def discover_scan_artifacts(
             continue
         if page_numbers and page_number not in page_numbers:
             continue
+        image_path = scan_image_path(gt_path)
         artifacts.append(
             ScanArtifact(
                 language=language,
@@ -184,22 +183,26 @@ def _evaluate_artifact(artifact: ScanArtifact, args: argparse.Namespace, input_r
     structure_path = output_case / f"{stem}_docling_structure.json"
     matches_path = output_case / f"{stem}_structure_matches.json"
 
-    if args.reuse and structure_path.exists():
-        predicted_elements = json.loads(structure_path.read_text(encoding="utf-8"))
-    elif args.reuse and raw_output_path.exists():
+    if args.reuse and raw_output_path.exists():
         predicted_elements = parse_docling_structure(
-            json.loads(raw_output_path.read_text(encoding="utf-8")), page_number=artifact.page_number
+            json.loads(raw_output_path.read_text(encoding="utf-8")), page_number=1
         )
         structure_path.write_text(json.dumps(predicted_elements, ensure_ascii=False, indent=2), encoding="utf-8")
+    elif args.reuse and structure_path.exists():
+        if artifact.page_number != 1:
+            raise ValueError("Re-evaluate this scan or restore its raw Docling output; historical multi-page cache may be invalid")
+        predicted_elements = json.loads(structure_path.read_text(encoding="utf-8"))
     else:
         predicted_elements = extract_docling_structure(
             artifact.image_path,
             raw_output_path=raw_output_path,
-            page_number=artifact.page_number,
+            page_number=1,
         )
         structure_path.write_text(json.dumps(predicted_elements, ensure_ascii=False, indent=2), encoding="utf-8")
 
-    gt_elements = extract_gt_structure_elements(load_gt(artifact.gt_path), page_number=artifact.page_number)
+    # Each extracted scan is a one-page image, independent of its source PDF page.
+    image_gt = load_gt(artifact.gt_path)
+    gt_elements = extract_gt_structure_elements(image_gt, page_number=1)
     metrics, matches = evaluate_structure(gt_elements, predicted_elements, iou_threshold=args.iou_threshold)
     matches_path.write_text(json.dumps(structure_matches_to_dicts(matches), ensure_ascii=False, indent=2), encoding="utf-8")
 
@@ -209,8 +212,10 @@ def _evaluate_artifact(artifact: ScanArtifact, args: argparse.Namespace, input_r
         "article_id": artifact.article_id,
         "template": artifact.template,
         "page_number": artifact.page_number,
+        "image_page_number": 1,
         "profile": artifact.profile,
         "variant": artifact.variant,
+        "noise_pipeline_version": image_gt.get("metadata", {}).get("noise_generation", {}).get("noise_pipeline_version", "legacy"),
         "image_path": str(artifact.image_path),
         "gt_path": str(artifact.gt_path),
         "prediction_path": str(structure_path),

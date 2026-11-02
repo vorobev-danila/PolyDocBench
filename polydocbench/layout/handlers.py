@@ -8,12 +8,16 @@ from polydocbench.layout.bbox import TextLineInfo
 from polydocbench.layout.placement_types import PlacedLine, PlacementResult, PlacementStatus
 from polydocbench.layout.specs import ElementLayoutSpec
 from polydocbench.layout.typography import TypographyStyle
+from polydocbench.layout.tables import TablePlacementHandler
+from polydocbench.layout.figures import ImagePlacementHandler
 
 
 class PlacementContext(Protocol):
     bbox_calculator: Any
     current_container: Any
     current_page_number: int
+    full_page_height: float
+    options: dict[str, Any]
 
     def _try_place_line(self, line_info: TextLineInfo) -> PlacementStatus: ...
 
@@ -28,6 +32,10 @@ class PlacementContext(Protocol):
     def _calculate_paragraph_bbox(self, placed_lines: list[PlacedLine]): ...
 
 
+class ElementPlacementHandler(Protocol):
+    def place(self, element_data: dict[str, Any], typography: TypographyStyle, layout_type: str) -> PlacementResult: ...
+
+
 class BasePlacementHandler:
     def __init__(self, context: PlacementContext) -> None:
         self.context = context
@@ -40,7 +48,7 @@ class TextPlacementHandler(BasePlacementHandler):
     def place(self, element_data: dict[str, Any], typography: TypographyStyle, layout_type: str) -> PlacementResult:
         text = element_data.get("content", "")
         paragraph_spacing = typography.paragraph_spacing
-        para_id = f"para_{id(element_data)}"
+        para_id = str(element_data.get("_layout_id") or "paragraph")
         result = PlacementResult(success=False)
 
         if not self.context.current_container:
@@ -114,6 +122,8 @@ class HeadingPlacementHandler(BasePlacementHandler):
             return result
 
         total_height = sum(line.height for line in lines_info)
+        if total_height > self.context.full_page_height:
+            raise ValueError("Heading is taller than the printable page")
         if not self.context.current_container.can_fit(total_height):
             if self.context._try_switch_column():
                 return self.place(element_data, typography, layout_type)
@@ -122,7 +132,7 @@ class HeadingPlacementHandler(BasePlacementHandler):
             result.message = "Heading does not fit entirely"
             return result
 
-        para_id = f"heading_{id(element_data)}"
+        para_id = str(element_data.get("_layout_id") or "heading")
         for line_index, line_info in enumerate(lines_info):
             bbox = self.context.current_container.place(line_info.height)
             placed_line = PlacedLine(
@@ -151,6 +161,9 @@ class GraphicPlacementHandler(BasePlacementHandler):
         spec = ElementLayoutSpec.from_element(element_data)
         result = PlacementResult(success=False)
 
+        if spec.height > self.context.full_page_height:
+            raise ValueError("Graphic element is taller than the printable page")
+
         if not self.context.current_container:
             result.message = "No container"
             return result
@@ -168,7 +181,7 @@ class GraphicPlacementHandler(BasePlacementHandler):
         return result
 
 
-def build_default_handlers(context: PlacementContext) -> dict[str, BasePlacementHandler]:
+def build_default_handlers(context: PlacementContext) -> dict[str, ElementPlacementHandler]:
     text = TextPlacementHandler(context)
     heading = HeadingPlacementHandler(context)
     graphic = GraphicPlacementHandler(context)
@@ -182,7 +195,7 @@ def build_default_handlers(context: PlacementContext) -> dict[str, BasePlacement
         "heading3": heading,
         "heading4": heading,
         "heading5": heading,
-        "image": graphic,
+        "image": ImagePlacementHandler(context),
         "formula": graphic,
-        "table": graphic,
+        "table": TablePlacementHandler(context),
     }

@@ -1,0 +1,16 @@
+{
+  "schema_version": "0.1",
+  "benchmark_id": "polydocbench-icdar2027",
+  "status": "draft",
+  "languages": ["en", "ru", "fr", "de", "es", "it"],
+  "articles_per_language": 20,
+  "templates": ["simple_article", "scientific_paper", "magazine_layout", "technical_report", "research_illustrated", "financial_report"],
+  "pages_per_document": 3,
+  "page_selection": "stratified_content",
+  "conditions": ["clean", "light_scan", "medium_scan", "heavy_scan"],
+  "variants_per_noisy_condition": 1,
+  "master_seed": 42,
+  "split_unit": "source_family",
+  "development_fraction": 0.2,
+  "tasks": ["quality", "ordering", "structure"]
+}

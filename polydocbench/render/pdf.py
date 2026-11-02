@@ -12,7 +12,7 @@ from reportlab.pdfgen import canvas
 from polydocbench.gt import GroundTruthExporter
 from polydocbench.render.config import RenderConfig
 from polydocbench.render.debug import DebugRenderer
-from polydocbench.render.elements import FormulaRenderer, HeadingRenderer, ImageRenderer, TextRenderer
+from polydocbench.render.elements import FormulaRenderer, HeadingRenderer, ImageRenderer, TextRenderer, TableRenderer
 from polydocbench.render.font_manager import FontManager
 
 
@@ -36,6 +36,7 @@ class PDFRenderer:
             "heading6": HeadingRenderer,
             "image": ImageRenderer,
             "formula": FormulaRenderer,
+            "table": TableRenderer,
         }
         self.current_page = 1
         self.debug_renderer: DebugRenderer | None = None
@@ -55,24 +56,29 @@ class PDFRenderer:
             self.debug_renderer = DebugRenderer(pdf_canvas, self.config)
 
         elements_by_page = self._group_elements_by_page(layout_dict)
-        for page_num in sorted(elements_by_page.keys()):
-            if page_num > 1:
+        for page_index, page in enumerate(layout_dict.get("pages", [])):
+            page_num = page["number"]
+            if page_index:
                 pdf_canvas.showPage()
+            pdf_canvas.setPageSize((page["width"], page["height"]))
             self.current_page = page_num
-            for element in elements_by_page[page_num]:
+            for element in elements_by_page.get(page_num, []):
                 self._render_element(pdf_canvas, element)
 
         pdf_canvas.save()
 
         gt_path = output_pdf.with_name(f"{output_pdf.stem}_gt.json")
-        self.gt_exporter.export(layout_result, gt_path)
+        export_result = self.gt_exporter.export(layout_result, gt_path)
+        if not export_result["success"]:
+            raise RuntimeError(f"GT export failed: {export_result.get('error')}")
 
         return {
             "pdf_path": str(output_pdf),
             "gt_path": str(gt_path),
-            "page_count": len(elements_by_page),
+            "page_count": len(layout_dict.get("pages", [])),
             "element_count": sum(len(elements) for elements in elements_by_page.values()),
             "render_time": datetime.now().isoformat(),
+            "layout_warnings": getattr(layout_result, "warnings", []),
         }
 
     def _get_renderer(self, element_type: str, canvas_obj: canvas.Canvas):

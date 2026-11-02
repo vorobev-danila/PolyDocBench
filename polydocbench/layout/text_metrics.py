@@ -6,8 +6,9 @@ from pathlib import Path
 from typing import Any
 
 from reportlab.pdfbase import pdfmetrics
-from reportlab.pdfbase.pdfmetrics import stringWidth
 from reportlab.pdfbase.ttfonts import TTFont
+
+from polydocbench.document.fonts import measure_text
 
 
 class TextMetrics:
@@ -35,7 +36,7 @@ class TextMetrics:
             }
 
     def measure_text_width(self, text: str, font_size: float) -> float:
-        return stringWidth(text, self.font_name, font_size)
+        return measure_text(text, self.font_name, font_size)
 
     def can_fit_in_width(self, text: str, max_width: float, font_size: float) -> bool:
         return self.measure_text_width(text, font_size) <= max_width

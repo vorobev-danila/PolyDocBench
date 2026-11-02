@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 from .geometry import bbox_iou
+from .protocol import EVALUATION_PROTOCOL_VERSION
 from .types import LineDict
 
 
@@ -92,29 +93,48 @@ def _project_predictions_to_gt_order(
     return predicted_order
 
 
-def kendall_tau(gt_order: list[str], predicted_order: list[str]) -> float:
-    """Kendall tau over predicted ids projected into GT order."""
-
-    gt_index = {line_id: index for index, line_id in enumerate(gt_order)}
-    ranks = [gt_index[line_id] for line_id in predicted_order if line_id in gt_index]
-
-    concordant = 0
-    discordant = 0
-    for i in range(len(ranks)):
-        for j in range(i + 1, len(ranks)):
-            if ranks[i] < ranks[j]:
-                concordant += 1
-            else:
-                discordant += 1
-
+def evaluate_order_pairs(
+    gt_order: list[str], predicted_groups: list[list[str]],
+) -> dict[str, float | int | None]:
+    """Score only pairs separated by model output groups, never inferred internal order."""
+    if len(set(gt_order)) != len(gt_order):
+        raise ValueError("GT reading-order IDs must be unique")
+    gt_index = {element_id: index for index, element_id in enumerate(gt_order)}
+    ranks = [
+        [gt_index[element_id] for element_id in group if element_id in gt_index]
+        for group in predicted_groups
+    ]
+    flattened = [rank for group in ranks for rank in group]
+    if len(set(flattened)) != len(flattened):
+        raise ValueError("Matched reading-order IDs must be unique")
+    concordant = discordant = 0
+    for index, group in enumerate(ranks):
+        for later_group in ranks[index + 1:]:
+            for first in group:
+                for second in later_group:
+                    concordant += int(first < second)
+                    discordant += int(first > second)
     total = concordant + discordant
-    return (concordant - discordant) / total if total else 0.0
+    total_gt_pairs = len(gt_order) * (len(gt_order) - 1) // 2
+    return {
+        "kendall_tau": (concordant - discordant) / total if total else None,
+        "pairwise_accuracy": concordant / total if total else None,
+        "num_order_pairs": total,
+        "num_correct_pairs": concordant,
+        "num_inverted_pairs": discordant,
+        "num_unresolved_pairs": sum(len(group) * (len(group) - 1) // 2 for group in ranks),
+        "order_pair_coverage": total / total_gt_pairs if total_gt_pairs else 0.0,
+    }
 
 
-def pairwise_accuracy(gt_order: list[str], predicted_order: list[str]) -> float:
-    """Fraction of correctly ordered line pairs."""
+def kendall_tau(gt_order: list[str], predicted_order: list[str]) -> float | None:
+    """Kendall tau over matched IDs; undefined without a comparable pair."""
+    return evaluate_order_pairs(gt_order, [[element_id] for element_id in predicted_order])["kendall_tau"]
 
-    return (kendall_tau(gt_order, predicted_order) + 1.0) / 2.0
+
+def pairwise_accuracy(gt_order: list[str], predicted_order: list[str]) -> float | None:
+    """Fraction of correctly ordered matched pairs, or None if no pairs exist."""
+    return evaluate_order_pairs(gt_order, [[element_id] for element_id in predicted_order])["pairwise_accuracy"]
 
 
 def evaluate_ordering(
@@ -122,7 +142,7 @@ def evaluate_ordering(
     predicted_lines: list[LineDict],
     num_columns: int,
     iou_threshold: float = 0.3,
-) -> dict[str, float | int]:
+) -> dict[str, float | int | str | None]:
     """Evaluate reading order with Kendall tau and pairwise accuracy."""
 
     gt_order, predicted_order = build_order_sequences(
@@ -132,8 +152,10 @@ def evaluate_ordering(
         iou_threshold=iou_threshold,
     )
     return {
-        "kendall_tau": kendall_tau(gt_order, predicted_order),
-        "pairwise_accuracy": pairwise_accuracy(gt_order, predicted_order),
+        "evaluation_protocol_version": EVALUATION_PROTOCOL_VERSION,
+        "matching_iou_threshold": iou_threshold,
+        "num_columns": num_columns,
+        **evaluate_order_pairs(gt_order, [[element_id] for element_id in predicted_order]),
         "num_matched": len(predicted_order),
         "num_gt": len(gt_order),
     }

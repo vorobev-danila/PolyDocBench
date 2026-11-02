@@ -63,6 +63,7 @@ def render_document(
         "template": template,
         "page_count": len(layout_result.pages),
         "element_count": len(layout_result.elements),
+        "layout_warnings": layout_result.warnings,
     }
 
 
@@ -164,7 +165,7 @@ def evaluate_quality_from_gt(
     predicted_lines: list[dict[str, Any]],
     page_number: int = 1,
     iou_threshold: float = 0.3,
-) -> dict[str, float]:
+) -> dict[str, float | int | str]:
     gt_lines = extract_gt_lines(load_gt(gt_path), page_number=page_number)
     return evaluate_ocr_quality(gt_lines, predicted_lines, iou_threshold=iou_threshold)
 
@@ -175,7 +176,7 @@ def evaluate_ordering_from_gt(
     page_number: int = 1,
     num_columns: int = 1,
     iou_threshold: float = 0.3,
-) -> dict[str, float | int]:
+) -> dict[str, float | int | str | None]:
     gt_lines = extract_gt_lines(load_gt(gt_path), page_number=page_number)
     return evaluate_ordering(
         gt_lines,

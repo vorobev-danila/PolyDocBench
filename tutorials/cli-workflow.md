@@ -38,6 +38,17 @@ The renderer writes:
 uv run python -m polydocbench render examples\wiki_formulas.json -o outputs\wiki_formulas.pdf --template simple_article
 ```
 
+## Complex Document Example
+
+For a network-free example with tables, captions and full-width inserts:
+
+```powershell
+uv run python -m polydocbench render examples\complex_document.json -o outputs\complex_layouts\research_illustrated.pdf --template research_illustrated
+```
+
+Use `--template reference_sheet` for landscape pages. See
+[Complex Layouts](complex-layouts.md) for all five new profiles and cell-level GT.
+
 ## Generate Noisy Scan Variants
 
 First render a PDF and GT pair:
@@ -121,9 +132,13 @@ uv run python -m polydocbench draw-gt-overlay outputs\wiki_formulas_dataset\medi
 
 Available profiles:
 
+- `clean` (opt-in lossless PNG control, one variant)
 - `light_scan`
 - `medium_scan`
 - `heavy_scan`
+
+New scans record independent artifact seeds, sampled noise parameters and input/
+output hashes. Details and replay examples: [Reproducible Noise](reproducible-noise.md).
 
 ## Render from Python
 
