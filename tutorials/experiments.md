@@ -5,6 +5,11 @@ artifacts, see [Benchmark Inventory](benchmark-manifest.md) and the
 [ICDAR 2027 roadmap](icdar-2027-plan.md). The current experiment runners do not
 yet execute the draft benchmark specification or assign dataset splits.
 
+For a shared, frozen pilot selection with per-model time/memory/failure
+accounting, use the separate [Benchmark Pilot](benchmark-pilot.md) workflow.
+It consumes an inventory and uses the same task evaluators without changing
+the existing experiment runners or their historical results.
+
 New noise generation uses pipeline `0.2`. Use a separate output directory for
 new runs; the same seed no longer recreates historical unversioned scans.
 Add `clean` to `--profiles` for a lossless control. Requested-pair filtering,

@@ -19,6 +19,9 @@ dependencies = [
 ]
 
 [project.optional-dependencies]
+benchmark = [
+    "psutil>=5.9.0",
+]
 noise = [
     "opencv-python-headless>=4.9.0",
     "pymupdf>=1.24.0",
@@ -48,6 +51,7 @@ api = [
     "uvicorn[standard]>=0.29.0",
 ]
 all = [
+    "psutil>=5.9.0",
     "opencv-python-headless>=4.9.0",
     "pymupdf>=1.24.0",
     "pytesseract>=0.3.10",

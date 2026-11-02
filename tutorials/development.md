@@ -9,7 +9,7 @@ This guide covers local development, tests, CI, and contribution flow.
 ## Install Development Dependencies
 
 ```powershell
-uv pip install -e ".[api,noise,ocr,dotsocr,structure,formula,dev]"
+uv pip install -e ".[api,noise,ocr,dotsocr,structure,formula,benchmark,dev]"
 ```
 
 ## Run Tests
@@ -33,6 +33,10 @@ uv run python -m uvicorn polydocbench.api.app:app --reload --host 127.0.0.1 --po
 ## CI
 
 CI runs on every push and pull request to `main` using GitHub Actions:
+
+CI includes the `benchmark` extra for supervised-worker/RSS tests. These tests
+use model stubs and local child processes; no paid API or Docling model download
+is needed. Real pilot runs are opt-in: [Benchmark Pilot](benchmark-pilot.md).
 
 ```text
 .github/workflows/tests.yml

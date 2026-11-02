@@ -65,6 +65,7 @@ M1 progress:
 - [x] Add typed artifact inventory, SHA-256 fingerprints, verification and gap reports.
 - [x] Add revision-bound Wikipedia capture, offline response verification and render-bundle linkage.
 - [x] Add review-gated source-family catalogs and deterministic family-level split plans.
+- [x] Add frozen paired pilot selection and supervised per-model timing/RSS/failure tooling.
 - [ ] Review source families, source revisions, content/media rights and code license.
 - [ ] Select the pilot subset and measure inference time, memory, failures and cost.
 - [ ] Approve or reduce the main experiment matrix using the measured budget.
@@ -223,6 +224,29 @@ Use [revision-bound sources and reviewed splits](source-revisions-and-splits.md)
 Human-review source families/media rights and measure a pilot budget. Parameter sweeps,
 GT audits and publication evaluation remain open. Do not silently relabel old
 artifacts as newly reproducible samples.
+
+The [pilot tooling](benchmark-pilot.md) supports Tesseract quality, dots.ocr
+ordering and Docling structure on one fixed selection. It measures local RSS
+and separates inference/evaluation times, but does not infer remote memory,
+GPU VRAM, billing, or a verified model checkpoint. An engineering pilot on
+historical unassigned scans does not close the reviewed-corpus or all-model
+budget gates.
+
+Engineering measurement (2026-11-02): a frozen historical pilot selected 18 base
+pages / 54 scan conditions, six languages, three templates, three inferred
+families and 11 source documents. Tesseract 5.5.0 completed 54/54 in 131.26 s
+on the recorded Windows host; subsequent successful inference mean was 2.25 s,
+and sampled process-tree RSS peaked at approximately 215 MiB. The plan and
+machine/configuration identity are retained locally under `outputs/planning/`
+and `outputs/experiments/pilot_runtime/`. These are feasibility measurements on
+unassigned historical data without clean controls, not final paper results or
+an approved all-model budget.
+
+A separate one-image Docling CPU smoke run reached the 180 s watchdog limit;
+its attempt is retained as `timeout` with no quality/structure score. That is
+not an estimate of completed inference latency. A longer bounded Docling run
+and the paid remote dots.ocr pilot remain pending; do not expand their full
+matrices or claim their budgets have been approved from the Tesseract results.
 
 Render snapshot smoke evidence: the local complex-document fixture was rendered
 with `research_illustrated`, `technical_report` and `financial_report` under

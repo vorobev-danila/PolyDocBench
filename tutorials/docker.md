@@ -14,6 +14,10 @@ The image installs these optional dependency groups:
 - `noise`
 - `formula`
 
+The default image does not include pilot profiling or OCR models. The
+[Benchmark Pilot](benchmark-pilot.md) workflow currently targets the local `uv`
+environment with the `benchmark` and selected model extras installed.
+
 Dependencies are installed from `uv.lock` with `--frozen`, so local and
 container builds use the same resolved versions. The runtime stage contains
 only the installed environment and application assets.

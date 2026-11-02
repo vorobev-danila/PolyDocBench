@@ -79,6 +79,10 @@ Do not interpret an accepted count as benchmark completeness or model success ra
 
 ## Reviewed Source Splits
 
+To select complete noise-condition pairs and measure model runtime from an
+inventory, see [Benchmark Pilot](benchmark-pilot.md). It verifies the selected
+manifest files and keeps all selected images in its result denominator.
+
 Create a draft family catalog from an inventory, review it manually, freeze a
 deterministic plan, and then apply it while rebuilding the manifest:
 

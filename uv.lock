@@ -1897,6 +1897,7 @@ all = [
     { name = "openai" },
     { name = "opencv-python-headless" },
     { name = "plotly" },
+    { name = "psutil" },
     { name = "pymupdf" },
     { name = "pytesseract" },
     { name = "pytest" },
@@ -1907,6 +1908,9 @@ all = [
 api = [
     { name = "fastapi" },
     { name = "uvicorn", extra = ["standard"] },
+]
+benchmark = [
+    { name = "psutil" },
 ]
 dev = [
     { name = "httpx" },
@@ -1952,6 +1956,8 @@ requires-dist = [
     { name = "plotly", marker = "extra == 'dotsocr'", specifier = ">=5.24.0" },
     { name = "plotly", marker = "extra == 'ocr'", specifier = ">=5.24.0" },
     { name = "plotly", marker = "extra == 'structure'", specifier = ">=5.24.0" },
+    { name = "psutil", marker = "extra == 'all'", specifier = ">=5.9.0" },
+    { name = "psutil", marker = "extra == 'benchmark'", specifier = ">=5.9.0" },
     { name = "pydantic", specifier = ">=2.9.0" },
     { name = "pymupdf", marker = "extra == 'all'", specifier = ">=1.24.0" },
     { name = "pymupdf", marker = "extra == 'noise'", specifier = ">=1.24.0" },
@@ -1969,7 +1975,7 @@ requires-dist = [
     { name = "uvicorn", extras = ["standard"], marker = "extra == 'all'", specifier = ">=0.29.0" },
     { name = "uvicorn", extras = ["standard"], marker = "extra == 'api'", specifier = ">=0.29.0" },
 ]
-provides-extras = ["noise", "ocr", "dotsocr", "structure", "formula", "dev", "api", "all"]
+provides-extras = ["benchmark", "noise", "ocr", "dotsocr", "structure", "formula", "dev", "api", "all"]
 
 [[package]]
 name = "polyfactory"

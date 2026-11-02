@@ -17,6 +17,8 @@ This package is organized around the research pipeline:
    `benchmark.files` shares portable fingerprints; `benchmark.render_snapshot`
    seals source/config/font/asset/code inputs for opt-in render verification/replay;
    `benchmark.splits` gates deterministic family-level splits on explicit review.
+   `benchmark.pilot` freezes paired samples; `pilot_runtime` supervises model
+   workers with timing, local RSS, and full failure/not-run accounting.
 
 Canonical project-level directories:
 

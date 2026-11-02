@@ -1,4 +1,26 @@
 from polydocbench.eval import parse_docling_structure
+from polydocbench.eval.docling_adapter import extract_docling_structure
+
+
+def test_docling_adapter_reuses_injected_converter_without_loading_models(tmp_path):
+    class Document:
+        def export_to_dict(self):
+            return {"texts": []}
+
+    class Result:
+        document = Document()
+
+    class Converter:
+        calls = 0
+
+        def convert(self, path):
+            self.calls += 1
+            return Result()
+
+    converter = Converter()
+    for _ in range(2):
+        assert extract_docling_structure(tmp_path / "scan.png", converter=converter) == []
+    assert converter.calls == 2
 
 
 def test_parse_docling_structure_reads_top_level_items_and_bbox():

@@ -55,6 +55,7 @@ The project is useful for:
 - Opt-in sealed source/render inputs with font/image/code snapshots, integrity checks and offline replay.
 - Revision-bound Wikipedia capture with raw MediaWiki evidence and offline verification.
 - Reviewed source-family catalogs and deterministic leakage-resistant `dev`/`test` plans.
+- Frozen paired pilots with per-model timing, failure accounting, and local process-memory measurement.
 - Transform-aware noisy GT for rotated/affine scan variants.
 - OCR quality, reading-order, and structure evaluation utilities.
 - Versioned OCR/reading-order evaluation with insertion-aware micro error rates and explicit order-pair coverage.
@@ -166,6 +167,7 @@ The detailed documentation is split into focused tutorials:
 | [Reproducible Noise](tutorials/reproducible-noise.md) | Clean controls, isolated seeds, actual parameters, replay and legacy migration |
 | [Render Snapshots](tutorials/render-snapshots.md) | Sealed source/config/font/image/code inputs, output hashes and offline render replay |
 | [Source Revisions And Splits](tutorials/source-revisions-and-splits.md) | Pinned Wikipedia revisions, family review, and deterministic dev/test assignment |
+| [Benchmark Pilot](tutorials/benchmark-pilot.md) | Frozen paired selection, model runtime, timeouts, local RSS, and budget limits |
 | [FastAPI Workflow](tutorials/fastapi-workflow.md) | API startup, endpoints, request examples |
 | [Architecture](tutorials/architecture.md) | Components, data flow, module responsibilities |
 | [Data Format](tutorials/data-format.md) | Source JSON, GT JSON, schema versions |
@@ -207,7 +209,7 @@ docker-compose.yml
 ## Development Workflow
 
 ```powershell
-uv pip install -e ".[api,noise,ocr,dotsocr,structure,formula,dev]"
+uv pip install -e ".[api,noise,ocr,dotsocr,structure,formula,benchmark,dev]"
 uv run python -m pytest -q -p no:cacheprovider
 ```
 

@@ -10,6 +10,7 @@ This directory contains focused guides for using and developing PolyDocBench.
 - [Reproducible Noise](reproducible-noise.md)
 - [Render Snapshots](render-snapshots.md)
 - [Wikipedia Revisions And Benchmark Splits](source-revisions-and-splits.md)
+- [Frozen Pilot And Runtime Measurements](benchmark-pilot.md)
 - [FastAPI Workflow](fastapi-workflow.md)
 - [Architecture](architecture.md)
 - [Data Format](data-format.md)

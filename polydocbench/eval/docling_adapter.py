@@ -14,14 +14,15 @@ def extract_docling_structure(
     *,
     raw_output_path: str | Path | None = None,
     page_number: int = 1,
+    converter: Any | None = None,
 ) -> list[dict[str, Any]]:
     """Run Docling and return normalized structure elements."""
-    try:
-        from docling.document_converter import DocumentConverter
-    except ImportError as exc:
-        raise RuntimeError('Install Docling dependencies with: uv pip install -e ".[structure]"') from exc
-
-    converter = DocumentConverter()
+    if converter is None:
+        try:
+            from docling.document_converter import DocumentConverter
+        except ImportError as exc:
+            raise RuntimeError('Install Docling dependencies with: uv pip install -e ".[structure]"') from exc
+        converter = DocumentConverter()
     result = converter.convert(str(input_path))
     document = result.document
     if hasattr(document, "export_to_dict"):

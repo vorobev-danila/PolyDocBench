@@ -33,6 +33,7 @@ uv pip install -e ".[api]"
 uv pip install -e ".[noise]"
 uv pip install -e ".[formula]"
 uv pip install -e ".[dev]"
+uv pip install -e ".[benchmark]"
 ```
 
 For remote dots.ocr reading-order evaluation through an OpenAI-compatible gateway:
@@ -50,8 +51,12 @@ uv pip install -e ".[structure]"
 For the full research stack:
 
 ```powershell
-uv pip install -e ".[api,noise,ocr,dotsocr,structure,formula,dev]"
+uv pip install -e ".[api,noise,ocr,dotsocr,structure,formula,benchmark,dev]"
 ```
+
+The `benchmark` extra adds `psutil` for supervised pilot measurements; model
+dependencies remain in `ocr`, `dotsocr`, and `structure`. See
+[Benchmark Pilot](benchmark-pilot.md).
 
 ## Verify Installation
 
