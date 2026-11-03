@@ -1,0 +1,14 @@
+{
+  "schema_version": "0.1",
+  "dpi": 200,
+  "repeats": 3,
+  "seed": 42,
+  "sweeps": [
+    {"operation": "defocus_blur", "parameter": "sigma_pixels", "levels": [0.8, 1.6, 2.6]},
+    {"operation": "motion_blur", "parameter": "length_pixels", "levels": [3, 7, 13], "fixed_parameters": {"angle_degrees": 20}},
+    {"operation": "sensor_noise", "parameter": "sigma", "levels": [5, 12, 24]},
+    {"operation": "faded_ink", "parameter": "retained_contrast", "levels": [0.7, 0.4, 0.2]},
+    {"operation": "local_shadow", "parameter": "strength", "levels": [0.2, 0.45, 0.7], "fixed_parameters": {"center_x": 0.5, "center_y": 0.5, "radius_x": 0.4, "radius_y": 0.4}},
+    {"operation": "bleed_through", "parameter": "opacity", "levels": [0.08, 0.18, 0.3], "fixed_parameters": {"sigma_pixels": 1.2, "shift_x": 12, "shift_y": 12, "source": "mirrored_self_page"}}
+  ]
+}

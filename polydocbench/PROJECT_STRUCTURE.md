@@ -21,6 +21,9 @@ This package is organized around the research pipeline:
    `benchmark.splits` gates deterministic family-level splits on explicit review.
    `benchmark.pilot` freezes paired samples; `pilot_runtime` supervises model
    workers with timing, local RSS, and full failure/not-run accounting.
+   `benchmark.calibration` freezes controlled noise sweeps and paired aggregation;
+   `calibration_run` generates verified inputs and reuses the pilot worker;
+   `calibration_report` exports offline response curves and illustrative crops.
 
 Canonical project-level directories:
 

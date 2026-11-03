@@ -19,6 +19,10 @@ reuse checks, PNG support and migration are described in
 Photometric profiles and configurable fixed-parameter sweeps are available through
 `--noise-config configs/noise_recipes.json` and selected custom names in
 `--profiles`. See [Noise Effects](noise-effects.md) for runnable commands and previews.
+For fixed-page clean controls and six isolated parameter-response curves, use
+[Noise Calibration](noise-calibration.md). This separate engineering workflow
+keeps raw counts, all statuses, and paired comparisons; it does not automatically
+approve scenario severity or promote historical data to reviewed development data.
 
 Opt into sealed source/config/font/image/code inputs with `--snapshot-inputs`.
 URL images additionally require `--allow-asset-downloads`. Use a new output

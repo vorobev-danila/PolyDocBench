@@ -34,9 +34,14 @@ uv run python -m uvicorn polydocbench.api.app:app --reload --host 127.0.0.1 --po
 
 CI runs on every push and pull request to `main` using GitHub Actions:
 
-CI includes the `benchmark` extra for supervised-worker/RSS tests. These tests
+CI includes the `benchmark` extra for supervised-worker/RSS tests and `ocr` for
+Plotly calibration-report checks. These tests
 use model stubs and local child processes; no paid API or Docling model download
 is needed. Real pilot runs are opt-in: [Benchmark Pilot](benchmark-pilot.md).
+Real Tesseract calibration is also opt-in: [Noise Calibration](noise-calibration.md).
+When Node.js is available, calibration tests also exercise every report selector
+against source metrics in a small DOM/Plotly stub. This checks JavaScript/data
+consistency, not browser rendering; no browser or native Tesseract is required by CI.
 
 ```text
 .github/workflows/tests.yml

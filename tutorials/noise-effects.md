@@ -120,6 +120,9 @@ Combinations containing affine steps still compose the geometry and transform
 GT normally. This does **not** prove readability or pixel-accurate ink masks.
 Very faint/blurred text may be unrecoverable; audit severity on development data
 before fixing the evaluation protocol. Occlusion/visibility rules are future work.
+Use [Paired Noise Calibration](noise-calibration.md) to freeze a selection and
+compare controlled parameter levels against clean Tesseract controls, with
+micro-count aggregation and explicit complete-cohort/failure denominators.
 
 New profiles and custom recipes use PNG so isolated sweeps have no hidden final
 JPEG loss. The camera scenario explicitly includes a JPEG encode/decode step.

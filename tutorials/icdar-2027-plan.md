@@ -1,6 +1,6 @@
 # ICDAR 2027 Publication Plan
 
-Updated: 2026-11-02. This is the working roadmap, not a statement that the
+Updated: 2026-11-03. This is the working roadmap, not a statement that the
 benchmark or the publication is complete. Update milestone status as evidence
 and artifacts become available.
 
@@ -88,6 +88,7 @@ M2 progress:
 - [x] Requested-pair reuse validation and explicit refusal of historical untraced noise in the Tesseract generator.
 - [x] Opt-in sealed source/config/font/asset/code inputs, output binding, integrity checks and exact render replay.
 - [x] Configurable JSON operation recipes and isolated photometric parameter sweeps (noise 0.3).
+- [x] Frozen page-paired Tesseract calibration, clean controls, complete-cohort curves and failure accounting.
 - [ ] Calibrate scenario severity and validate photometric realism/readability on development data.
 - [ ] Source revision/rights review, GT audit, fixed publication metrics and model baselines.
 
@@ -222,8 +223,10 @@ acceptance, complete camera-ready, archival release, registration and presentati
 Keep the historical inventory as a baseline. Use [render snapshots](render-snapshots.md)
 and [reproducible noise](reproducible-noise.md) in a separate pilot directory.
 Use [revision-bound sources and reviewed splits](source-revisions-and-splits.md) for new data.
-Human-review source families/media rights and measure a pilot budget. Noise calibration,
-GT audits and publication evaluation remain open. Do not silently relabel old
+Human-review source families/media rights and measure a pilot budget. Reviewed
+development-set severity approval, GT audits and publication evaluation remain open.
+The [noise calibration workflow](noise-calibration.md) supports exploratory
+measurements but does not close those review gates. Do not silently relabel old
 artifacts as newly reproducible samples.
 
 The [pilot tooling](benchmark-pilot.md) supports Tesseract quality, dots.ocr
@@ -248,6 +251,18 @@ its attempt is retained as `timeout` with no quality/structure score. That is
 not an estimate of completed inference latency. A longer bounded Docling run
 and the paid remote dots.ocr pilot remain pending; do not expand their full
 matrices or claim their budgets have been approved from the Tesseract results.
+
+Calibration engineering evidence (2026-11-03): six fixed first pages, six
+languages, three templates and three inferred families produced 150 images.
+Tesseract completed 150/150 with 144/144 noisy-clean pairs available. All 180
+aggregate rows matched independent count pooling; all 150 GT geometries/content
+matched clean and 42 sampled strong-level/clean traces replayed pixel-exactly.
+The local offline report is under `outputs/experiments/noise_calibration_pilot_v2/`.
+Clean micro CER was approximately 0.92%; strong blur/shadow raised it sharply,
+while faded-ink settings were nearly neutral. Responses were not uniformly
+monotonic. These are engineering observations on unassigned historical inputs,
+not approved severity levels or final paper results. Full commands and limits:
+[Noise Calibration](noise-calibration.md).
 
 Render snapshot smoke evidence: the local complex-document fixture was rendered
 with `research_illustrated`, `technical_report` and `financial_report` under

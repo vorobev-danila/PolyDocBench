@@ -7,6 +7,10 @@ actual sampled parameters and supports replay on the original raster. This is
 separate from source/GT schema `0.1`, trace schema `0.1`, and evaluation protocol
 `0.2`. A matching version number across these formats has no implied relationship.
 
+For isolated, page-paired Tesseract response curves, see
+[Noise Calibration](noise-calibration.md). It reuses these traces and the frozen
+pilot worker without changing historical results or assigning unreviewed splits.
+
 ## Generate A Paired Dataset
 
 From the repository root, render an input without debug overlays:

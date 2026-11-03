@@ -58,6 +58,7 @@ The project is useful for:
 - Revision-bound Wikipedia capture with raw MediaWiki evidence and offline verification.
 - Reviewed source-family catalogs and deterministic leakage-resistant `dev`/`test` plans.
 - Frozen paired pilots with per-model timing, failure accounting, and local process-memory measurement.
+- Page-paired Tesseract noise calibration with clean controls, response curves, and explicit failure coverage.
 - Transform-aware noisy GT for rotated/affine scan variants.
 - OCR quality, reading-order, and structure evaluation utilities.
 - Versioned OCR/reading-order evaluation with insertion-aware micro error rates and explicit order-pair coverage.
@@ -171,6 +172,7 @@ The detailed documentation is split into focused tutorials:
 | [Render Snapshots](tutorials/render-snapshots.md) | Sealed source/config/font/image/code inputs, output hashes and offline render replay |
 | [Source Revisions And Splits](tutorials/source-revisions-and-splits.md) | Pinned Wikipedia revisions, family review, and deterministic dev/test assignment |
 | [Benchmark Pilot](tutorials/benchmark-pilot.md) | Frozen paired selection, model runtime, timeouts, local RSS, and budget limits |
+| [Noise Calibration](tutorials/noise-calibration.md) | Controlled six-effect sweeps, paired micro metrics, and an offline response-curve report |
 | [FastAPI Workflow](tutorials/fastapi-workflow.md) | API startup, endpoints, request examples |
 | [Architecture](tutorials/architecture.md) | Components, data flow, module responsibilities |
 | [Data Format](tutorials/data-format.md) | Source JSON, GT JSON, schema versions |

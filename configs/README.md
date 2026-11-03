@@ -9,9 +9,12 @@ Current files:
 - `render_config.yaml` - renderer configuration defaults.
 - `benchmark_icdar2027.json` - draft publication benchmark targets, not executable generation settings.
 - `noise_recipes.json` - custom blur sweeps and a faded-camera combination, loaded explicitly with `--noise-config`.
+- `noise_calibration.json` - controlled six-effect sweeps with fixed nuisance parameters, used by `scripts/run_noise_calibration.py`.
 
 Noise recipe schema, parameter units, replay and example gallery:
 [Noise Effects](../tutorials/noise-effects.md).
+Page-paired Tesseract calibration, repeats, metrics and limitations:
+[Noise Calibration](../tutorials/noise-calibration.md).
 
 The layout config contains the three original templates and five richer profiles.
 Supported table/image/region options are documented in
