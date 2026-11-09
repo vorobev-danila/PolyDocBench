@@ -21,10 +21,15 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument("--api-key-env", default=None)
     parser.add_argument("--request-timeout", type=float, default=180)
     parser.add_argument("--max-retries", type=int, default=0)
+    parser.add_argument("--visibility-policy", type=Path, help="Opt into image visibility protocol 0.3 with a frozen policy JSON")
     args = parser.parse_args(argv)
     config = {key: getattr(args, key) for key in
               ("tesseract_cmd", "base_url", "model", "api_key_env", "request_timeout", "max_retries")
               if getattr(args, key) is not None}
+    if args.visibility_policy:
+        from polydocbench.eval.scope import load_visibility_policy
+
+        config["visibility_policy"] = load_visibility_policy(args.visibility_policy).model_dump()
     if args.request_timeout <= 0 or args.max_retries < 0:
         parser.error("request timeout must be positive and retries non-negative")
     plan = PilotPlan.model_validate_json(args.plan.read_text(encoding="utf-8"))

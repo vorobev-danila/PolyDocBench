@@ -1,5 +1,10 @@
 # Evaluation Protocol
 
+The definitions below describe the unchanged default protocol **0.2**.
+Opt-in **0.3** adds task-specific eligibility, ignored prediction regions,
+nullable empty-scope scores and coverage: [Evaluation Visibility](evaluation-visibility.md).
+Do not pool these protocols or different visibility policies in one result set.
+
 This guide defines OCR quality and reading-order evaluation protocol `0.2`.
 The version is exported as `evaluation_protocol_version` by the Python evaluators,
 API, and experiment runners. It is independent of source/GT `schema_version`

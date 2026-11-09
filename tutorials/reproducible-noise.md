@@ -7,6 +7,11 @@ actual sampled parameters and supports replay on the original raster. This is
 separate from source/GT schema `0.1`, trace schema `0.1`, and evaluation protocol
 `0.2`. A matching version number across these formats has no implied relationship.
 
+New scan GT additionally records geometric visibility facts without changing
+pixel noise 0.3 or source/GT schema 0.1. The optional scoring policy is a separate
+protocol 0.3: [Evaluation Visibility](evaluation-visibility.md). Old GT files
+are not rewritten, and geometry facts alone do not exclude content from scoring.
+
 For isolated, page-paired Tesseract response curves, see
 [Noise Calibration](noise-calibration.md). It reuses these traces and the frozen
 pilot worker without changing historical results or assigning unreviewed splits.

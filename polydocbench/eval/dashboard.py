@@ -9,7 +9,8 @@ from typing import Any
 
 from .protocol import result_protocol_version
 from .quality import aggregate_ocr_counts
-from .reporting import format_metric
+from .reporting import format_metric, mean_available
+from .scoped import scope_summary, scope_table_columns
 
 
 def write_ocr_dashboard(output_path: str | Path, rows: list[dict[str, Any]]) -> Path:
@@ -116,10 +117,11 @@ def write_ocr_dashboard(output_path: str | Path, rows: list[dict[str, Any]]) -> 
         )
 
     summary_rows = _summary_rows(rows)
+    scope_headers, scope_cells = scope_table_columns(summary_rows)
     figure.add_trace(
         go.Table(
             header={
-                "values": ["Language", "Template", "Noise", "Samples", "Macro CER*", "Macro WER*", "IoU", "Matched", "Micro CER", "Micro WER", "Line F1"],
+                "values": ["Language", "Template", "Noise", "Samples", "Macro CER*", "Macro WER*", "IoU", "Matched", "Micro CER", "Micro WER", "Line F1"] + scope_headers,
                 "fill_color": "#213547",
                 "font": {"color": "white"},
                 "align": "left",
@@ -130,14 +132,14 @@ def write_ocr_dashboard(output_path: str | Path, rows: list[dict[str, Any]]) -> 
                     [row["template"] for row in summary_rows],
                     [row["profile"] for row in summary_rows],
                     [row["count"] for row in summary_rows],
-                    [f'{row["CER"]:.4f}' for row in summary_rows],
-                    [f'{row["WER"]:.4f}' for row in summary_rows],
-                    [f'{row["IoU"]:.4f}' for row in summary_rows],
-                    [f'{row["matched_ratio"]:.4f}' for row in summary_rows],
+                    [format_metric(row["CER"]) for row in summary_rows],
+                    [format_metric(row["WER"]) for row in summary_rows],
+                    [format_metric(row["IoU"]) for row in summary_rows],
+                    [format_metric(row["matched_ratio"]) for row in summary_rows],
                     [format_metric(row["micro_CER"]) for row in summary_rows],
                     [format_metric(row["micro_WER"]) for row in summary_rows],
                     [format_metric(row["line_F1"]) for row in summary_rows],
-                ],
+                ] + scope_cells,
                 "fill_color": "#f7f9fb",
                 "align": "left",
             },
@@ -184,7 +186,7 @@ def _group_means(
         ])[metric] for value in values]
     grouped: defaultdict[str, list[float]] = defaultdict(list)
     for row in rows:
-        if row["profile"] == profile:
+        if row["profile"] == profile and row.get(metric) is not None:
             grouped[str(row[dimension])].append(float(row[metric]))
     return [mean(grouped[value]) if grouped[value] else None for value in values]
 
@@ -202,10 +204,11 @@ def _summary_rows(rows: list[dict[str, Any]]) -> list[dict[str, Any]]:
                 "template": template,
                 "profile": profile,
                 "count": len(group),
-                "CER": mean(float(row["CER"]) for row in group),
-                "WER": mean(float(row["WER"]) for row in group),
-                "IoU": mean(float(row["IoU"]) for row in group),
-                "matched_ratio": mean(float(row["matched_ratio"]) for row in group),
+                "CER": mean_available(row["CER"] for row in group),
+                "WER": mean_available(row["WER"] for row in group),
+                "IoU": mean_available(row["IoU"] for row in group),
+                "matched_ratio": mean_available(row["matched_ratio"] for row in group),
+                **scope_summary(group),
                 **aggregate_ocr_counts(group),
             }
         )

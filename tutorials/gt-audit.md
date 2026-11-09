@@ -128,6 +128,10 @@ The area concerns annotation allocations, not visible ink or readability. Counts
 include overlapping block/cell/line annotations and are not independent samples.
 The audit does not introduce a visibility mask or silently exclude text from scoring.
 
+Task-specific scoring exclusions are a separate, opt-in workflow:
+[Evaluation Visibility](evaluation-visibility.md). Passing this audit does not
+approve its candidate policy or change historical metrics.
+
 ## Human Review
 
 Every selected PDF-page preview and scan gets a separate review unit. Initial

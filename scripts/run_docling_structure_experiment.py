@@ -10,6 +10,10 @@ from dataclasses import dataclass
 from pathlib import Path
 from statistics import mean
 from typing import Any
+from polydocbench.eval.protocol import result_protocol_version
+from polydocbench.eval.reporting import mean_available, format_metric
+from polydocbench.eval.scoped import check_result_output, evaluate_with_visibility, scope_summary, visibility_from_args
+from polydocbench.eval.scope import prepare_scope
 
 PROJECT_ROOT = Path(__file__).resolve().parents[1]
 if str(PROJECT_ROOT) not in sys.path:
@@ -50,6 +54,7 @@ def build_parser() -> argparse.ArgumentParser:
     parser.add_argument("--page-numbers", nargs="+", type=int, default=None, help="Optional one-based page filters")
     parser.add_argument("--max-images", type=int, default=None, help="Maximum number of scan artifacts for a smoke run")
     parser.add_argument("--iou-threshold", type=float, default=0.5, help="IoU threshold for structure element matching")
+    parser.add_argument("--visibility-policy", type=Path, help="Opt into visibility protocol 0.3")
     parser.add_argument("--reuse", action="store_true", help="Reuse existing Docling outputs")
     parser.add_argument("--continue-on-error", action="store_true", help="Record failed artifacts and continue the batch")
     parser.add_argument("--dashboard-only", action="store_true", help="Rebuild dashboard.html from existing structure metrics")
@@ -62,6 +67,8 @@ def main() -> int:
     args = build_parser().parse_args()
     input_root = Path(args.input_dir)
     output_root = Path(args.output_dir)
+    if not args.dashboard_only:
+        check_result_output(output_root, visibility_from_args(args))
     output_root.mkdir(parents=True, exist_ok=True)
     metrics_path = output_root / "metrics.jsonl"
     errors_path = output_root / "errors.jsonl"
@@ -117,8 +124,8 @@ def main() -> int:
             print(
                 f"[{index}/{len(artifacts)}] {artifact.language}/{artifact.article_id}/{artifact.template}/"
                 f"page_{artifact.page_number:03d}/{artifact.profile}_{artifact.variant}: "
-                f"score={row['structure_score']:.3f} det_F1={row['detection_F1']:.3f} "
-                f"type_acc={row['type_accuracy']:.3f} mean_iou={row['mean_iou']:.3f}"
+                f"score={format_metric(row['structure_score'], 3)} det_F1={format_metric(row['detection_F1'], 3)} "
+                f"type_acc={format_metric(row['type_accuracy'], 3)} mean_iou={format_metric(row['mean_iou'], 3)}"
             )
 
     _write_summary(summary_path, rows)
@@ -175,6 +182,10 @@ def discover_scan_artifacts(
 
 
 def _evaluate_artifact(artifact: ScanArtifact, args: argparse.Namespace, input_root: Path, output_root: Path) -> dict[str, Any]:
+    image_gt = load_gt(artifact.gt_path)
+    policy = visibility_from_args(args)
+    if policy is not None:
+        prepare_scope(image_gt, "structure", policy)
     relative_case = artifact.image_path.parent.relative_to(input_root)
     output_case = output_root / relative_case
     output_case.mkdir(parents=True, exist_ok=True)
@@ -201,9 +212,13 @@ def _evaluate_artifact(artifact: ScanArtifact, args: argparse.Namespace, input_r
         structure_path.write_text(json.dumps(predicted_elements, ensure_ascii=False, indent=2), encoding="utf-8")
 
     # Each extracted scan is a one-page image, independent of its source PDF page.
-    image_gt = load_gt(artifact.gt_path)
     gt_elements = extract_gt_structure_elements(image_gt, page_number=1)
-    metrics, matches = evaluate_structure(gt_elements, predicted_elements, iou_threshold=args.iou_threshold)
+    if policy is None:
+        metrics, matches = evaluate_structure(gt_elements, predicted_elements, iou_threshold=args.iou_threshold)
+    else:
+        evaluated = evaluate_with_visibility(image_gt, predicted_elements, task="structure", policy=policy, iou_threshold=args.iou_threshold)
+        metrics, matches = evaluated.metrics, evaluated.matches
+        (output_case / f"{stem}_scope.json").write_text(json.dumps(evaluated.scope, ensure_ascii=False, indent=2), encoding="utf-8")
     matches_path.write_text(json.dumps(structure_matches_to_dicts(matches), ensure_ascii=False, indent=2), encoding="utf-8")
 
     return {
@@ -231,6 +246,7 @@ def _read_metrics(metrics_path: Path) -> list[dict[str, Any]]:
 
 
 def _write_summary(summary_path: Path, rows: list[dict[str, Any]]) -> None:
+    protocol = result_protocol_version(rows)
     fields = [
         "language",
         "template",
@@ -241,6 +257,9 @@ def _write_summary(summary_path: Path, rows: list[dict[str, Any]]) -> None:
         "type_accuracy",
         "mean_iou",
     ]
+    fields.extend(scope_summary(rows))
+    if protocol == "0.3":
+        fields.append("evaluation_protocol_version")
     grouped: dict[tuple[str, str, str], list[dict[str, Any]]] = {}
     for row in rows:
         grouped.setdefault((row["language"], row["template"], row["profile"]), []).append(row)
@@ -254,10 +273,12 @@ def _write_summary(summary_path: Path, rows: list[dict[str, Any]]) -> None:
                     "template": template,
                     "profile": profile,
                     "count": len(group),
-                    "structure_score": mean(float(row["structure_score"]) for row in group),
-                    "detection_F1": mean(float(row["detection_F1"]) for row in group),
-                    "type_accuracy": mean(float(row["type_accuracy"]) for row in group),
-                    "mean_iou": mean(float(row["mean_iou"]) for row in group),
+                    "structure_score": mean_available(row["structure_score"] for row in group),
+                    "detection_F1": mean_available(row["detection_F1"] for row in group),
+                    "type_accuracy": mean_available(row["type_accuracy"] for row in group),
+                    "mean_iou": mean_available(row["mean_iou"] for row in group),
+                    **scope_summary(group),
+                    **({"evaluation_protocol_version": protocol} if protocol == "0.3" else {}),
                 }
             )
 

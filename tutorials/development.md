@@ -55,9 +55,18 @@ available. Full local fixture generation and historical diagnostics are opt-in:
 [GT Audit](gt-audit.md). No OCR model or extra dependency beyond existing noise
 and development extras is needed.
 
-```text
-.github/workflows/tests.yml
+Visibility-aware evaluation tests cover clipping, ignored-region unions,
+eligible-GT protection, undefined scores, coverage, API/pilot integration and
+protocol separation. Shapely/GEOS is a base dependency, recorded in policy IDs:
+
+```powershell
+uv run python -m pytest tests\test_evaluation_visibility.py -q -p no:cacheprovider
 ```
+
+The optional native inspection is documented in
+[Evaluation Visibility](evaluation-visibility.md). Do not change package source
+files while render-snapshot tests are running: they deliberately capture code
+fingerprints. CI lives in `.github/workflows/tests.yml`.
 
 ## Project Structure
 

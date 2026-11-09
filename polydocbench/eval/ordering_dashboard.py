@@ -9,6 +9,7 @@ from typing import Any
 
 from .protocol import result_protocol_version
 from .reporting import format_metric, mean_available
+from .scoped import scope_summary, scope_table_columns
 
 
 def write_ordering_dashboard(output_path: str | Path, rows: list[dict[str, Any]]) -> Path:
@@ -69,10 +70,11 @@ def write_ordering_dashboard(output_path: str | Path, rows: list[dict[str, Any]]
                 col=col,
             )
     summaries = _summary_rows(rows)
+    scope_headers, scope_cells = scope_table_columns(summaries)
     figure.add_trace(
         go.Table(
             header={
-                "values": ["Language", "Template", "Noise", "Samples", "Ordered WER", "Token F1", "Tau", "Valid Order Samples", "Block Coverage", "Pair Coverage"],
+                "values": ["Language", "Template", "Noise", "Samples", "Ordered WER", "Token F1", "Tau", "Valid Order Samples", "Block Coverage", "Pair Coverage"] + scope_headers,
                 "fill_color": "#213547",
                 "font": {"color": "white"},
                 "align": "left",
@@ -83,13 +85,13 @@ def write_ordering_dashboard(output_path: str | Path, rows: list[dict[str, Any]]
                     [row["template"] for row in summaries],
                     [row["profile"] for row in summaries],
                     [row["count"] for row in summaries],
-                    [f'{row["ordered_WER"]:.4f}' for row in summaries],
-                    [f'{row["token_F1"]:.4f}' for row in summaries],
+                    [format_metric(row["ordered_WER"]) for row in summaries],
+                    [format_metric(row["token_F1"]) for row in summaries],
                     [format_metric(row["kendall_tau"]) for row in summaries],
                     [row["valid_order_count"] for row in summaries],
-                    [f'{row["matched_block_ratio"]:.4f}' for row in summaries],
+                    [format_metric(row["matched_block_ratio"]) for row in summaries],
                     [format_metric(row["order_pair_coverage"]) for row in summaries],
-                ],
+                ] + scope_cells,
                 "fill_color": "#f7f9fb",
                 "align": "left",
             },
@@ -135,6 +137,7 @@ def _summary_rows(rows: list[dict[str, Any]]) -> list[dict[str, Any]]:
             "template": key[1],
             "profile": key[2],
             "count": len(group),
+            **scope_summary(group),
             "valid_order_count": sum(item.get("pairwise_accuracy") is not None for item in group),
             "order_pair_coverage": mean_available(item.get("order_pair_coverage") for item in group),
             **{metric: mean_available(item[metric] for item in group) for metric in (

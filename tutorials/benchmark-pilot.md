@@ -10,6 +10,13 @@ publication results. File hashes alone do not establish valid GT semantics.
 The historical set has known container/page, heading-line and reading-order
 defects; auditing does not rewrite its inputs or retrospectively approve scores.
 
+Use `--visibility-policy configs/evaluation_visibility.json` for opt-in protocol
+0.3. The policy is part of model configuration identity, GT is validated before
+inference, and predictions have hashed scope sidecars. Run summaries separate
+successful requests from images with eligible GT and export exclusion counts.
+See [Evaluation Visibility](evaluation-visibility.md); historical pilots are not
+automatically reinterpreted.
+
 ## Install
 
 ```powershell

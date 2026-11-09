@@ -11,6 +11,7 @@ Current files:
 - `noise_recipes.json` - custom blur sweeps and a faded-camera combination, loaded explicitly with `--noise-config`.
 - `noise_calibration.json` - controlled six-effect sweeps with fixed nuisance parameters, used by `scripts/run_noise_calibration.py`.
 - `gt_audit_noise.json` - fixed positive/negative rotations and shear for offline GT stress fixtures, not approved OCR severities.
+- `evaluation_visibility.json` - candidate task-specific visibility policy; explicit opt-in evaluation protocol 0.3, not publication approval.
 
 Noise recipe schema, parameter units, replay and example gallery:
 [Noise Effects](../tutorials/noise-effects.md).

@@ -9,6 +9,8 @@ from typing import Any
 
 from polydocbench.eval import evaluate_ordering, evaluate_structure, extract_gt_lines, extract_gt_structure_elements, load_gt
 from polydocbench.eval.quality import evaluate_ocr_quality
+from polydocbench.eval.scope import VisibilityPolicy
+from polydocbench.eval.scoped import evaluate_with_visibility
 from polydocbench.layout import LayoutEngine
 from polydocbench.render import PDFRenderer
 from polydocbench.sources import WikipediaParser, capture_wikipedia_source
@@ -178,7 +180,12 @@ def evaluate_quality_from_gt(
     predicted_lines: list[dict[str, Any]],
     page_number: int = 1,
     iou_threshold: float = 0.3,
-) -> dict[str, float | int | str]:
+    visibility_policy: VisibilityPolicy | dict | None = None,
+) -> dict[str, Any]:
+    if visibility_policy is not None:
+        result = evaluate_with_visibility(load_gt(gt_path), predicted_lines, task="quality", policy=visibility_policy,
+                                          page_number=page_number, iou_threshold=iou_threshold)
+        return {**result.metrics, "evaluation_scope": result.scope}
     gt_lines = extract_gt_lines(load_gt(gt_path), page_number=page_number)
     return evaluate_ocr_quality(gt_lines, predicted_lines, iou_threshold=iou_threshold)
 
@@ -189,7 +196,12 @@ def evaluate_ordering_from_gt(
     page_number: int = 1,
     num_columns: int = 1,
     iou_threshold: float = 0.3,
-) -> dict[str, float | int | str | None]:
+    visibility_policy: VisibilityPolicy | dict | None = None,
+) -> dict[str, Any]:
+    if visibility_policy is not None:
+        result = evaluate_with_visibility(load_gt(gt_path), predicted_lines, task="line_ordering", policy=visibility_policy,
+                                          page_number=page_number, iou_threshold=iou_threshold, num_columns=num_columns)
+        return {**result.metrics, "evaluation_scope": result.scope}
     gt_lines = extract_gt_lines(load_gt(gt_path), page_number=page_number)
     return evaluate_ordering(
         gt_lines,
@@ -204,7 +216,12 @@ def evaluate_structure_from_gt(
     predicted_elements: list[dict[str, Any]],
     page_number: int = 1,
     iou_threshold: float = 0.5,
-) -> dict[str, float | int]:
+    visibility_policy: VisibilityPolicy | dict | None = None,
+) -> dict[str, Any]:
+    if visibility_policy is not None:
+        result = evaluate_with_visibility(load_gt(gt_path), predicted_elements, task="structure", policy=visibility_policy,
+                                          page_number=page_number, iou_threshold=iou_threshold)
+        return {**result.metrics, "evaluation_scope": result.scope}
     gt_elements = extract_gt_structure_elements(load_gt(gt_path), page_number=page_number)
     metrics, _ = evaluate_structure(gt_elements, predicted_elements, iou_threshold=iou_threshold)
     return metrics

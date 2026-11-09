@@ -136,6 +136,12 @@ Use `/noise/pdf-with-gt` when geometric transforms should also update GT:
 
 ## Evaluation Responses
 
+For image GT, all three evaluation endpoints accept optional
+`"visibility_policy": {}` to select protocol 0.3 defaults. The response includes
+coverage and an `evaluation_scope` decision ledger. Without the field, existing
+behavior is unchanged. Rules, coordinate requirements, nullable scores and the
+line-versus-semantic ordering distinction: [Evaluation Visibility](evaluation-visibility.md).
+
 OCR quality responses include `evaluation_protocol_version: "0.2"`, legacy
 `CER`/`WER`, insertion-aware `micro_CER`/`micro_WER`, error counts, and
 `line_precision`/`line_recall`/`line_F1`.

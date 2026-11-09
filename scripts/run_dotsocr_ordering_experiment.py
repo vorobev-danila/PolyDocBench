@@ -25,6 +25,8 @@ from polydocbench.eval.dotsocr import DEFAULT_DOTSOCR_BASE_URL, DEFAULT_DOTSOCR_
 from polydocbench.eval.dotsocr import parse_dotsocr_blocks_response
 from polydocbench.eval.protocol import result_protocol_version
 from polydocbench.eval.reporting import format_metric, mean_available
+from polydocbench.eval.scoped import check_result_output, evaluate_with_visibility, scope_summary, visibility_from_args
+from polydocbench.eval.scope import prepare_scope
 
 
 @dataclass(frozen=True)
@@ -56,6 +58,7 @@ def build_parser() -> argparse.ArgumentParser:
     parser.add_argument("--max-images", type=int, default=None, help="Maximum number of scan artifacts for a smoke run")
     parser.add_argument("--min-block-similarity", type=float, default=0.3, help="Minimum text-first semantic block match score")
     parser.add_argument("--max-gt-span", type=int, default=3, help="Maximum adjacent GT blocks matched to one model block")
+    parser.add_argument("--visibility-policy", type=Path, help="Opt into visibility protocol 0.3")
     parser.add_argument("--reuse", action="store_true", help="Reuse existing semantic block predictions")
     parser.add_argument("--continue-on-error", action="store_true", help="Record failed artifacts and continue the remote batch")
     parser.add_argument("--dashboard-only", action="store_true", help="Rebuild dashboard.html from existing ordering metrics")
@@ -69,6 +72,8 @@ def main() -> int:
     args = build_parser().parse_args()
     input_root = Path(args.input_dir)
     output_root = Path(args.output_dir)
+    if not args.dashboard_only:
+        check_result_output(output_root, visibility_from_args(args))
     output_root.mkdir(parents=True, exist_ok=True)
     metrics_path = output_root / "metrics.jsonl"
     errors_path = output_root / "errors.jsonl"
@@ -179,6 +184,10 @@ def _evaluate_artifact(
     output_root: Path,
     api_key: str | None,
 ) -> dict[str, Any]:
+    image_gt = load_gt(artifact.gt_path)
+    policy = visibility_from_args(args)
+    if policy is not None:
+        prepare_scope(image_gt, "ordering", policy)
     relative_parent = artifact.gt_path.relative_to(input_root).parent
     prediction_dir = output_root / relative_parent
     prediction_path = prediction_dir / f"{artifact.profile}_{artifact.variant}_dotsocr_blocks.json"
@@ -207,14 +216,15 @@ def _evaluate_artifact(
         prediction_path.parent.mkdir(parents=True, exist_ok=True)
         prediction_path.write_text(json.dumps(predicted_blocks, ensure_ascii=False, indent=2), encoding="utf-8")
 
-    image_gt = load_gt(artifact.gt_path)
     gt_blocks = extract_visible_gt_blocks(image_gt, page_number=1)
-    metrics, matches = evaluate_semantic_ordering(
-        gt_blocks,
-        predicted_blocks,
-        min_similarity=args.min_block_similarity,
-        max_gt_span=args.max_gt_span,
-    )
+    if policy is None:
+        metrics, matches = evaluate_semantic_ordering(gt_blocks, predicted_blocks, min_similarity=args.min_block_similarity, max_gt_span=args.max_gt_span)
+    else:
+        evaluated = evaluate_with_visibility(image_gt, predicted_blocks, task="ordering", policy=policy,
+                                             min_similarity=args.min_block_similarity, max_gt_span=args.max_gt_span)
+        metrics, matches = evaluated.metrics, evaluated.matches
+        scope_path = prediction_dir / f"{artifact.profile}_{artifact.variant}_scope.json"
+        scope_path.write_text(json.dumps(evaluated.scope, ensure_ascii=False, indent=2), encoding="utf-8")
     matches_path.parent.mkdir(parents=True, exist_ok=True)
     matches_path.write_text(
         json.dumps(
@@ -276,6 +286,7 @@ def _write_summary(path: Path, rows: list[dict[str, Any]]) -> None:
         "mean_pairwise_accuracy", "mean_matched_block_ratio",
         "valid_order_count", "num_order_pairs", "mean_order_pair_coverage",
     ]
+    fieldnames.extend(scope_summary(rows))
     groups: dict[tuple[str, str, str], list[dict[str, Any]]] = {}
     for row in rows:
         groups.setdefault((row["language"], row["template"], row["profile"]), []).append(row)
@@ -293,6 +304,7 @@ def _write_summary(path: Path, rows: list[dict[str, Any]]) -> None:
                     "profile": profile,
                     "article_count": len({row["article_id"] for row in group}),
                     "count": len(group),
+                    **scope_summary(group),
                     "valid_order_count": sum(row.get("pairwise_accuracy") is not None for row in group),
                     "num_order_pairs": sum(row["num_order_pairs"] for row in group)
                     if all("num_order_pairs" in row for row in group) else None,

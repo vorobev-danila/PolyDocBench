@@ -9,6 +9,7 @@ This package is organized around the research pipeline:
 5. `gt`: validate and export ground-truth annotations.
    `gt.audit` checks semantic/source/table consistency beyond the exchange schema;
    `gt.audit_geometry` is an independent affine/canvas-clipping oracle.
+   `gt.visibility` computes task-neutral geometric facts with Shapely/GEOS.
 6. `noise`: generate synthetic scans from clean rendered documents.
    `noise.provenance` defines versioned generation traces and seed derivation;
    `noise.scans` applies/replays operations without mutating global RNG state.
@@ -16,6 +17,8 @@ This package is organized around the research pipeline:
    recipes and their validated overrides are embedded in generation traces.
 7. `eval`: evaluate OCR quality, reading order, document structure, geometry
    matching, and generate experiment dashboards.
+   `eval.scope` freezes eligibility/ignore-region decisions; `eval.scoped`
+   applies opt-in protocol 0.3 while preserving legacy task evaluator behavior.
 8. `benchmark`: typed draft research specifications and content-addressed
    inventories of historical experiment artifacts, with file integrity checks.
    `benchmark.files` shares portable fingerprints; `benchmark.render_snapshot`

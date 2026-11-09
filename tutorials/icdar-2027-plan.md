@@ -91,6 +91,7 @@ M2 progress:
 - [x] Configurable JSON operation recipes and isolated photometric parameter sweeps (noise 0.3).
 - [x] Frozen page-paired Tesseract calibration, clean controls, complete-cohort curves and failure accounting.
 - [x] Frozen GT audit, independent affine/clipping oracle, source/table checks, replay and explicit review records.
+- [x] Opt-in visibility-aware scoring, task-specific exclusions, prediction protection and explicit scope/coverage ledgers (protocol 0.3).
 - [ ] Calibrate scenario severity and validate photometric realism/readability on development data.
 - [ ] Source revision/rights review, GT audit, fixed publication metrics and model baselines.
 
@@ -235,6 +236,15 @@ The [GT audit workflow](gt-audit.md) now separates automatic consistency checks
 from explicit preview review. Resolve historical defects, review fresh GT and
 freeze the visibility policy before publication evaluation; passing transforms
 alone does not establish correct source annotations.
+
+The candidate [visibility protocol](evaluation-visibility.md) was inspected on
+78 fresh scans (234 task scopes) and 14 native Tesseract requests. At shear 0.08,
+eligible quality/order/structure units were 910/986, 75/82 and 78/96 respectively.
+This is denominator accounting, not evidence of improved recognition. Native
+ordering is preserved; excluded regions cannot hide predictions overlapping
+eligible GT. The default historical evaluation stays 0.2. Source/family/rights
+review, human GT approval, policy approval and new development calibration remain
+open; these fixtures must not be relabelled as a reviewed publication corpus.
 
 The [pilot tooling](benchmark-pilot.md) supports Tesseract quality, dots.ocr
 ordering and Docling structure on one fixed selection. It measures local RSS

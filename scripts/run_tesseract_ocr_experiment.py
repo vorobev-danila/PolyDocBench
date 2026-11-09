@@ -28,6 +28,9 @@ from polydocbench.eval import evaluate_ocr_quality, extract_gt_lines, load_gt, w
 from polydocbench.eval.ocr import extract_tesseract_lines
 from polydocbench.eval.protocol import result_protocol_version
 from polydocbench.eval.quality import aggregate_ocr_counts
+from polydocbench.eval.scoped import check_result_output, evaluate_with_visibility, scope_summary, visibility_from_args
+from polydocbench.eval.scope import prepare_scope
+from polydocbench.eval.reporting import format_metric, mean_available
 from polydocbench.layout import LayoutEngine
 from polydocbench.render import PDFRenderer
 from polydocbench.sources.wikipedia import WikipediaParser
@@ -194,6 +197,7 @@ def build_parser() -> argparse.ArgumentParser:
     parser.add_argument("--seed", type=_nonnegative_int, default=42, help="Noise master seed")
     parser.add_argument("--page-scope", choices=["first", "half", "all"], default="first", help="Rendered pages to evaluate")
     parser.add_argument("--iou-threshold", type=float, default=0.3, help="Line matching IoU threshold")
+    parser.add_argument("--visibility-policy", type=Path, help="Opt into visibility protocol 0.3")
     parser.add_argument("--languages", nargs="+", default=list(LANGUAGE_NAMES), help="Language codes to run")
     parser.add_argument("--article-ids", nargs="+", default=None, help="Article IDs to run, for example: linear_algebra ai")
     parser.add_argument("--article-limit-per-language", type=int, default=3, help="Max articles per language; use 0 for all")
@@ -222,6 +226,8 @@ def main() -> int:
         if unknown_profiles := sorted(set(args.profiles) - known_profiles):
             parser.error(f"Unknown noise profiles: {', '.join(unknown_profiles)}")
     output_root = Path(args.output_dir)
+    if not args.dashboard_only and not args.list_articles:
+        check_result_output(output_root, visibility_from_args(args))
     output_root.mkdir(parents=True, exist_ok=True)
 
     if args.list_articles:
@@ -406,6 +412,10 @@ def _run_template_case(
 
         for artifact_gt_path in _requested_gt_paths(page_dir, args.profiles, args.variants):
             image_path = scan_image_path(artifact_gt_path)
+            image_gt = load_gt(artifact_gt_path)
+            policy = visibility_from_args(args)
+            if policy is not None:
+                prepare_scope(image_gt, "quality", policy)
 
             prediction_lines = extract_tesseract_lines(
                 image_path,
@@ -416,10 +426,16 @@ def _run_template_case(
             prediction_path = predictions_dir / f"{image_path.stem}_tesseract.json"
             prediction_path.write_text(json.dumps(prediction_lines, ensure_ascii=False, indent=2), encoding="utf-8")
 
-            image_gt = load_gt(artifact_gt_path)
             gt_lines = extract_gt_lines(image_gt, page_number=1)
             generation = image_gt.get("metadata", {}).get("noise_generation", {})
-            metrics = evaluate_ocr_quality(gt_lines, prediction_lines, iou_threshold=args.iou_threshold)
+            scope_path = None
+            if policy is None:
+                metrics = evaluate_ocr_quality(gt_lines, prediction_lines, iou_threshold=args.iou_threshold)
+            else:
+                evaluated = evaluate_with_visibility(image_gt, prediction_lines, task="quality", policy=policy, iou_threshold=args.iou_threshold)
+                metrics = evaluated.metrics
+                scope_path = predictions_dir / f"{image_path.stem}_scope.json"
+                scope_path.write_text(json.dumps(evaluated.scope, ensure_ascii=False, indent=2), encoding="utf-8")
             profile, variant = _parse_artifact_name(image_path.stem)
             row = {
                 "language": case.code,
@@ -442,10 +458,12 @@ def _run_template_case(
                 "predicted_lines": len(prediction_lines),
                 **metrics,
             }
+            if scope_path is not None:
+                row["scope_path"] = str(scope_path)
             print(
                 f"      page={page_number} {image_path.stem}: "
-                f"CER={row['CER']:.3f} WER={row['WER']:.3f} IoU={row['IoU']:.3f} matched={row['matched_ratio']:.3f}"
-                f" micro_CER={row['micro_CER']:.3f} line_F1={row['line_F1']:.3f}"
+                f"CER={format_metric(row['CER'], 3)} WER={format_metric(row['WER'], 3)} IoU={format_metric(row['IoU'], 3)} matched={format_metric(row['matched_ratio'], 3)}"
+                f" micro_CER={format_metric(row['micro_CER'], 3)} line_F1={format_metric(row['line_F1'], 3)}"
                 f" lines={row['predicted_lines']}/{row['gt_lines']}"
             )
             rows.append(row)
@@ -612,6 +630,7 @@ def _write_summary(path: Path, rows: list[dict[str, Any]]) -> None:
         "mean_matched_ratio",
         "micro_CER", "micro_WER", "line_precision", "line_recall", "line_F1",
     ]
+    fieldnames.extend(scope_summary(rows))
     groups: dict[tuple[str, str, str], list[dict[str, Any]]] = {}
     for row in rows:
         groups.setdefault((row["language"], row["template"], row["profile"]), []).append(row)
@@ -632,10 +651,11 @@ def _write_summary(path: Path, rows: list[dict[str, Any]]) -> None:
                     "profile": profile,
                     "article_count": len({row["article_id"] for row in group}),
                     "count": len(group),
-                    "mean_CER": mean(row["CER"] for row in group),
-                    "mean_WER": mean(row["WER"] for row in group),
-                    "mean_IoU": mean(row["IoU"] for row in group),
-                    "mean_matched_ratio": mean(row["matched_ratio"] for row in group),
+                    "mean_CER": mean_available(row["CER"] for row in group),
+                    "mean_WER": mean_available(row["WER"] for row in group),
+                    "mean_IoU": mean_available(row["IoU"] for row in group),
+                    "mean_matched_ratio": mean_available(row["matched_ratio"] for row in group),
+                    **scope_summary(group),
                     **{key: pooled[key] for key in (
                         "micro_CER", "micro_WER", "line_precision", "line_recall", "line_F1"
                     )},

@@ -15,6 +15,11 @@ The historical corpus has known container/parent/reading-order defects; a valid
 inventory or exact affine coordinates alone do not establish complete GT validity.
 Keep historical results separate and regenerate affected inputs after diagnosis.
 
+All three runners optionally accept
+`--visibility-policy configs/evaluation_visibility.json` in a new result root.
+This selects protocol 0.3 with explicit clipping/ignore-region decisions and
+coverage, not a silent metric update. See [Evaluation Visibility](evaluation-visibility.md).
+
 New noise generation uses pipeline `0.3`. Use a separate output directory for
 new runs; the same seed no longer recreates historical unversioned scans.
 Add `clean` to `--profiles` for a lossless control. Requested-pair filtering,

@@ -47,7 +47,7 @@ def normalize_structure_type(value: Any) -> str:
     return TYPE_ALIASES.get(text, text)
 
 
-def extract_gt_structure_elements(gt_json: dict[str, Any], page_number: int = 1) -> list[dict[str, Any]]:
+def extract_gt_structure_elements(gt_json: dict[str, Any], page_number: int = 1, *, unique_blocks: bool = False) -> list[dict[str, Any]]:
     """Extract visible structure elements from PolyDocBench GT for one image page."""
     block_elements = {
         element["id"]: element
@@ -106,6 +106,8 @@ def extract_gt_structure_elements(gt_json: dict[str, Any], page_number: int = 1)
         )
 
     for parent_id in visible_non_text_ids:
+        if unique_blocks and parent_id in grouped_text_lines:
+            continue
         parent = block_elements.get(parent_id)
         if not parent or not parent.get("bbox"):
             continue

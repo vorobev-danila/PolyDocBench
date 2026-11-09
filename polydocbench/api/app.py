@@ -18,6 +18,7 @@ from polydocbench.api.services import (
     render_document,
 )
 from polydocbench.noise import NOISE_PROFILES, NoiseRecipeConfig
+from polydocbench.eval.scope import VisibilityPolicy
 from polydocbench.layout.templates import list_template_names
 
 
@@ -88,6 +89,7 @@ class QualityEvaluationRequest(BaseModel):
     predicted_lines: list[PredictedLinePayload] = Field(default_factory=list)
     page_number: int = 1
     iou_threshold: float = 0.3
+    visibility_policy: VisibilityPolicy | None = None
 
 
 class OrderingEvaluationRequest(QualityEvaluationRequest):
@@ -113,6 +115,7 @@ class StructureEvaluationRequest(BaseModel):
     predicted_elements: list[PredictedStructureElementPayload] = Field(default_factory=list)
     page_number: int = 1
     iou_threshold: float = 0.5
+    visibility_policy: VisibilityPolicy | None = None
 
 
 @app.get("/health")
@@ -204,20 +207,21 @@ def noise_pdf_with_gt(request: NoisePdfWithGtRequest) -> dict[str, Any]:
 
 
 @app.post("/evaluate/quality")
-def evaluate_quality(request: QualityEvaluationRequest) -> dict[str, float | int | str]:
+def evaluate_quality(request: QualityEvaluationRequest) -> dict[str, Any]:
     try:
         return evaluate_quality_from_gt(
             gt_path=request.gt_path,
             predicted_lines=[line.as_line_dict() for line in request.predicted_lines],
             page_number=request.page_number,
             iou_threshold=request.iou_threshold,
+            visibility_policy=request.visibility_policy,
         )
     except Exception as exc:
         raise HTTPException(status_code=400, detail=str(exc)) from exc
 
 
 @app.post("/evaluate/ordering")
-def evaluate_reading_order(request: OrderingEvaluationRequest) -> dict[str, float | int | str | None]:
+def evaluate_reading_order(request: OrderingEvaluationRequest) -> dict[str, Any]:
     try:
         return evaluate_ordering_from_gt(
             gt_path=request.gt_path,
@@ -225,19 +229,21 @@ def evaluate_reading_order(request: OrderingEvaluationRequest) -> dict[str, floa
             page_number=request.page_number,
             num_columns=request.num_columns,
             iou_threshold=request.iou_threshold,
+            visibility_policy=request.visibility_policy,
         )
     except Exception as exc:
         raise HTTPException(status_code=400, detail=str(exc)) from exc
 
 
 @app.post("/evaluate/structure")
-def evaluate_document_structure(request: StructureEvaluationRequest) -> dict[str, float | int]:
+def evaluate_document_structure(request: StructureEvaluationRequest) -> dict[str, Any]:
     try:
         return evaluate_structure_from_gt(
             gt_path=request.gt_path,
             predicted_elements=[element.as_element_dict() for element in request.predicted_elements],
             page_number=request.page_number,
             iou_threshold=request.iou_threshold,
+            visibility_policy=request.visibility_policy,
         )
     except Exception as exc:
         raise HTTPException(status_code=400, detail=str(exc)) from exc

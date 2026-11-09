@@ -235,6 +235,11 @@ For affine transforms, PolyDocBench transforms all four bbox corners and stores:
 
 ## Versioning Policy
 
+New scan elements also have additive `metadata.geometry_visibility` facts
+(visibility schema 0.1): visible area fraction, status and canvas-clipped polygon.
+These are not task eligibility labels. Evaluation policy 0.1 / protocol 0.3 are
+separate, optional identities; see [Evaluation Visibility](evaluation-visibility.md).
+
 Schema parsing is not semantic GT certification. The opt-in
 [GT Audit](gt-audit.md) separately checks ID/reference/order integrity, source
 coverage, page/container bounds and independent affine geometry, with explicit

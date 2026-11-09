@@ -5,7 +5,7 @@ from __future__ import annotations
 from typing import Any
 
 from .matching import match_lines
-from .protocol import EVALUATION_PROTOCOL_VERSION
+from .protocol import EVALUATION_PROTOCOL_VERSION, result_protocol_version
 from .text_metrics import edit_distance, normalize_text
 from .types import LineDict
 
@@ -83,6 +83,9 @@ def evaluate_ocr_quality(
 
 def aggregate_ocr_counts(rows: list[dict[str, Any]]) -> dict[str, float | int | None]:
     """Pool sufficient statistics; legacy files cannot supply micro scores."""
+    scoped = any(row.get("evaluation_protocol_version") == "0.3" for row in rows)
+    if scoped:
+        result_protocol_version(rows)
     keys = (
         "char_errors", "word_errors", "gt_char_count", "gt_word_count",
         "num_gt_lines", "num_predicted_lines", "num_matched_lines",
@@ -96,7 +99,7 @@ def aggregate_ocr_counts(rows: list[dict[str, Any]]) -> dict[str, float | int | 
     matched = totals["num_matched_lines"]
     precision = matched / totals["num_predicted_lines"] if totals["num_predicted_lines"] else 0.0
     recall = matched / totals["num_gt_lines"] if totals["num_gt_lines"] else 0.0
-    return {
+    result = {
         **totals,
         "micro_CER": totals["char_errors"] / max(1, totals["gt_char_count"]),
         "micro_WER": totals["word_errors"] / max(1, totals["gt_word_count"]),
@@ -104,4 +107,12 @@ def aggregate_ocr_counts(rows: list[dict[str, Any]]) -> dict[str, float | int | 
         "line_recall": recall,
         "line_F1": 2 * precision * recall / (precision + recall) if precision + recall else 0.0,
     }
+    if scoped:
+        if not totals["gt_char_count"]:
+            result["micro_CER"] = None
+        if not totals["gt_word_count"]:
+            result["micro_WER"] = None
+        if not totals["num_gt_lines"]:
+            result.update(line_precision=None, line_recall=None, line_F1=None)
+    return result
 

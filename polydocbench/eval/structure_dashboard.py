@@ -6,6 +6,9 @@ from collections import defaultdict
 from pathlib import Path
 from statistics import mean
 from typing import Any
+from .protocol import result_protocol_version
+from .reporting import mean_available, format_metric
+from .scoped import scope_summary, scope_table_columns
 
 
 def write_structure_dashboard(output_path: str | Path, rows: list[dict[str, Any]]) -> Path:
@@ -17,6 +20,7 @@ def write_structure_dashboard(output_path: str | Path, rows: list[dict[str, Any]
         raise RuntimeError('Install visualization dependencies with: uv pip install -e ".[structure]"') from exc
 
     output_path = Path(output_path)
+    result_protocol_version(rows)
     output_path.parent.mkdir(parents=True, exist_ok=True)
 
     if not rows:
@@ -101,10 +105,11 @@ def write_structure_dashboard(output_path: str | Path, rows: list[dict[str, Any]
         )
 
     summary_rows = _summary_rows(rows)
+    scope_headers, scope_cells = scope_table_columns(summary_rows)
     figure.add_trace(
         go.Table(
             header={
-                "values": ["Language", "Template", "Noise", "Samples", "Score", "Det F1", "Type Acc", "Mean IoU"],
+                "values": ["Language", "Template", "Noise", "Samples", "Score", "Det F1", "Type Acc", "Mean IoU"] + scope_headers,
                 "fill_color": "#213547",
                 "font": {"color": "white"},
                 "align": "left",
@@ -115,11 +120,11 @@ def write_structure_dashboard(output_path: str | Path, rows: list[dict[str, Any]
                     [row["template"] for row in summary_rows],
                     [row["profile"] for row in summary_rows],
                     [row["count"] for row in summary_rows],
-                    [f'{row["structure_score"]:.4f}' for row in summary_rows],
-                    [f'{row["detection_F1"]:.4f}' for row in summary_rows],
-                    [f'{row["type_accuracy"]:.4f}' for row in summary_rows],
-                    [f'{row["mean_iou"]:.4f}' for row in summary_rows],
-                ],
+                    [format_metric(row["structure_score"]) for row in summary_rows],
+                    [format_metric(row["detection_F1"]) for row in summary_rows],
+                    [format_metric(row["type_accuracy"]) for row in summary_rows],
+                    [format_metric(row["mean_iou"]) for row in summary_rows],
+                ] + scope_cells,
                 "fill_color": "#f7f9fb",
                 "align": "left",
             },
@@ -148,7 +153,7 @@ def _ordered_values(rows: list[dict[str, Any]], key: str, preferred: list[str] |
 def _group_means(rows: list[dict[str, Any]], dimension: str, values: list[str], metric: str, profile: str) -> list[float | None]:
     grouped: defaultdict[str, list[float]] = defaultdict(list)
     for row in rows:
-        if row["profile"] == profile:
+        if row["profile"] == profile and row.get(metric) is not None:
             grouped[str(row[dimension])].append(float(row[metric]))
     return [mean(grouped[value]) if grouped[value] else None for value in values]
 
@@ -165,10 +170,11 @@ def _summary_rows(rows: list[dict[str, Any]]) -> list[dict[str, Any]]:
                 "template": template,
                 "profile": profile,
                 "count": len(group),
-                "structure_score": mean(float(row["structure_score"]) for row in group),
-                "detection_F1": mean(float(row["detection_F1"]) for row in group),
-                "type_accuracy": mean(float(row["type_accuracy"]) for row in group),
-                "mean_iou": mean(float(row["mean_iou"]) for row in group),
+                "structure_score": mean_available(row["structure_score"] for row in group),
+                "detection_F1": mean_available(row["detection_F1"] for row in group),
+                "type_accuracy": mean_available(row["type_accuracy"] for row in group),
+                "mean_iou": mean_available(row["mean_iou"] for row in group),
+                **scope_summary(group),
             }
         )
     return summary

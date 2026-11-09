@@ -51,6 +51,15 @@ class PilotAdapter:
                                       prompt=self.config["prompt"], raw_response_path=raw)
 
     def evaluate(self, record, gt: dict, predictions: list) -> dict:
+        if self.config.get("visibility_policy") is not None:
+            from polydocbench.eval.scoped import evaluate_with_visibility
+
+            task = {"tesseract": "quality", "docling": "structure", "dotsocr": "ordering"}[self.engine]
+            result = evaluate_with_visibility(gt, predictions, task=task, policy=self.config["visibility_policy"],
+                                              iou_threshold=self.config["quality_iou"] if task == "quality" else self.config["structure_iou"],
+                                              min_similarity=self.config["min_similarity"], max_gt_span=self.config["max_gt_span"])
+            self.scope = result.scope
+            return result.metrics
         from polydocbench.eval import (
             evaluate_ocr_quality, evaluate_semantic_ordering, evaluate_structure,
             extract_gt_lines, extract_gt_structure_elements, extract_visible_gt_blocks,
@@ -90,6 +99,16 @@ def run_worker(job: dict, output: Path, adapter=None) -> None:
             stage = "inference"
             stage_started = perf_counter()
             try:
+                policy = job.get("config", {}).get("visibility_policy")
+                if policy is not None:
+                    from polydocbench.eval.scope import prepare_scope
+
+                    stage = "validation"
+                    gt = json.loads((root / record.image_gt.path).read_text(encoding="utf-8"))
+                    task = {"tesseract": "quality", "docling": "structure", "dotsocr": "ordering"}[engine]
+                    prepare_scope(gt, task, policy)
+                    row["validation_seconds"] = perf_counter() - stage_started
+                    stage, stage_started = "inference", perf_counter()
                 predicted = adapter.predict(record, root / record.image.path,
                                              predictions_dir / f"{record.artifact_id}.raw")
                 row["inference_seconds"] = perf_counter() - stage_started
@@ -100,6 +119,12 @@ def run_worker(job: dict, output: Path, adapter=None) -> None:
                 stage_started = perf_counter()
                 gt = json.loads((root / record.image_gt.path).read_text(encoding="utf-8"))
                 row["metrics"] = adapter.evaluate(record, gt, predicted)
+                if policy is not None and (row["metrics"].get("evaluation_protocol_version") != "0.3" or not hasattr(adapter, "scope")):
+                    raise ValueError("A scoped pilot must produce protocol 0.3 metrics and an exclusion ledger")
+                if policy is not None and hasattr(adapter, "scope"):
+                    scope_path = predictions_dir / f"{record.artifact_id}.scope.json"
+                    scope_path.write_text(json.dumps(adapter.scope, ensure_ascii=False, allow_nan=False, indent=2), encoding="utf-8")
+                    row["scope_path"] = scope_path.relative_to(output).as_posix()
                 row["evaluation_seconds"] = perf_counter() - stage_started
                 row["status"] = "success"
             except Exception as exc:

@@ -8,6 +8,7 @@ from typing import Any
 
 from polydocbench.document.schema import FORMAT_SCHEMA_VERSION
 from polydocbench.gt.schema import validate_gt_document
+from polydocbench.gt.visibility import visibility_facts
 
 
 Point = tuple[float, float]
@@ -203,4 +204,5 @@ def _transform_element(
     transformed["polygon"] = polygon
     transformed.setdefault("metadata", {})["source_bbox"] = copy.deepcopy(bbox)
     transformed["metadata"]["coordinate_system"] = "pixels-top-left"
+    transformed["metadata"]["geometry_visibility"] = visibility_facts(polygon, output_width, output_height)
     return transformed

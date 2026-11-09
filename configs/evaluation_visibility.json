@@ -1,0 +1,9 @@
+{
+  "schema_version": "0.1",
+  "policy_name": "conservative_visibility",
+  "coordinate_epsilon_pixels": 0.05,
+  "quality_partial": "exclude",
+  "ordering_partial": "exclude_incomplete_blocks",
+  "structure_partial": "exclude",
+  "prediction_ignore": "fully_contained_unprotected"
+}

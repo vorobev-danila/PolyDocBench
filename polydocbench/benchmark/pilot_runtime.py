@@ -24,7 +24,8 @@ def default_model_config() -> dict:
     return {"tesseract_cmd": "tesseract", "model": DEFAULT_DOTSOCR_MODEL,
             "base_url": DEFAULT_DOTSOCR_BASE_URL, "api_key_env": "LITELLM_API_KEY",
             "prompt": DOTSOCR_ORDERING_PROMPT, "request_timeout": 180.0, "max_retries": 0,
-            "quality_iou": 0.3, "structure_iou": 0.5, "min_similarity": 0.3, "max_gt_span": 3}
+            "quality_iou": 0.3, "structure_iou": 0.5, "min_similarity": 0.3, "max_gt_span": 3,
+            "visibility_policy": None}
 
 
 def _tree_rss(process) -> int:
@@ -63,7 +64,7 @@ def runtime_environment() -> dict:
     import psutil
 
     packages = {}
-    for name in ("polydocbench", "psutil", "pytesseract", "docling", "docling-core", "torch", "openai", "pydantic"):
+    for name in ("polydocbench", "psutil", "pytesseract", "docling", "docling-core", "torch", "openai", "pydantic", "shapely"):
         try:
             packages[name] = version(name)
         except PackageNotFoundError:
@@ -81,6 +82,9 @@ def summarize_run(rows: list[dict], *, elapsed: float, peak_rss: int, engine: st
     successes = [row for row in rows if row["status"] == "success"]
     later = [row["inference_seconds"] for row in successes if row["phase"] == "subsequent_call"]
     first = next((row for row in rows if row.get("phase") == "first_call"), None)
+    scoped = [row["metrics"] for row in successes if (row.get("metrics") or {}).get("evaluation_protocol_version") == "0.3"]
+    from polydocbench.eval.scoped import scope_summary
+
     return {
         "selected": len(rows), "statuses": statuses, "successful": len(successes),
         "success_rate": len(successes) / len(rows) if rows else None,
@@ -94,6 +98,7 @@ def summarize_run(rows: list[dict], *, elapsed: float, peak_rss: int, engine: st
         "memory_scope": "client_process_tree_only" if engine == "dotsocr" else "local_worker_process_tree",
         "gpu_peak_bytes": None, "server_memory_bytes": None,
         "cost_currency": None, "measured_cost": None,
+        **({"visibility": scope_summary(scoped), "scored_images": sum(r["scope_eligible_gt"] > 0 for r in scoped)} if scoped else {}),
         "limitations": ["RSS is sampled and sums shared pages across processes; not GPU VRAM or remote-server memory.",
                         "First call includes lazy setup; filesystem/model caches are not cleared.",
                         "Subsequent calls reuse the session but are not a controlled warm-cache experiment.",
@@ -117,6 +122,10 @@ def run_pilot(plan: PilotPlan, input_dir: str | Path, output_dir: str | Path, *,
     if output.exists() and (not output.is_dir() or any(output.iterdir())):
         raise ValueError("Pilot run output must be new or empty; cached predictions are never counted as inference")
     config = {**default_model_config(), **(config or {})}
+    if config["visibility_policy"] is not None:
+        from polydocbench.eval.scope import VisibilityPolicy
+
+        config["visibility_policy"] = VisibilityPolicy.model_validate(config["visibility_policy"]).model_dump()
     # Only these public configuration keys are persisted; no API key value is accepted.
     if set(config) != set(default_model_config()):
         raise ValueError("Unknown model configuration key")
