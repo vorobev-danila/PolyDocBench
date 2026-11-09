@@ -19,4 +19,7 @@ def result_protocol_version(rows: list[dict[str, Any]]) -> str:
             raise ValueError("Cannot aggregate missing/different visibility policies or geometry engines")
         if len({row.get("scope_task") for row in rows}) != 1 or len({row.get("scope_unit") for row in rows}) != 1:
             raise ValueError("Cannot aggregate different visibility tasks/annotation units")
+        if any(row.get("evaluation_contract_id") for row in rows):
+            if len({row.get("evaluation_contract_id") for row in rows}) != 1:
+                raise ValueError("Cannot aggregate missing/different frozen evaluation contracts")
     return next(iter(versions), EVALUATION_PROTOCOL_VERSION)

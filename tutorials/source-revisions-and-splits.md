@@ -1,5 +1,10 @@
 # Wikipedia Revisions And Benchmark Splits
 
+Controlled excerpts with synthetic tables/figures use a separate, replayable
+derived-source provenance chain, not a false claim that modified JSON is an
+unchanged Wikipedia response. The bounded candidate and its dev-only family
+reservation are described in [Development Corpus](development-corpus.md).
+
 Publication runs should not use an unfixed "latest" Wikipedia page. PolyDocBench
 can resolve an article once, request that exact MediaWiki `oldid`, and preserve
 the raw query response, parse response, rendered HTML, normalized source JSON,

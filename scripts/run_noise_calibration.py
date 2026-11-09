@@ -15,6 +15,7 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument("--input-dir", type=Path)
     parser.add_argument("--output-dir", type=Path, required=True)
     parser.add_argument("--config", type=Path, default=Path("configs/noise_calibration.json"))
+    parser.add_argument("--evaluation-contract", type=Path, help="Freeze protocol 0.3 settings and implementation identity")
     parser.add_argument("--base-pages", type=int, default=12)
     parser.add_argument("--languages", nargs="+", default=None)
     parser.add_argument("--split", choices=["dev", "unassigned"], default="dev")
@@ -29,6 +30,10 @@ def main(argv: list[str] | None = None) -> int:
         if args.manifest is None or args.input_dir is None:
             parser.error("--manifest and --input-dir are required unless --report-only is selected")
         spec_data = json.loads(args.config.read_text(encoding="utf-8"))
+        if args.evaluation_contract:
+            from polydocbench.eval.contract import load_evaluation_settings
+
+            spec_data.update(evaluation_protocol_version="0.3", evaluation_contract=load_evaluation_settings(args.evaluation_contract).model_dump())
         if args.repeats is not None:
             spec_data["repeats"] = args.repeats
         spec = CalibrationSpec.model_validate(spec_data)

@@ -163,6 +163,12 @@ decisions, annotation quality audit, and independent release reproduction.
 Revision-bound capture and split tooling do not approve those decisions. A
 render bundle therefore does not by itself close M1/M2.
 
+Controlled excerpts use `derived_response_bound`, with the original revision
+evidence, deterministic composition recipe and local media preserved inside the
+bundle. Verification replays the derivation before checking its source/PDF/GT
+chain. It does not claim the composition is a full or unchanged Wikipedia article:
+see [Development Corpus](development-corpus.md).
+
 ## Tests
 
 ```powershell

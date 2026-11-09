@@ -59,6 +59,8 @@ class PilotAdapter:
                                               iou_threshold=self.config["quality_iou"] if task == "quality" else self.config["structure_iou"],
                                               min_similarity=self.config["min_similarity"], max_gt_span=self.config["max_gt_span"])
             self.scope = result.scope
+            if self.config.get("evaluation_contract"):
+                result.metrics["evaluation_contract_id"] = self.config["evaluation_contract"]["contract_id"]
             return result.metrics
         from polydocbench.eval import (
             evaluate_ocr_quality, evaluate_semantic_ordering, evaluate_structure,
@@ -99,6 +101,11 @@ def run_worker(job: dict, output: Path, adapter=None) -> None:
             stage = "inference"
             stage_started = perf_counter()
             try:
+                if job.get("config", {}).get("evaluation_contract"):
+                    from polydocbench.eval.contract import FrozenEvaluation
+
+                    stage = "validation"
+                    FrozenEvaluation.model_validate(job["config"]["evaluation_contract"]).verify_runtime()
                 policy = job.get("config", {}).get("visibility_policy")
                 if policy is not None:
                     from polydocbench.eval.scope import prepare_scope

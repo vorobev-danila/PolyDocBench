@@ -1,5 +1,11 @@
 # Frozen Pilot And Runtime Measurements
 
+Publication-development pilots can additionally use
+`--evaluation-contract configs/evaluation_publication.json` to freeze protocol
+0.3 settings and evaluator implementation. The same contract is supported by
+all three existing engines; their model/checkpoint and runtime budgets remain
+separate. See [Development Corpus](development-corpus.md).
+
 Use a small, fixed pilot to measure feasibility **before** expanding the corpus.
 The pilot runner evaluates Tesseract quality, dots.ocr semantic reading order,
 or Docling structure on the same selected image/GT pairs. It does not regenerate

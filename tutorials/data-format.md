@@ -1,5 +1,12 @@
 # Data Format
 
+Controlled development excerpts remain valid source schema 0.1 documents.
+`metadata.derived_source_id` refers to a separate, replayable provenance sidecar;
+it must not be confused with an unchanged Wikipedia source snapshot. Recipes,
+parent revision evidence and synthetic media are described in
+[Development Corpus](development-corpus.md). Source/GT interchange versions,
+evaluation contract IDs, review bundle IDs and dataset approval are independent.
+
 PolyDocBench uses explicit JSON formats for source documents and ground-truth output. Both formats include a top-level `schema_version`.
 
 Current schema version:

@@ -215,8 +215,10 @@ Aggregation rejects mixed legacy/0.2/0.3 protocols and differing visibility
 policies/GEOS identities. Matching remains the existing task matcher, including
 its bbox-IoU and segmentation limitations. Inspect model/matching configurations
 as well; a common visibility policy does not make different experiments identical.
-Calibration tooling still explicitly uses protocol 0.2 and is not silently
-migrated to 0.3. Policy approval and a new reviewed calibration are separate work.
+Calibration defaults still explicitly use protocol 0.2 and are not silently
+migrated. `run_noise_calibration.py --evaluation-contract` now opts into 0.3,
+binding choices and implementation; see [Development Corpus](development-corpus.md).
+Policy approval and a reviewed calibration remain separate human decisions.
 
 ## Local Inspection
 

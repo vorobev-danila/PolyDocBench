@@ -92,6 +92,7 @@ M2 progress:
 - [x] Frozen page-paired Tesseract calibration, clean controls, complete-cohort curves and failure accounting.
 - [x] Frozen GT audit, independent affine/clipping oracle, source/table checks, replay and explicit review records.
 - [x] Opt-in visibility-aware scoring, task-specific exclusions, prediction protection and explicit scope/coverage ledgers (protocol 0.3).
+- [x] Candidate development-corpus builder with revision-bound excerpt lineage, deterministic media-rich page selection, frozen evaluator contracts and evidence-bound review handoff.
 - [ ] Calibrate scenario severity and validate photometric realism/readability on development data.
 - [ ] Source revision/rights review, GT audit, fixed publication metrics and model baselines.
 
@@ -223,6 +224,14 @@ acceptance, complete camera-ready, archival release, registration and presentati
 
 ## Current Next Step
 
+Complete the explicit human review handoff in [Development Corpus](development-corpus.md).
+The 72-page target is a separate controlled development candidate; all translations
+and variants of its two proposed families are reserved for development, not final
+test. After reviewing source rights/families, selected GT and evaluation choices,
+approve or revise severity on development evidence. Keep candidate approval
+separate from final test construction, all-model budget approval and publication
+claims. Broader test families and real-document validation remain open.
+
 Keep the historical inventory as a baseline. Use [render snapshots](render-snapshots.md)
 and [reproducible noise](reproducible-noise.md) in a separate pilot directory.
 Use [revision-bound sources and reviewed splits](source-revisions-and-splits.md) for new data.
@@ -307,3 +316,26 @@ results; revision/family/split/rights review remains open.
 After each tested engineering milestone, commit the scoped changes and push the
 active project branch. Do not publish `.env`, reports, generated experiment data
 or unrelated working folders; do not force-push to bypass remote changes.
+
+Development-candidate evidence (2026-11-09): 12 revision-bound sources, six
+languages, two proposed families and six layouts produced 72 selected base pages
+and 288 scans, each selected page with a table and figure. The corrected prose
+selection explicitly excludes raw TeX/navigation-contaminated source items; the
+initial composition remains quarantined. Numerical audit passed for 72 complete
+documents / 152 PDF pages and all 288 scans, with 51 partial-clipping warnings and
+35,164 checked elements. Human review of 360 preview units remains pending.
+
+Protocol 0.3 settings/implementation were frozen for a 12-page calibration:
+228/228 native Tesseract requests and 216/216 noisy-clean pairs completed. A
+separate 48/48 comparison on the same pages measured clean/light/medium/heavy
+micro CER at 3.73/3.63/9.06/8.01 percent, all retaining 970 GT lines. This explicitly
+does not validate a monotonic severity scale. Independent pooling checked 234
+aggregate rows and 228 scope ledgers; the full suite has 402 passing tests.
+
+The local handoff at `outputs/dev_corpus_prose_20261109/index.html` contains 16
+pending source/family/rights/protocol/severity decisions. The user will review
+and approve after inspecting the evidence. No human approval has been fabricated;
+M1/M2 are still in progress. Source excerpts, two-family scope, inline-math/script
+limitations, dirty-tree snapshots, missing final code/data license decisions,
+model-budget gaps and real-document validation prevent a publication-ready claim.
+Instructions and review commands: [Development Corpus](development-corpus.md).

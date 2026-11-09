@@ -68,6 +68,18 @@ The optional native inspection is documented in
 files while render-snapshot tests are running: they deliberately capture code
 fingerprints. CI lives in `.github/workflows/tests.yml`.
 
+Development-corpus and evaluation-contract regressions also test derived revision
+lineage, offline sealed rendering, deterministic page selection, legacy plan
+compatibility, protocol mixing and pending-review gates:
+
+```powershell
+uv run python -m pytest tests\test_development_corpus.py tests\test_evaluation_contract.py -q -p no:cacheprovider
+```
+
+The native six-language capture/calibration is opt-in and not part of CI:
+[Development Corpus](development-corpus.md). Unit tests use local fixture responses
+and model stubs, not paid services or a Docling download.
+
 ## Project Structure
 
 ```text

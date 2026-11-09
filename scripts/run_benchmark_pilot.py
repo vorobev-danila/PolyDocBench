@@ -22,6 +22,7 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument("--request-timeout", type=float, default=180)
     parser.add_argument("--max-retries", type=int, default=0)
     parser.add_argument("--visibility-policy", type=Path, help="Opt into image visibility protocol 0.3 with a frozen policy JSON")
+    parser.add_argument("--evaluation-contract", type=Path, help="Freeze candidate protocol choices and evaluator implementation")
     args = parser.parse_args(argv)
     config = {key: getattr(args, key) for key in
               ("tesseract_cmd", "base_url", "model", "api_key_env", "request_timeout", "max_retries")
@@ -30,6 +31,13 @@ def main(argv: list[str] | None = None) -> int:
         from polydocbench.eval.scope import load_visibility_policy
 
         config["visibility_policy"] = load_visibility_policy(args.visibility_policy).model_dump()
+    if args.evaluation_contract:
+        from polydocbench.eval.contract import load_evaluation_settings
+
+        contract = load_evaluation_settings(args.evaluation_contract)
+        if args.visibility_policy and config["visibility_policy"] != contract.settings.visibility_policy.model_dump():
+            parser.error("Visibility policy differs from the evaluation contract")
+        config.update(contract.model_config_values())
     if args.request_timeout <= 0 or args.max_retries < 0:
         parser.error("request timeout must be positive and retries non-negative")
     plan = PilotPlan.model_validate_json(args.plan.read_text(encoding="utf-8"))

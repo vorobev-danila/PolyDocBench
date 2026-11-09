@@ -49,7 +49,7 @@ def write_calibration_report(output: Path, plan, summaries: list[dict], pairs: l
     options = "".join(f'<option value="{i}">{html.escape(d + ": " + g)}</option>' for i, (d, g) in enumerate(scopes))
     effects = "".join(f'<option value="{html.escape(s.operation)}">{html.escape(s.operation)}</option>' for s in plan.spec.sweeps)
     payload = json.dumps({"rows": summaries, "scopes": scopes}, allow_nan=False).replace("<", "\\u003c")
-    scope = "Reviewed-family development split" if plan.split == "dev" else "Engineering pilot / unassigned historical sources"
+    scope = "Reviewed-family development split" if plan.split == "dev" else "Engineering candidate / unassigned sources"
     languages = sorted({r.language for r in plan.selection.records})
     templates = sorted({r.template for r in plan.selection.records})
     page = """<!doctype html><html lang="en"><head><meta charset="utf-8">
@@ -83,7 +83,7 @@ figure{margin:14px 0;padding:16px 0;border-top:1px solid #d9e1e5}.images{display
     page += '<th>Curve pairs</th><th>Expected pairs</th><th>Clean</th><th>Noisy</th><th>Delta</th></tr></thead><tbody id="values"></tbody></table></div>'
     page += '<h2>Illustrative Page CER Changes</h2><p class="scope">Selected by largest signed CER delta after evaluation; fixed top-text crops, not localized error boxes.</p>'
     page += "".join(examples)
-    page += '<p class="scope">Protocol 0.2 &middot; Noise 0.3 &middot; insertion-aware micro aggregation &middot; no inference of real-scanner realism</p></main>'
+    page += f'<p class="scope">Protocol {plan.spec.evaluation_protocol_version} &middot; Noise 0.3 &middot; insertion-aware micro aggregation &middot; no inference of real-scanner realism</p></main>'
     page += f'<script>{get_plotlyjs()}</script><script id="data" type="application/json">{payload}</script>'
     page += """<script>
 const data=JSON.parse(document.getElementById('data').textContent);
@@ -107,7 +107,8 @@ function draw(){
    hovertemplate:'value=%{x}<br>delta=%{y:.3f}<br>complete pages=%{customdata[1]}<extra></extra>'}],
    {...base,showlegend:false,margin:{...base.margin,b:65},title:{text:'Paired '+title+' Change',font:{size:16}},yaxis:{...base.yaxis,title:{text:m==='line_F1'?'Delta F1 score':'Delta '+title+' (pp)'},tickformat:'.2f'},
    shapes:[{type:'line',xref:'paper',x0:0,x1:1,y0:0,y1:0,line:{color:'#586970',dash:'dot',width:1}}]},config);
- document.getElementById('coverage').textContent=rows[0].complete_base_pages+'/'+rows[0].selected_base_pages+' complete pages; '+rows[0].source_families+' source families (inferred if unreviewed).';
+ document.getElementById('coverage').textContent=rows[0].complete_base_pages+'/'+rows[0].selected_base_pages+' complete pages; '+rows[0].source_families+' source families (inferred if unreviewed).'+
+   (rows[0].clean_scope_input_gt===undefined?'':' Clean eligible GT: '+rows[0].clean_scope_eligible_gt+'/'+rows[0].clean_scope_input_gt+'; noisy: '+rows[0].noisy_scope_eligible_gt+'/'+rows[0].noisy_scope_input_gt+'; ignored predictions: '+rows[0].noisy_scope_ignored_predictions+'.');
  const tbody=document.getElementById('values');tbody.replaceChildren();
  rows.forEach(r=>{const tr=document.createElement('tr');const values=['L'+r.level+' / '+r.value,r.selected_base_pages,r.complete_base_pages,r.available_pairs,r.curve_pairs,r.expected_pairs,
     pct(r['clean_'+m]),pct(r['noisy_'+m]),r['delta_'+m]===null?'n/a':(100*r['delta_'+m]).toFixed(2)+(m==='line_F1'?' score *100':' pp')];

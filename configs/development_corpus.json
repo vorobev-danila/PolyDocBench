@@ -1,0 +1,124 @@
+{
+  "schema_version": "0.1",
+  "purpose": "development_candidate_only",
+  "text_filter": "prose_without_tex_or_navigation_v1",
+  "sources": [
+    {
+      "language": "en",
+      "article_id": "history_russia",
+      "family_id": "history_russia",
+      "url": "https://en.wikipedia.org/wiki/History_of_Russia"
+    },
+    {
+      "language": "en",
+      "article_id": "linear_algebra",
+      "family_id": "linear_algebra",
+      "url": "https://en.wikipedia.org/wiki/Linear_algebra"
+    },
+    {
+      "language": "ru",
+      "article_id": "history_russia",
+      "family_id": "history_russia",
+      "url": "https://ru.wikipedia.org/wiki/%D0%98%D1%81%D1%82%D0%BE%D1%80%D0%B8%D1%8F_%D0%A0%D0%BE%D1%81%D1%81%D0%B8%D0%B8"
+    },
+    {
+      "language": "ru",
+      "article_id": "linear_algebra",
+      "family_id": "linear_algebra",
+      "url": "https://ru.wikipedia.org/wiki/%D0%9B%D0%B8%D0%BD%D0%B5%D0%B9%D0%BD%D0%B0%D1%8F_%D0%B0%D0%BB%D0%B3%D0%B5%D0%B1%D1%80%D0%B0"
+    },
+    {
+      "language": "fr",
+      "article_id": "history_russia",
+      "family_id": "history_russia",
+      "url": "https://fr.wikipedia.org/wiki/Histoire_de_la_Russie"
+    },
+    {
+      "language": "fr",
+      "article_id": "linear_algebra",
+      "family_id": "linear_algebra",
+      "url": "https://fr.wikipedia.org/wiki/Alg%C3%A8bre_lin%C3%A9aire"
+    },
+    {
+      "language": "de",
+      "article_id": "history_russia",
+      "family_id": "history_russia",
+      "url": "https://de.wikipedia.org/wiki/Geschichte_Russlands"
+    },
+    {
+      "language": "de",
+      "article_id": "linear_algebra",
+      "family_id": "linear_algebra",
+      "url": "https://de.wikipedia.org/wiki/Lineare_Algebra"
+    },
+    {
+      "language": "es",
+      "article_id": "history_russia",
+      "family_id": "history_russia",
+      "url": "https://es.wikipedia.org/wiki/Historia_de_Rusia"
+    },
+    {
+      "language": "es",
+      "article_id": "linear_algebra",
+      "family_id": "linear_algebra",
+      "url": "https://es.wikipedia.org/wiki/%C3%81lgebra_lineal"
+    },
+    {
+      "language": "it",
+      "article_id": "history_russia",
+      "family_id": "history_russia",
+      "url": "https://it.wikipedia.org/wiki/Storia_della_Russia"
+    },
+    {
+      "language": "it",
+      "article_id": "linear_algebra",
+      "family_id": "linear_algebra",
+      "url": "https://it.wikipedia.org/wiki/Algebra_lineare"
+    }
+  ],
+  "templates": [
+    "simple_article",
+    "scientific_paper",
+    "magazine_layout",
+    "technical_report",
+    "research_illustrated",
+    "financial_report"
+  ],
+  "text_items": 12,
+  "max_item_characters": 1200,
+  "dpi": 200,
+  "seed": 42,
+  "profiles": [
+    "clean",
+    "light_scan",
+    "medium_scan",
+    "heavy_scan"
+  ],
+  "page_selection": "max_table_figure_presence_then_text_v1",
+  "labels": {
+    "en": [
+      "Figure 1. Controlled geometric shapes; not experimental data.",
+      "Table 1. Synthetic configuration values."
+    ],
+    "ru": [
+      "Рисунок 1. Контрольные геометрические фигуры; не результаты эксперимента.",
+      "Таблица 1. Синтетические значения конфигурации."
+    ],
+    "fr": [
+      "Figure 1. Formes géométriques de contrôle ; pas de données expérimentales.",
+      "Tableau 1. Valeurs de configuration synthétiques."
+    ],
+    "de": [
+      "Abbildung 1. Kontrollierte geometrische Formen; keine Versuchsdaten.",
+      "Tabelle 1. Synthetische Konfigurationswerte."
+    ],
+    "es": [
+      "Figura 1. Formas geométricas de control; no son datos experimentales.",
+      "Tabla 1. Valores de configuración sintéticos."
+    ],
+    "it": [
+      "Figura 1. Forme geometriche di controllo; non sono dati sperimentali.",
+      "Tabella 1. Valori di configurazione sintetici."
+    ]
+  }
+}

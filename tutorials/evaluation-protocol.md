@@ -1,5 +1,10 @@
 # Evaluation Protocol
 
+For development candidates, `--evaluation-contract` on the pilot/calibration
+runners freezes protocol 0.3 settings together with evaluator files and the
+geometry engine. This prevents accidental threshold/implementation mixing;
+it does not grant scientific approval. See [Development Corpus](development-corpus.md).
+
 The definitions below describe the unchanged default protocol **0.2**.
 Opt-in **0.3** adds task-specific eligibility, ignored prediction regions,
 nullable empty-scope scores and coverage: [Evaluation Visibility](evaluation-visibility.md).

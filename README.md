@@ -61,6 +61,7 @@ The project is useful for:
 - Page-paired Tesseract noise calibration with clean controls, response curves, and explicit failure coverage.
 - Frozen GT audits with independent affine checks, table/source coverage, replay and visual human-review records.
 - Opt-in visibility-aware evaluation with ignored regions, protected eligible GT and explicit coverage.
+- Revision-bound development candidates with replayable text/media compositions and evidence-bound human review gates.
 - Transform-aware noisy GT for rotated/affine scan variants.
 - OCR quality, reading-order, and structure evaluation utilities.
 - Versioned OCR/reading-order evaluation with insertion-aware micro error rates and explicit order-pair coverage.
@@ -177,6 +178,7 @@ The detailed documentation is split into focused tutorials:
 | [Noise Calibration](tutorials/noise-calibration.md) | Controlled six-effect sweeps, paired micro metrics, and an offline response-curve report |
 | [GT Audit](tutorials/gt-audit.md) | Structural/source checks, independent geometry oracle, pixel replay and explicit human review |
 | [Evaluation Visibility](tutorials/evaluation-visibility.md) | Task-specific clipping, ignored regions, protocol 0.3 and coverage accounting |
+| [Development Corpus](tutorials/development-corpus.md) | Six-language candidate generation, frozen evaluation contracts, GT/rights review and recalibration |
 | [FastAPI Workflow](tutorials/fastapi-workflow.md) | API startup, endpoints, request examples |
 | [Architecture](tutorials/architecture.md) | Components, data flow, module responsibilities |
 | [Data Format](tutorials/data-format.md) | Source JSON, GT JSON, schema versions |

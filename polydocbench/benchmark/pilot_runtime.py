@@ -25,7 +25,7 @@ def default_model_config() -> dict:
             "base_url": DEFAULT_DOTSOCR_BASE_URL, "api_key_env": "LITELLM_API_KEY",
             "prompt": DOTSOCR_ORDERING_PROMPT, "request_timeout": 180.0, "max_retries": 0,
             "quality_iou": 0.3, "structure_iou": 0.5, "min_similarity": 0.3, "max_gt_span": 3,
-            "visibility_policy": None}
+            "visibility_policy": None, "evaluation_contract": None}
 
 
 def _tree_rss(process) -> int:
@@ -122,6 +122,13 @@ def run_pilot(plan: PilotPlan, input_dir: str | Path, output_dir: str | Path, *,
     if output.exists() and (not output.is_dir() or any(output.iterdir())):
         raise ValueError("Pilot run output must be new or empty; cached predictions are never counted as inference")
     config = {**default_model_config(), **(config or {})}
+    if config["evaluation_contract"] is not None:
+        from polydocbench.eval.contract import FrozenEvaluation
+
+        contract = FrozenEvaluation.model_validate(config["evaluation_contract"])
+        expected = contract.model_config_values()
+        if any(config[key] != value for key, value in expected.items()):
+            raise ValueError("Pilot settings differ from the frozen evaluation contract")
     if config["visibility_policy"] is not None:
         from polydocbench.eval.scope import VisibilityPolicy
 

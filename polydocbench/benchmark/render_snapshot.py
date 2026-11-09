@@ -27,6 +27,7 @@ from polydocbench.layout.templates import DEFAULT_TEMPLATE_PATH, resolve_templat
 from polydocbench.render import PDFRenderer
 from polydocbench.render.config import RenderConfig
 from polydocbench.sources.snapshots import PROVENANCE_NAME as SOURCE_PROVENANCE_NAME, verify_wikipedia_source
+from polydocbench.sources.derived import PROVENANCE_NAME as DERIVED_PROVENANCE_NAME, verify_derived_source
 
 from .files import FileFingerprint, fingerprint_file, json_sha256
 
@@ -62,7 +63,7 @@ class RenderInputSnapshot(BaseModel):
     generator_revision: str | None
     generator_dirty: bool | None
     source_url: str
-    source_revision_status: Literal["not_verified", "response_bound"]
+    source_revision_status: Literal["not_verified", "response_bound", "derived_response_bound"]
     source_snapshot_id: str | None = None
     rights_review_status: Literal["not_reviewed"]
 
@@ -87,7 +88,7 @@ class RenderInputSnapshot(BaseModel):
                 raise ValueError("Asset reference is outside the sealed asset files")
         if not any(file.role == "generator_code" for file in self.files):
             raise ValueError("Generator source snapshot is missing")
-        if (self.source_revision_status == "response_bound") != (self.source_snapshot_id is not None):
+        if (self.source_revision_status != "not_verified") != (self.source_snapshot_id is not None):
             raise ValueError("Response-bound sources require a source snapshot ID")
         return self
 
@@ -378,6 +379,16 @@ def capture_render_snapshot(
                        "source_evidence", files)
         source_revision_status = "response_bound"
         source_snapshot_id = source_evidence.inputs.snapshot_id
+    elif data.get("metadata", {}).get("derived_source_id"):
+        derived = verify_derived_source(source_path.parent)
+        if derived.source.sha256 != files["inputs/source.original.json"].sha256:
+            raise ValueError("Derived evidence does not match the selected source JSON")
+        paths = [DERIVED_PROVENANCE_NAME, derived.source.path, *[f.path for f in derived.files]]
+        for relative in paths:
+            _copy_file(root, source_path.parent / relative, f"inputs/derived_source_evidence/{relative}",
+                       "source_evidence", files)
+        source_revision_status = "derived_response_bound"
+        source_snapshot_id = derived.parent_snapshot_id
     _copy_file(root, layout_path, "inputs/layout.original.yaml", "original_config", files)
     items = document.source_items()
     prepared = {"schema_version": document.schema_version, "title": document.title, "url": document.url,
@@ -455,6 +466,11 @@ def verify_render_snapshot(root: str | Path, *, check_outputs: bool = True) -> R
         if (source_evidence.inputs.snapshot_id != provenance.inputs.source_snapshot_id
                 or source_evidence.source.sha256 != original_source.sha256):
             raise ValueError("Render snapshot does not preserve its Wikipedia source evidence")
+    elif provenance.inputs.source_revision_status == "derived_response_bound":
+        derived = verify_derived_source(root / "inputs/derived_source_evidence")
+        original = next(f for f in provenance.inputs.files if f.role == "original_source")
+        if derived.parent_snapshot_id != provenance.inputs.source_snapshot_id or derived.source.sha256 != original.sha256:
+            raise ValueError("Render snapshot does not preserve its derived source lineage")
     if check_outputs:
         gt = _json(root / provenance.gt.path)
         if gt.get("metadata", {}).get("render_snapshot_id") != provenance.inputs.snapshot_id:

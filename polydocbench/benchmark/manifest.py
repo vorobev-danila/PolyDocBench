@@ -19,6 +19,7 @@ from polydocbench.document.schema import validate_source_document
 from polydocbench.gt.schema import validate_gt_document
 from polydocbench.noise.provenance import NoiseGeneration, scan_image_path
 from polydocbench.sources.snapshots import PROVENANCE_NAME as SOURCE_PROVENANCE_NAME, verify_wikipedia_source
+from polydocbench.sources.derived import PROVENANCE_NAME as DERIVED_PROVENANCE_NAME, verify_derived_source
 from .files import FileFingerprint, fingerprint_file as _fingerprint, json_sha256 as _digest
 from .render_snapshot import PROVENANCE_NAME, verify_render_snapshot
 from .splits import SplitPlan
@@ -252,6 +253,16 @@ def _record(root: Path, gt_path: Path, fingerprint_cache: dict[Path, FileFingerp
         ))
         provenance_files.extend(_fingerprint(root, path) for path in source_paths)
         gaps.remove("source_revision_not_verified")
+    elif (case_dir / DERIVED_PROVENANCE_NAME).exists() or source_data.get("metadata", {}).get("derived_source_id"):
+        derived = verify_derived_source(case_dir)
+        parent = verify_wikipedia_source(case_dir / "origin")
+        source_snapshot_id = derived.parent_snapshot_id
+        source_page_id, source_revision_id = parent.inputs.page_id, parent.inputs.revision_id
+        wikidata_item_id = parent.inputs.wikidata_item_id
+        provenance_files.extend(_fingerprint(root, case_dir / path)
+                                for path in [DERIVED_PROVENANCE_NAME, *[f.path for f in derived.files]])
+        gaps.remove("source_revision_not_verified")
+        gaps.append("controlled_composition_not_full_article")
     if (template_dir / PROVENANCE_NAME).exists():
         if template_dir not in render_cache:
             evidence = verify_render_snapshot(template_dir)

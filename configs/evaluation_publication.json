@@ -1,0 +1,17 @@
+{
+  "schema_version": "0.1",
+  "evaluation_protocol_version": "0.3",
+  "quality_iou": 0.3,
+  "structure_iou": 0.5,
+  "min_similarity": 0.3,
+  "max_gt_span": 3,
+  "visibility_policy": {
+    "schema_version": "0.1",
+    "policy_name": "conservative_visibility",
+    "coordinate_epsilon_pixels": 0.05,
+    "quality_partial": "exclude",
+    "ordering_partial": "exclude_incomplete_blocks",
+    "structure_partial": "exclude",
+    "prediction_ignore": "fully_contained_unprotected"
+  }
+}

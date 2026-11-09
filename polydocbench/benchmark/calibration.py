@@ -5,9 +5,10 @@ from __future__ import annotations
 from collections import defaultdict
 from typing import Literal
 
-from pydantic import BaseModel, ConfigDict, Field, model_validator
+from pydantic import BaseModel, ConfigDict, Field, model_validator, model_serializer
 
 from polydocbench.eval.quality import aggregate_ocr_counts
+from polydocbench.eval.contract import FrozenEvaluation
 from polydocbench.noise import NoiseRecipeConfig, NoiseStep
 from polydocbench.noise.provenance import PARAMETER_MODELS, derive_seed
 from polydocbench.provenance import json_sha256
@@ -53,7 +54,8 @@ class NoiseSweep(CalibrationModel):
 class CalibrationSpec(CalibrationModel):
     schema_version: Literal["0.1"] = "0.1"
     noise_pipeline_version: Literal["0.3"] = "0.3"
-    evaluation_protocol_version: Literal["0.2"] = "0.2"
+    evaluation_protocol_version: Literal["0.2", "0.3"] = "0.2"
+    evaluation_contract: FrozenEvaluation | None = None
     dpi: int = Field(default=200, ge=36, le=600, strict=True)
     repeats: int = Field(default=3, ge=1, le=20, strict=True)
     seed: int = Field(default=42, ge=0, strict=True)
@@ -61,10 +63,19 @@ class CalibrationSpec(CalibrationModel):
 
     @model_validator(mode="after")
     def unique_operations(self) -> "CalibrationSpec":
+        if (self.evaluation_protocol_version == "0.3") != (self.evaluation_contract is not None):
+            raise ValueError("Protocol 0.3 requires a frozen evaluation contract; legacy 0.2 must not declare one")
         names = [sweep.operation for sweep in self.sweeps]
         if len(names) != len(set(names)):
             raise ValueError("Each operation may have only one sweep")
         return self
+
+    @model_serializer(mode="wrap")
+    def preserve_legacy_serialization(self, handler):
+        result = handler(self)
+        if self.evaluation_contract is None:
+            result.pop("evaluation_contract", None)
+        return result
 
     def conditions(self) -> list[dict]:
         return [{"profile": f"cal_{sweep.operation}_l{level_index}_r{repeat}",
@@ -166,8 +177,14 @@ def summarize_calibration(plan: CalibrationPlan, rows: list[dict]) -> tuple[list
             raise ValueError("Duplicate or foreign calibration result")
         if row.get("status") == "success":
             metrics = row.get("metrics") or {}
-            if metrics.get("evaluation_protocol_version") != "0.2" or metrics.get("gt_char_count", 0) < 1:
-                raise ValueError("Successful calibration rows require protocol 0.2 and nonempty GT")
+            if metrics.get("evaluation_protocol_version") != plan.spec.evaluation_protocol_version or metrics.get("gt_char_count", 0) < 1:
+                raise ValueError("Successful calibration rows require the declared protocol and nonempty GT")
+            contract = plan.spec.evaluation_contract
+            if contract and (metrics.get("evaluation_contract_id") != contract.contract_id
+                             or metrics.get("scope_policy_id") != contract.visibility_policy_id
+                             or metrics.get("scope_task") != "quality"
+                             or metrics.get("matching_iou_threshold") != contract.settings.quality_iou):
+                raise ValueError("Calibration metrics differ from the frozen evaluation contract")
         indexed[key] = row
     pairs = []
     for page_id, record in page_records.items():
@@ -203,6 +220,13 @@ def summarize_calibration(plan: CalibrationPlan, rows: list[dict]) -> tuple[list
                            "curve_pairs": len(valid), "complete_base_pages": len(complete),
                            "selected_base_pages": len({p["base_page_id"] for p in scoped}),
                            "source_families": len({p["source_family"] for p in valid})}
+                if plan.spec.evaluation_contract:
+                    from polydocbench.eval.scoped import scope_summary
+
+                    summary.update(evaluation_protocol_version="0.3", evaluation_contract_id=plan.spec.evaluation_contract.contract_id)
+                    for label in ("clean", "noisy"):
+                        summary.update({f"{label}_{key}": value for key, value in
+                                        scope_summary([p[f"{label}_metrics"] for p in valid]).items()})
                 for key in ("char_errors", "word_errors", "gt_char_count", "gt_word_count",
                             "num_gt_lines", "num_predicted_lines", "num_matched_lines"):
                     summary[f"clean_{key}"] = clean.get(key)

@@ -186,9 +186,26 @@ uv run python scripts\run_noise_calibration.py `
   --output-dir outputs\experiments\noise_calibration_pilot_v2 --report-only
 ```
 
-Calibration schema 0.1, noise pipeline 0.3, and evaluation protocol 0.2 are
+Calibration schema 0.1, noise pipeline 0.3, and default evaluation protocol 0.2 are
 separate identities. The plan, recipe parameters, model configuration, raw
 counts, file hashes, and local environment support inspection/reproduction;
 they do not retroactively recover missing historical provenance. See
 [Noise Effects](noise-effects.md), [Evaluation Protocol](evaluation-protocol.md),
 and the [publication roadmap](icdar-2027-plan.md) for the remaining review gates.
+
+## Visibility-Aware Candidate Calibration
+
+Opt into protocol 0.3 with `--evaluation-contract configs/evaluation_publication.json`
+and a **new** output directory. The plan records matching thresholds, normalization,
+implementation hashes, Shapely/GEOS identity and visibility policy. It preserves
+legacy 0.2 plan serialization and does not reinterpret historical results.
+Successful scoped rows require matching contract IDs and thresholds, and saved
+exclusion ledgers must agree with the exact GT and native predictions. CSV coverage
+includes retained/input GT and ignored predictions; the dashboard displays these
+counts beside the selected curve. Neither a lower CER nor a completed sweep
+automatically approves a severity level.
+
+The complete capture/build/audit/calibration/human-review workflow is in
+[Development Corpus](development-corpus.md). Before human approval use the explicit
+engineering `--split unassigned`, never a fabricated reviewed split. Source
+families used for calibration must remain excluded from the final test corpus.

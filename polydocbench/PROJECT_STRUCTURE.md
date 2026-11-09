@@ -3,6 +3,8 @@
 This package is organized around the research pipeline:
 
 1. `sources`: parse Wikipedia into normalized JSON and capture revision-bound API/HTML evidence.
+   `sources.derived` records and replays controlled excerpt/media compositions without
+   pretending they are unchanged API responses.
 2. `document`: shared document-level data structures.
 3. `layout`: convert normalized content into placed elements and pages.
 4. `render`: render layout results into PDFs/images.
@@ -29,6 +31,8 @@ This package is organized around the research pipeline:
    `benchmark.calibration` freezes controlled noise sweeps and paired aggregation;
    `calibration_run` generates verified inputs and reuses the pilot worker;
    `calibration_report` exports offline response curves and illustrative crops.
+   `benchmark.development` captures sources and builds development-only candidates;
+   `development_review` binds GT/rights/protocol/severity decisions to immutable evidence.
    `benchmark.gt_audit` binds numerical checks and explicit human reviews to a
    frozen selection; `gt_audit_report` creates the offline review gallery.
 

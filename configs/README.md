@@ -12,6 +12,8 @@ Current files:
 - `noise_calibration.json` - controlled six-effect sweeps with fixed nuisance parameters, used by `scripts/run_noise_calibration.py`.
 - `gt_audit_noise.json` - fixed positive/negative rotations and shear for offline GT stress fixtures, not approved OCR severities.
 - `evaluation_visibility.json` - candidate task-specific visibility policy; explicit opt-in evaluation protocol 0.3, not publication approval.
+- `evaluation_publication.json` - candidate matching/normalization/aggregation settings; runners freeze their implementation and visibility identity, not human approval.
+- `development_corpus.json` - 12 pinned source captures, six languages, six layouts and 72 selected base pages; controlled excerpts with synthetic media, reserved for development only.
 
 Noise recipe schema, parameter units, replay and example gallery:
 [Noise Effects](../tutorials/noise-effects.md).
