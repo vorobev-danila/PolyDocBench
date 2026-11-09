@@ -149,6 +149,12 @@ approval, or publication-corpus review are implied. Raw local evidence is under
 with the repository. The first interrupted attempt remains separately preserved
 under `outputs/experiments/noise_calibration_pilot/` and is not used in this report.
 
+The subsequent [GT audit](gt-audit.md) found inherited container/parent,
+heading-line and reading-order defects in historical inputs. Exact replay and
+clean/noisy GT equality do not repair those source defects or certify annotation
+validity. Preserve this calibration as engineering evidence; use fresh audited
+inputs and reviewed development sources before approving publication severities.
+
 ## Inspect Or Rebuild Results
 
 Open `outputs/experiments/noise_calibration_pilot_v2/dashboard.html` locally.

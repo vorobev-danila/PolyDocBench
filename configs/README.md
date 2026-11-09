@@ -10,11 +10,14 @@ Current files:
 - `benchmark_icdar2027.json` - draft publication benchmark targets, not executable generation settings.
 - `noise_recipes.json` - custom blur sweeps and a faded-camera combination, loaded explicitly with `--noise-config`.
 - `noise_calibration.json` - controlled six-effect sweeps with fixed nuisance parameters, used by `scripts/run_noise_calibration.py`.
+- `gt_audit_noise.json` - fixed positive/negative rotations and shear for offline GT stress fixtures, not approved OCR severities.
 
 Noise recipe schema, parameter units, replay and example gallery:
 [Noise Effects](../tutorials/noise-effects.md).
 Page-paired Tesseract calibration, repeats, metrics and limitations:
 [Noise Calibration](../tutorials/noise-calibration.md).
+GT fixture generation and semantic/geometry checks:
+[Ground-Truth Audit](../tutorials/gt-audit.md).
 
 The layout config contains the three original templates and five richer profiles.
 Supported table/image/region options are documented in

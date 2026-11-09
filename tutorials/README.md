@@ -13,6 +13,7 @@ This directory contains focused guides for using and developing PolyDocBench.
 - [Wikipedia Revisions And Benchmark Splits](source-revisions-and-splits.md)
 - [Frozen Pilot And Runtime Measurements](benchmark-pilot.md)
 - [Paired Noise Calibration](noise-calibration.md)
+- [Ground-Truth Audit](gt-audit.md)
 - [FastAPI Workflow](fastapi-workflow.md)
 - [Architecture](architecture.md)
 - [Data Format](data-format.md)

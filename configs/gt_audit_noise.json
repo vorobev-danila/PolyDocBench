@@ -1,0 +1,8 @@
+{
+  "schema_version": "0.1",
+  "profiles": {
+    "audit_rotate_positive": [{"name": "random_affine", "parameters": {"angle_degrees": 3, "shear": 0}}],
+    "audit_rotate_negative": [{"name": "random_affine", "parameters": {"angle_degrees": -3, "shear": 0}}],
+    "audit_shear": [{"name": "random_affine", "parameters": {"angle_degrees": 0, "shear": 0.08}}]
+  }
+}

@@ -10,6 +10,11 @@ accounting, use the separate [Benchmark Pilot](benchmark-pilot.md) workflow.
 It consumes an inventory and uses the same task evaluators without changing
 the existing experiment runners or their historical results.
 
+Before publication runs, audit the selected inputs with [GT Audit](gt-audit.md).
+The historical corpus has known container/parent/reading-order defects; a valid
+inventory or exact affine coordinates alone do not establish complete GT validity.
+Keep historical results separate and regenerate affected inputs after diagnosis.
+
 New noise generation uses pipeline `0.3`. Use a separate output directory for
 new runs; the same seed no longer recreates historical unversioned scans.
 Add `clean` to `--profiles` for a lossless control. Requested-pair filtering,

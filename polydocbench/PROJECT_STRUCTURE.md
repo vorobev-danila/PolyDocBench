@@ -7,6 +7,8 @@ This package is organized around the research pipeline:
 3. `layout`: convert normalized content into placed elements and pages.
 4. `render`: render layout results into PDFs/images.
 5. `gt`: validate and export ground-truth annotations.
+   `gt.audit` checks semantic/source/table consistency beyond the exchange schema;
+   `gt.audit_geometry` is an independent affine/canvas-clipping oracle.
 6. `noise`: generate synthetic scans from clean rendered documents.
    `noise.provenance` defines versioned generation traces and seed derivation;
    `noise.scans` applies/replays operations without mutating global RNG state.
@@ -24,6 +26,8 @@ This package is organized around the research pipeline:
    `benchmark.calibration` freezes controlled noise sweeps and paired aggregation;
    `calibration_run` generates verified inputs and reuses the pilot worker;
    `calibration_report` exports offline response curves and illustrative crops.
+   `benchmark.gt_audit` binds numerical checks and explicit human reviews to a
+   frozen selection; `gt_audit_report` creates the offline review gallery.
 
 Canonical project-level directories:
 

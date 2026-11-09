@@ -1,6 +1,7 @@
 # ICDAR 2027 Publication Plan
 
-Updated: 2026-11-03. This is the working roadmap, not a statement that the
+Updated: 2026-11-09 (engineering status; submission requirements were not
+rechecked in this milestone). This is the working roadmap, not a statement that the
 benchmark or the publication is complete. Update milestone status as evidence
 and artifacts become available.
 
@@ -89,6 +90,7 @@ M2 progress:
 - [x] Opt-in sealed source/config/font/asset/code inputs, output binding, integrity checks and exact render replay.
 - [x] Configurable JSON operation recipes and isolated photometric parameter sweeps (noise 0.3).
 - [x] Frozen page-paired Tesseract calibration, clean controls, complete-cohort curves and failure accounting.
+- [x] Frozen GT audit, independent affine/clipping oracle, source/table checks, replay and explicit review records.
 - [ ] Calibrate scenario severity and validate photometric realism/readability on development data.
 - [ ] Source revision/rights review, GT audit, fixed publication metrics and model baselines.
 
@@ -229,6 +231,11 @@ The [noise calibration workflow](noise-calibration.md) supports exploratory
 measurements but does not close those review gates. Do not silently relabel old
 artifacts as newly reproducible samples.
 
+The [GT audit workflow](gt-audit.md) now separates automatic consistency checks
+from explicit preview review. Resolve historical defects, review fresh GT and
+freeze the visibility policy before publication evaluation; passing transforms
+alone does not establish correct source annotations.
+
 The [pilot tooling](benchmark-pilot.md) supports Tesseract quality, dots.ocr
 ordering and Docling structure on one fixed selection. It measures local RSS
 and separates inference/evaluation times, but does not infer remote memory,
@@ -263,6 +270,20 @@ while faded-ink settings were nearly neutral. Responses were not uniformly
 monotonic. These are engineering observations on unassigned historical inputs,
 not approved severity levels or final paper results. Full commands and limits:
 [Noise Calibration](noise-calibration.md).
+
+GT-audit engineering evidence (2026-11-09): fresh offline fixtures covered six
+languages, seven templates, 10 documents / 13 pages and 78 scans. All automatic
+consistency checks and 78 pixel replays passed; 7,476 transformed elements had
+maximum coordinate error about 9.1e-13 pixels. There were 122 partial-clipping
+warnings, not silently excluded annotations. All 91 preview review units remain
+pending. A separate historical audit checked 18 full GT documents / 316 pages
+and 54 selected scans: every document and 45 scans had semantic errors, including
+wrong container/page ownership, cross-page parents, missing recognized heading
+lines, captions/cells, and incomplete reading order. Old file hashes were retained.
+These findings do not quantify bias in every past OCR score; regenerate affected
+inputs and assess task-specific impact. Reviewed families/rights, human GT audit
+and visibility/severity approval remain open. Local reports and commands are in
+[GT Audit](gt-audit.md); neither run is an approved publication benchmark.
 
 Render snapshot smoke evidence: the local complex-document fixture was rendered
 with `research_illustrated`, `technical_report` and `financial_report` under

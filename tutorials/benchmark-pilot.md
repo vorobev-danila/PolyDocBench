@@ -5,6 +5,11 @@ The pilot runner evaluates Tesseract quality, dots.ocr semantic reading order,
 or Docling structure on the same selected image/GT pairs. It does not regenerate
 the dataset or replace the task-specific dashboards.
 
+Audit that same frozen plan with [GT Audit](gt-audit.md) before interpreting
+publication results. File hashes alone do not establish valid GT semantics.
+The historical set has known container/page, heading-line and reading-order
+defects; auditing does not rewrite its inputs or retrospectively approve scores.
+
 ## Install
 
 ```powershell

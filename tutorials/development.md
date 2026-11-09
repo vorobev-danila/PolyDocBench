@@ -43,6 +43,18 @@ When Node.js is available, calibration tests also exercise every report selector
 against source metrics in a small DOM/Plotly stub. This checks JavaScript/data
 consistency, not browser rendering; no browser or native Tesseract is required by CI.
 
+GT-audit tests cover semantic defects, source/table coverage, independent affine
+known answers, clipping, replay and review/evidence binding:
+
+```powershell
+uv run python -m pytest tests\test_gt_audit.py -q -p no:cacheprovider
+```
+
+They also check native report filters with a small DOM stub when Node.js is
+available. Full local fixture generation and historical diagnostics are opt-in:
+[GT Audit](gt-audit.md). No OCR model or extra dependency beyond existing noise
+and development extras is needed.
+
 ```text
 .github/workflows/tests.yml
 ```

@@ -235,6 +235,12 @@ For affine transforms, PolyDocBench transforms all four bbox corners and stores:
 
 ## Versioning Policy
 
+Schema parsing is not semantic GT certification. The opt-in
+[GT Audit](gt-audit.md) separately checks ID/reference/order integrity, source
+coverage, page/container bounds and independent affine geometry, with explicit
+human-review records. It uses audit protocol 0.1 without changing GT schema 0.1
+or silently tightening existing API/schema consumers.
+
 Opt-in render bundles use a separate render-input/provenance schema `0.1`.
 Their GT records `metadata.render_snapshot_id`; dependency hashes live in
 `render_inputs.json` and `document_provenance.json`, not in a guessed historical
