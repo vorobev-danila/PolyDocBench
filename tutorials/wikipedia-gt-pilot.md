@@ -113,6 +113,55 @@ Tower page 54 groups multiple cells from one row into an OCR line. It also
 contains the correctly recognized heading `Galerie`, rejected from matching
 at an IoU of 0.061. Fourteen unmatched clean GT lines have an overlapping
 unmatched prediction with exact normalized text below threshold. Do not
-interpret a missing match as proof that text was not recognized, and do not
-retune the primary score on these examples. Next check matching sensitivity
-and table-vs-body performance separately before increasing the corpus size.
+interpret a missing match as proof that text was not recognized.
+
+## Matching Sensitivity
+
+Reuse the saved predictions and GT, without running Tesseract again:
+
+```powershell
+uv run --no-sync python -m scripts.analyze_wikipedia_ocr_sensitivity --input-dir outputs/wikipedia_gt_pilot_20261118_final --ocr-run-dir outputs/wikipedia_ocr_pilot --output-dir outputs/wikipedia_ocr_sensitivity
+```
+
+The script verifies the original contract, scans, GT, prediction/scope evidence
+and primary scores. It changes only the bbox-IoU cutoff: 0.10, 0.20, 0.30, 0.40
+and 0.50. The output includes `report.md`, `overall.csv`, `by_class.csv`,
+`per_image.csv`, `paired_pages.csv`, `cases.json` and `provenance.json`.
+The CSVs include counts as well as rates, and only complete triples with
+identical eligible GT IDs, class and text enter pooled comparisons.
+
+In the local pilot, all five thresholds retained 12 complete triples and
+477/477 GT lines per condition. Pooled CER ranked clean < medium < fixed +3
+degrees throughout; the medium-to-clean difference ranged from +1.74 to
++11.19 percentage points, and the fixed rotation difference ranged from
++9.16 to +16.04 points. This is evidence of rank stability on this small sample,
+not evidence of a stable effect size or a calibrated severity scale.
+
+At 0.30 the clean body/other class had 0.67% GT-attributed CER (306/306 lines
+matched); cell lines had 32.83% (60/136 matched), versus 5.49% CER on the matched
+cell lines alone. Class rates include edits on matched lines and deletions for
+missed GT, but omit unmatched OCR insertions that cannot be assigned to a class.
+Those insertions remain in the overall micro scores. Per-class precision/F1
+is undefined because Tesseract lines do not carry these GT classes.
+
+Spot checks on the clean images distinguish three failure modes. On Eiffel
+Tower page 54, `Galerie` is recognized verbatim but the tight OCR box achieves
+only 0.061 IoU against the wide GT box. Tesseract groups six column headings
+from the same table row into one prediction on that page. On Rialto Bridge
+page 6, the printed caption beginning `Il progetto del Palladio` is visible
+in the GT region but absent from the OCR output. Automatic candidates in
+`cases.json` are not verified labels for all omissions or splits/merges.
+
+Lower cutoffs do not guarantee lower CER under greedy matching. On SI prefixes
+page 3 (`medium_scan`), the heading `Sprachliches` takes the first prediction
+of the following paragraph at IoU 0.190 when the cutoff is 0.10. The displacement
+cascades: both cutoffs match 27 lines, but total character errors rise from
+151 at 0.30 to 1,198 at 0.10. A separate check using rectangle intersections
+reproduced the assignments and counts for this page.
+
+Keep protocol 0.3 with IoU 0.30 as the frozen primary reference for this pilot.
+Use the sweep and GT-class breakdown as diagnostic outputs, not to pick the
+lowest score. Before locking the publication protocol, compare greedy matching
+with global one-to-one assignment using geometry alone on development data,
+with the same scope, cutoffs and edit accounting. No rule changes or thresholds
+should be selected from held-out test results.

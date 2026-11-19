@@ -84,6 +84,16 @@ def paired_results(plan, results, references):
     return pairs, aggregate
 
 
+def gt_line_class(line, elements):
+    meta = line["metadata"]
+    parent_type = elements.get(meta.get("parent_id"), {}).get("type", "")
+    if meta.get("owner_type") == "table" or parent_type == "table_cell":
+        return "table_cell"
+    if parent_type == "caption":
+        return "caption"
+    return "heading" if parent_type.startswith("heading") else "body_or_other"
+
+
 def clean_diagnostics(gt, prepared, kept, metrics, iou):
     matches = match_lines(prepared.gt, kept, iou_threshold=iou)
     by_id = {element["id"]: element for element in gt["elements"]}
@@ -91,12 +101,7 @@ def clean_diagnostics(gt, prepared, kept, metrics, iou):
                                    "matched_text_edits": 0, "unmatched_gt_characters": 0})
     used, examples = set(), []
     for match in matches:
-        line = by_id[match.gt["id"]]
-        meta = line["metadata"]
-        parent = by_id.get(meta.get("parent_id"), {})
-        kind = ("table_cell" if meta.get("owner_type") == "table" or parent.get("type") == "table_cell"
-                else "caption" if parent.get("type") == "caption"
-                else "heading" if parent.get("type", "").startswith("heading") else "body_or_other")
+        kind = gt_line_class(by_id[match.gt["id"]], by_id)
         text = normalize_text(match.gt["text"])
         counts = classes[kind]
         counts["gt_lines"] += 1
@@ -137,8 +142,7 @@ def clean_diagnostics(gt, prepared, kept, metrics, iou):
             "longest_unmatched_predictions": sorted(insertions, key=lambda x: -len(x["text"]))[:5]}
 
 
-def build_report(source, output, plan):
-    dataset, run = source / "dataset", output / "run"
+def load_verified_run(dataset, run, plan):
     if verify_manifest(plan.selection, dataset):
         raise ValueError("Frozen scan or source evidence changed")
     provenance, job = read_json(run / "run.json"), read_json(run / "job.json")
@@ -154,24 +158,40 @@ def build_report(source, output, plan):
     if len(results) != len(rows) or set(results) != {r.artifact_id for r in plan.selection.records}:
         raise ValueError("Inference ledger is missing rows or contains duplicate/unexpected artifacts")
 
+    for record in plan.selection.records:
+        row = results[record.artifact_id]
+        context = {key: getattr(record, key) for key in ("language", "article_id", "template", "source_page_number", "profile")}
+        if any(row[key] != value for key, value in context.items()) or (
+                row["plan_id"] != plan.plan_id or row["configuration_sha256"] != provenance["configuration_sha256"]):
+            raise ValueError("Incompatible inference row")
+    return contract, provenance, results
+
+
+def verified_predictions(dataset, run, record, row, contract):
+    counts = row["metrics"]
+    if counts["evaluation_contract_id"] != contract.contract_id:
+        raise ValueError("Metrics use a different evaluation contract")
+    gt = read_json(dataset / record.image_gt.path)
+    prediction = read_json(run / row["prediction_path"])
+    saved_ledger = read_json(run / row["scope_path"])
+    prepared = prepare_scope(gt, "quality", contract.settings.visibility_policy)
+    kept, scope, coverage = prepared.filter_predictions(prediction)
+    if json_sha256(saved_ledger) != json_sha256(scope) or any(counts[k] != v for k, v in coverage.items()):
+        raise ValueError("Saved visibility evidence does not match the original prediction and GT")
+    return gt, prepared, kept
+
+
+def build_report(source, output, plan):
+    dataset, run = source / "dataset", output / "run"
+    contract, provenance, results = load_verified_run(dataset, run, plan)
     references, clean, per_image = {}, [], []
     for record in plan.selection.records:
         row = results[record.artifact_id]
-        if row["plan_id"] != plan.plan_id or row["configuration_sha256"] != provenance["configuration_sha256"]:
-            raise ValueError("Incompatible inference row")
         counts = row.get("metrics") if row["status"] == "success" else None
         per_image.append({key: value for key, value in row.items() if key != "metrics"} | (counts or {}))
         if counts is None:
             continue
-        if counts["evaluation_contract_id"] != contract.contract_id:
-            raise ValueError("Metrics use a different evaluation contract")
-        gt = read_json(dataset / record.image_gt.path)
-        prediction = read_json(run / row["prediction_path"])
-        saved_ledger = read_json(run / row["scope_path"])
-        prepared = prepare_scope(gt, "quality", contract.settings.visibility_policy)
-        kept, scope, coverage = prepared.filter_predictions(prediction)
-        if json_sha256(saved_ledger) != json_sha256(scope) or any(counts[k] != v for k, v in coverage.items()):
-            raise ValueError("Saved visibility evidence does not match the original prediction and GT")
+        gt, prepared, kept = verified_predictions(dataset, run, record, row, contract)
         references[record.artifact_id] = json_sha256({"lines": sorted((line["id"], line["text"]) for line in prepared.gt)})
         if record.profile == "clean":
             diagnostic = clean_diagnostics(gt, prepared, kept, counts, contract.settings.quality_iou)
@@ -187,9 +207,9 @@ def build_report(source, output, plan):
     write_csv(output / "paired_pages.csv", pairs)
     write_csv(output / "summary.csv", summary)
     (output / "clean_diagnostics.json").write_text(json.dumps(clean, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
-    success = sum(row["status"] == "success" for row in rows)
+    success = sum(row["status"] == "success" for row in results.values())
     write_summary(output, source, contract, provenance, summary, pairs, clean, success)
-    return success, len(rows)
+    return success, len(results)
 
 
 def percent(value):

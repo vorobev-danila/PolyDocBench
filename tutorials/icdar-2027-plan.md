@@ -232,11 +232,16 @@ placement, media in table cells and rights review remain open; the older
 controlled corpus is regression evidence, not a proxy for source diversity.
 
 The 2026-11-19 Wikipedia OCR pilot completed all 36 scans, with 12 paired pages
-and identical reference lines across conditions. Pooled CER was 8.04% clean,
-21.90% at fixed +3 degrees and 9.78% for medium noise. Clean table-cell and
-heading matching were much weaker than body-line matching. Check sensitivity
-to geometry and grouping on these development predictions before scaling;
-this is not a final test set or validated severity calibration.
+and identical reference lines across conditions. On those cached predictions,
+the [matching sensitivity check](wikipedia-gt-pilot.md#matching-sensitivity)
+reproduced the primary score at IoU 0.30 without rerunning inference. The pooled
+CER ranking held at IoU 0.10 to 0.50, but the medium-to-clean delta ranged from
++1.74 to +11.19 percentage points. A medium-noise page showed a cascade of
+misassignments under greedy matching with a low cutoff. Keep the existing
+primary reference for this pilot. Before expanding the experiment, compare
+greedy and global geometry-only assignment at fixed cutoffs on development
+predictions and document the choice before any held-out evaluation. Neither
+this ranking nor the separate GT-class diagnostics validate noise severity.
 
 Complete the explicit human review handoff in [Development Corpus](development-corpus.md).
 The 72-page target is a separate controlled development candidate; all translations
