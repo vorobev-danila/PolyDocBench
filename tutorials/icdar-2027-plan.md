@@ -231,6 +231,13 @@ on the rendered subset, with 18 parsed blocks excluded and logged. Inline math
 placement, media in table cells and rights review remain open; the older
 controlled corpus is regression evidence, not a proxy for source diversity.
 
+The 2026-11-19 Wikipedia OCR pilot completed all 36 scans, with 12 paired pages
+and identical reference lines across conditions. Pooled CER was 8.04% clean,
+21.90% at fixed +3 degrees and 9.78% for medium noise. Clean table-cell and
+heading matching were much weaker than body-line matching. Check sensitivity
+to geometry and grouping on these development predictions before scaling;
+this is not a final test set or validated severity calibration.
+
 Complete the explicit human review handoff in [Development Corpus](development-corpus.md).
 The 72-page target is a separate controlled development candidate; all translations
 and variants of its two proposed families are reserved for development, not final

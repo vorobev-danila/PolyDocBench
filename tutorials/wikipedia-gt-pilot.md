@@ -71,3 +71,48 @@ compare the corresponding transformed scans. Check especially multi-column
 reading order, table continuations, captions and moved inline math. Do not use
 this exploratory sample as a held-out benchmark or publish its assets before
 reviewing source fidelity, media rights and the evaluation scope.
+
+## Paired Tesseract Pilot
+
+Install the OCR/benchmark extras alongside the gallery dependencies, and use
+a local Tesseract installation with eng, rus, fra, deu, spa and ita.
+
+```powershell
+uv sync --extra noise --extra formula --extra ocr --extra benchmark --extra dev
+uv run --no-sync python scripts/run_wikipedia_ocr_pilot.py --input-dir outputs/wikipedia_gt_pilot_20261118_final --output-dir outputs/wikipedia_ocr_pilot
+```
+
+The OCR run uses the same audit plan, including the exact scan and GT files,
+without re-rendering or modifying human-review records. Use a fresh output
+directory for new inference or append `--report-only` to recompute the report
+from an existing run and its frozen evaluator. The report's pooled metrics use
+only pages with the same eligible GT line IDs and text in all three conditions.
+The pairing CSV preserves failures and incompatible pairs. See `report.md`,
+`summary.csv`, `images.csv`, `paired_pages.csv` and `clean_diagnostics.json`
+inside the OCR output. The model binary version, runtime and settings are in
+`run/run.json` and `run/job.json`.
+
+Local result (2026-11-19): 36/36 successful, 12/12 comparable base pages, and
+477/477 eligible text lines per condition (identical IDs and text). Tesseract
+5.5.0 with protocol 0.3 and line bbox IoU 0.30 yielded:
+
+| Condition | Micro CER | Micro WER | Line F1 |
+| --- | ---: | ---: | ---: |
+| Clean | 8.04% | 11.91% | 86.13% |
+| Fixed +3 degree rotation | 21.90% | 27.81% | 83.80% |
+| Medium scan | 9.78% | 14.94% | 85.10% |
+
+The fixed rotation increased pooled CER by 13.86 percentage points versus
+clean; medium noise increased it by 1.74. These are different transformations,
+not positions on a calibrated severity scale. Rotation affects OCR and spatial
+matching; this run alone does not isolate how much each contributes.
+
+On clean pages, 306/306 body/other lines matched but only 60/136 cell lines
+and 6/20 headings matched at the frozen IoU threshold. For example, Eiffel
+Tower page 54 groups multiple cells from one row into an OCR line. It also
+contains the correctly recognized heading `Galerie`, rejected from matching
+at an IoU of 0.061. Fourteen unmatched clean GT lines have an overlapping
+unmatched prediction with exact normalized text below threshold. Do not
+interpret a missing match as proof that text was not recognized, and do not
+retune the primary score on these examples. Next check matching sensitivity
+and table-vs-body performance separately before increasing the corpus size.
