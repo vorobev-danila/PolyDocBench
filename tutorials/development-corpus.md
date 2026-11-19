@@ -1,5 +1,9 @@
 # Reviewed Development Corpus
 
+This is the controlled engineering corpus with deliberately repeated media.
+For pages with original Wikipedia photographs, tables, captions and formulas,
+see the separate [Wikipedia Content GT Pilot](wikipedia-gt-pilot.md).
+
 This workflow prepares an evidence-bound **development candidate**, not a final
 test set or an automatically approved dataset. Human source/rights/GT/protocol
 and severity decisions remain explicit. Do not count noisy variants or different

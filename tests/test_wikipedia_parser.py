@@ -53,6 +53,18 @@ def test_wikipedia_parser_extracts_hierarchy_and_elements():
     assert heading["content"][3]["src"] == "https://upload.wikimedia.org/example.png"
 
 
+def test_paragraph_math_is_separate_without_duplicate_tex_or_audio_controls():
+    result = WikipediaParser().parse_html(r'''<div class="mw-parser-output"><div>
+        <p>Consider <span class="mwe-math-element"><math><semantics><mi>x</mi>
+        <annotation encoding="application/x-tex">{\displaystyle x}</annotation>
+        </semantics></math></span> here<span class="ext-phonos">Play audio</span>.</p>
+        </div></div>''')
+    paragraph, formula = result["content"]
+    assert paragraph["text"].replace(" ", "") == "Considerhere."
+    assert formula["latex"] == "x"
+    assert formula["type"] == "formula"
+
+
 def test_wikipedia_parser_uses_mediawiki_api_fallback_for_empty_html(monkeypatch):
     import requests
 

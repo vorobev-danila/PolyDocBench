@@ -1,6 +1,8 @@
 import json
 from pathlib import Path
 
+from PIL import Image
+
 from polydocbench.layout import LayoutEngine
 
 
@@ -119,9 +121,9 @@ def test_layout_engine_exports_stable_ids_and_reading_order():
     assert first_line["metadata"]["parent_id"] == "paragraph_0001"
 
 
-def test_layout_engine_preserves_formula_image_metadata():
-    input_path = Path("outputs/test_runs/layout_engine_formula_source.json")
-    input_path.parent.mkdir(parents=True, exist_ok=True)
+def test_layout_engine_preserves_formula_image_metadata(tmp_path):
+    input_path = tmp_path / "source.json"
+    Image.new("RGB", (120, 40), "white").save(tmp_path / "formula.png")
     input_path.write_text(
         json.dumps(
             {
@@ -130,7 +132,7 @@ def test_layout_engine_preserves_formula_image_metadata():
                 "content": [
                     {
                         "type": "formula",
-                        "image_src": "outputs/test_runs/formula.png",
+                        "image_src": "formula.png",
                         "latex": "a+b",
                         "formula_type": "display",
                     }
@@ -145,7 +147,8 @@ def test_layout_engine_preserves_formula_image_metadata():
     formula = next(element for element in result.ground_truth["elements"] if element["type"] == "formula")
     container = result.pages[0].containers[0]
 
-    assert formula["metadata"]["image_src"] == "outputs/test_runs/formula.png"
+    assert formula["metadata"]["image_src"] == "formula.png"
     assert formula["metadata"]["latex"] == "a+b"
     assert formula["metadata"]["formula_type"] == "display"
     assert formula["bbox"]["x"] == container.x + (container.width - formula["bbox"]["width"]) / 2
+    assert formula["bbox"]["width"] / formula["bbox"]["height"] == 3

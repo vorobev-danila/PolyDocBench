@@ -14,6 +14,7 @@ This directory contains focused guides for using and developing PolyDocBench.
 - [Frozen Pilot And Runtime Measurements](benchmark-pilot.md)
 - [Paired Noise Calibration](noise-calibration.md)
 - [Ground-Truth Audit](gt-audit.md)
+- [Wikipedia Content GT Pilot](wikipedia-gt-pilot.md)
 - [Evaluation Visibility And Ignore Regions](evaluation-visibility.md)
 - [Reviewed Development Corpus](development-corpus.md)
 - [FastAPI Workflow](fastapi-workflow.md)

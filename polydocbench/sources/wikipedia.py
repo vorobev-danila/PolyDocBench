@@ -227,14 +227,18 @@ class WikipediaParser:
 
     def _extract_items_from_div(self, node: Tag) -> list[dict[str, Any]]:
         items: list[dict[str, Any]] = []
+        children = node.find_all(["p", "ul", "ol", "table", "figure", "div"], recursive=False)
+        child_ids = {id(child) for child in children}
 
         for math_node in self._find_formula_nodes(node):
+            if any(id(parent) in child_ids for parent in math_node.parents):
+                continue
             formula = self._extract_formula(math_node)
             if formula:
                 items.append(formula)
 
         # Some Wikipedia language editions wrap display math in definition lists.
-        for child in node.find_all(["p", "ul", "ol", "table", "figure", "div"], recursive=False):
+        for child in children:
             if not self._should_skip(child):
                 items.extend(self._extract_content_items(child))
 
@@ -242,15 +246,21 @@ class WikipediaParser:
 
     def _extract_paragraph_with_formulas(self, node: Tag) -> list[dict[str, Any]]:
         items: list[dict[str, Any]] = []
-        text = self._clean_text(node.get_text(" ", strip=True))
+        # Formulas are rendered as separate blocks, not duplicated as raw annotation text.
+        paragraph = deepcopy(node)
+        for widget in paragraph.select(".ext-phonos"):
+            widget.decompose()
+        formulas = []
+        for math_node in self._find_formula_nodes(paragraph):
+            if formula := self._extract_formula(math_node):
+                formulas.append(formula)
+                math_node.decompose()
+        text = self._clean_text(paragraph.get_text(" ", strip=True))
         if text:
             items.append({"type": "paragraph", "text": text})
 
         # Preserve math as separate elements for current renderer experiments.
-        for math_node in self._find_formula_nodes(node):
-            formula = self._extract_formula(math_node)
-            if formula:
-                items.append(formula)
+        items.extend(formulas)
 
         return items
 

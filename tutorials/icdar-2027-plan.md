@@ -224,6 +224,13 @@ acceptance, complete camera-ready, archival release, registration and presentati
 
 ## Current Next Step
 
+Review the [Wikipedia Content GT Pilot](wikipedia-gt-pilot.md) before expanding
+the development corpus or repeating OCR calibration. It contains 12 selected
+pages from six pinned articles (36 paired scans). Automatic GT checks passed
+on the rendered subset, with 18 parsed blocks excluded and logged. Inline math
+placement, media in table cells and rights review remain open; the older
+controlled corpus is regression evidence, not a proxy for source diversity.
+
 Complete the explicit human review handoff in [Development Corpus](development-corpus.md).
 The 72-page target is a separate controlled development candidate; all translations
 and variants of its two proposed families are reserved for development, not final

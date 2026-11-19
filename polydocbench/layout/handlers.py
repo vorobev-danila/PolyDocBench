@@ -158,6 +158,8 @@ class HeadingPlacementHandler(BasePlacementHandler):
 
 class GraphicPlacementHandler(BasePlacementHandler):
     def place(self, element_data: dict[str, Any], typography: TypographyStyle, layout_type: str) -> PlacementResult:
+        if any(element_data.get(key) for key in ("src", "path", "url", "image_src")):
+            return ImagePlacementHandler(self.context).place(element_data, typography, layout_type)
         spec = ElementLayoutSpec.from_element(element_data)
         result = PlacementResult(success=False)
 

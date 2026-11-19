@@ -42,6 +42,7 @@ structure = [
 ]
 formula = [
     "svglib>=1.5.1,<1.6",
+    "ziamath>=0.13,<0.14",
 ]
 dev = [
     "httpx>=0.28.0",
@@ -61,6 +62,7 @@ all = [
     "python-dotenv>=1.2.2",
     "docling>=2.70.0",
     "svglib>=1.5.1,<1.6",
+    "ziamath>=0.13,<0.14",
     "httpx>=0.28.0",
     "pytest>=8.0.0",
     "fastapi>=0.110.0",

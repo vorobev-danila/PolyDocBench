@@ -16,12 +16,15 @@ class ImagePlacementHandler:
 
     def place(self, element_data, typography, layout_type):
         context = self.context
+        kind = element_data["type"]
         container = context.current_container
         if container is None:
             return PlacementResult(False, message="No container for image")
         source = next((str(element_data[key]) for key in ("src", "path", "url", "image_src")
                        if element_data.get(key)), "")
-        metadata = {key: element_data[key] for key in ("caption", "alt", "alt_text") if key in element_data}
+        metadata = {key: element_data[key] for key in (
+            "caption", "alt", "alt_text", "alttext", "image_src", "latex", "mathml", "formula_type"
+        ) if key in element_data}
         options = context.options.get("images", {})
         if source:
             if not source.startswith(("http://", "https://")) and not Path(source).is_file():
@@ -37,8 +40,13 @@ class ImagePlacementHandler:
                 raise ValueError("Image requires a source path or URL")
             spec = ElementLayoutSpec.from_element(element_data)
             native_width, native_height = spec.width, spec.height
-        requested_width = float(element_data.get("width") or container.width * float(options.get("width_fraction", 1.0)))
-        requested_height = float(element_data.get("height") or context.full_page_height * float(options.get("max_height_fraction", 0.5)))
+        # Formula artwork has a natural size; unlike figures, don't enlarge it to the column width.
+        default_width = native_width * 0.75 if kind == "formula" else container.width * float(options.get("width_fraction", 1.0))
+        default_height = context.full_page_height * float(options.get("max_height_fraction", 0.5))
+        if kind == "formula":
+            default_height = min(default_height, native_height * 0.75)
+        requested_width = float(element_data.get("width") or default_width)
+        requested_height = float(element_data.get("height") or default_height)
         if not all(math.isfinite(value) and value > 0 for value in (requested_width, requested_height)):
             raise ValueError("Figure dimensions must be positive")
         scale = min(requested_width / native_width, requested_height / native_height, container.width / native_width)
@@ -63,7 +71,7 @@ class ImagePlacementHandler:
         element_id = element_data["_layout_id"]
         metadata.update({"role": "block", "source_index": element_data["_source_index"], "container_id": container.id})
         result = PlacementResult(True, elements=[DocumentElement(
-            id=element_id, type="image", bbox=BBox(x, top - height, width, height, allocation.page), metadata=metadata,
+            id=element_id, type=kind, bbox=BBox(x, top - height, width, height, allocation.page), metadata=metadata,
         )])
         caption_width = max((line.target_width for line in lines), default=width)
         caption_x = container.x + (container.width - caption_width) / 2

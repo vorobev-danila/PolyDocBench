@@ -9,14 +9,18 @@ import shutil
 import subprocess
 import tempfile
 from importlib.metadata import distributions
+from hashlib import sha256
 from pathlib import Path
 from typing import Any, Literal
+import unicodedata
+from urllib.parse import urlsplit
 from xml.etree import ElementTree
 
 import yaml
 from PIL import Image
 from pydantic import BaseModel, ConfigDict, Field, model_validator
 from reportlab.pdfbase import pdfmetrics
+from reportlab.pdfbase.ttfonts import TTFont
 
 from polydocbench.document.assets import image_dimensions, resolve_image
 from polydocbench.document.fonts import FALLBACK_FONT, font_fallback_scope
@@ -35,11 +39,12 @@ from .files import FileFingerprint, fingerprint_file, json_sha256
 ROOT = Path(__file__).resolve().parents[2]
 RESOURCE_KEYS = ("src", "path", "url", "image_src")
 PROVENANCE_NAME = "document_provenance.json"
+SYMBOL_FONT_PATH = ROOT / "fonts/NotoSansSymbols2/NotoSansSymbols2-Regular.ttf"
 
 
 class SnapshotFile(FileFingerprint):
     role: Literal["original_source", "prepared_source", "original_config", "layout_config", "render_config",
-                  "font", "asset", "license", "generator_code", "toolchain", "source_evidence"]
+                  "font", "asset", "license", "generator_code", "toolchain", "source_evidence", "source_selection"]
 
 
 class AssetReference(BaseModel):
@@ -219,6 +224,87 @@ def _freeze_assets(data, source_dir, root, files, references, allow_downloads, l
                 _freeze_assets(value, source_dir, root, files, references, allow_downloads, f"{location}/{key}")
 
 
+def _freeze_mathml(item, root, files, references, location):
+    import ziamath
+
+    markup = item["mathml"]
+    math = ElementTree.fromstring(markup)
+    supported = {"math", "semantics", "annotation", "mrow", "mi", "mn", "mo", "mtext", "mspace",
+                 "msup", "msub", "msubsup", "mfrac", "msqrt", "mroot", "mstyle", "mover", "munder",
+                 "munderover", "mpadded", "mphantom", "mtable", "mtr", "mtd", "mfenced", "menclose"}
+    unknown = sorted({node.tag.rsplit("}", 1)[-1] for node in math.iter()} - supported)
+    if unknown:
+        raise ValueError("Unsupported MathML elements: " + ", ".join(unknown))
+    # Emit paths rather than symbols/uses for compatibility with the PDF SVG renderer.
+    previous = ziamath.config.svg2
+    try:
+        ziamath.config.svg2 = False
+        svg = ziamath.Math(math).svg().encode("utf-8")
+    except (AttributeError, IndexError, KeyError, NotImplementedError, TypeError) as exc:
+        raise ValueError(f"MathML cannot be drawn by Ziamath ({type(exc).__name__})") from exc
+    finally:
+        ziamath.config.svg2 = previous
+    if b"<path " not in svg:
+        raise ValueError("MathML did not produce any SVG paths")
+    relative = f"inputs/assets/{sha256(svg).hexdigest()}.svg"
+    if relative not in files:
+        path = root / relative
+        path.parent.mkdir(parents=True, exist_ok=True)
+        path.write_bytes(svg)
+        _validate_asset(path)
+        files[relative] = SnapshotFile(**fingerprint_file(root, path).model_dump(), role="asset")
+    reference = "mathml:sha256:" + sha256(markup.encode("utf-8")).hexdigest()
+    references.append(AssetReference(location=location, original_reference=reference, snapshot_path=relative))
+    item["src"] = relative
+
+
+def _unsupported_glyphs(item, glyphs):
+    texts = [item.get("content", ""), item.get("caption", "")]
+    texts.extend(cell.get("text", "") for row in item.get("rows", []) for cell in row)
+    return sorted({ord(ch) for value in texts for ch in str(value)
+                   if ord(ch) not in glyphs and not ch.isspace() and unicodedata.category(ch) != "Cf"})
+
+
+def _prepare_wikipedia_pilot(items, source_dir, root, files, references, font_path):
+    """Keep parsed source order; exclusions never modify the captured article."""
+    kept, excluded, source_indices = [], [], []
+    glyphs = {point for path in (font_path, SYMBOL_FONT_PATH)
+              for point, index in TTFont("PilotGlyphCoverage", str(path)).face.charToGlyph.items() if index}
+    for index, item in enumerate(items, 1):
+        kind = item["type"]
+        problems = list(item.get("extraction_warnings", []))
+        missing = _unsupported_glyphs(item, glyphs)
+        if missing:
+            problems.append("Missing bundled font glyphs: " + ", ".join(f"U+{code:04X}" for code in missing))
+        if kind in {"image", "formula"}:
+            reference = item.get("src") or item.get("image_src")
+            if reference and (urlsplit(reference).scheme != "https" or urlsplit(reference).netloc not in {
+                "upload.wikimedia.org", "thumb.wikimedia.org", "wikimedia.org", "en.wikipedia.org",
+                "ru.wikipedia.org", "fr.wikipedia.org", "de.wikipedia.org", "es.wikipedia.org", "it.wikipedia.org",
+            }):
+                problems.append("Asset URL is outside the supported Wikimedia origins")
+            if not problems:
+                try:
+                    location = f"/elements/{len(kept)}"
+                    if kind == "formula" and not reference and item.get("mathml"):
+                        _freeze_mathml(item, root, files, references, location)
+                    else:
+                        _freeze_assets(item, source_dir, root, files, references, True, location)
+                except (ValueError, ElementTree.ParseError) as exc:
+                    problems.append(str(exc))
+        if problems:
+            excluded.append({"source_index": index, "type": kind, "reasons": problems,
+                             "reference": item.get("src") or item.get("image_src")})
+        else:
+            kept.append(item)
+            source_indices.append(index)
+    if not kept:
+        raise ValueError("Wikipedia pilot has no supported source blocks")
+    return kept, {"policy": "wikipedia_pilot_v1", "input_blocks": len(items), "rendered_blocks": len(kept),
+                  "retained_source_indices": source_indices,
+                  "exclusions": excluded}
+
+
 def _font_file(root, path, files) -> str:
     path = Path(path)
     if not path.is_file():
@@ -340,10 +426,13 @@ def capture_render_snapshot(
     layout_config_path: str | Path = DEFAULT_TEMPLATE_PATH,
     render_config_path: str | Path | None = None,
     font_path: str | Path = "DejaVu Sans/DejaVuSans.ttf", allow_downloads: bool = False,
+    wikipedia_pilot: bool = False,
 ) -> dict[str, Any]:
     """Seal exact source/config/font/asset/code copies, then render without network resources."""
     source_path = Path(source_path).resolve(strict=True)
     data = _json(source_path)
+    if wikipedia_pilot and (not data.get("metadata", {}).get("wikipedia_snapshot_id") or not allow_downloads):
+        raise ValueError("Wikipedia pilot requires captured revision evidence and explicit media downloads")
     document = validate_source_document(data)
     layout_path = resolve_template_path(layout_config_path)
     layout_config = yaml.safe_load(layout_path.read_text(encoding="utf-8"))
@@ -393,7 +482,13 @@ def capture_render_snapshot(
     items = document.source_items()
     prepared = {"schema_version": document.schema_version, "title": document.title, "url": document.url,
                 "elements": flatten_source_content(items) if document.content else items}
-    _freeze_assets(prepared["elements"], source_path.parent, root, files, references, allow_downloads, "/elements")
+    if wikipedia_pilot:
+        prepared["elements"], selection = _prepare_wikipedia_pilot(
+            prepared["elements"], source_path.parent, root, files, references, font_path
+        )
+        _record_json(root, "inputs/source_selection.json", selection, "source_selection", files)
+    else:
+        _freeze_assets(prepared["elements"], source_path.parent, root, files, references, allow_downloads, "/elements")
     _record_json(root, "inputs/source.json", prepared, "prepared_source", files)
     _record_json(root, "inputs/layout.json", {"base_settings": layout_config.get("base_settings", {}),
                                              "templates": {template: selected}}, "layout_config", files)
@@ -420,7 +515,7 @@ def capture_render_snapshot(
                 if family + suffix in fonts and fonts[family + suffix] != relative:
                     raise ValueError(f"Conflicting font configuration for {family + suffix}")
                 fonts[family + suffix] = relative
-    fonts[FALLBACK_FONT] = _font_file(root, ROOT / "fonts/NotoSansSymbols2/NotoSansSymbols2-Regular.ttf", files)
+    fonts[FALLBACK_FONT] = _font_file(root, SYMBOL_FONT_PATH, files)
     _record_json(root, "inputs/render.json", effective, "render_config", files)
     for path in sorted((ROOT / "polydocbench").rglob("*.py")):
         _copy_file(root, path, f"generator/{path.relative_to(ROOT).as_posix()}", "generator_code", files)

@@ -164,6 +164,16 @@ def run_gt_audit(plan: GTAuditPlan, input_dir: str | Path, output_dir: str | Pat
             source_gt = _load(root / record.pdf_gt.path)
             with contextlib.redirect_stdout(io.StringIO()):
                 items = ContentLoader.load_json(root / record.source.path)
+                if record.render_snapshot_id:
+                    from .render_snapshot import verify_render_snapshot
+
+                    render_root = (root / record.pdf.path).parent
+                    if (render_root / "inputs/source_selection.json").is_file():
+                        bundle = verify_render_snapshot(render_root)
+                        roles = {f.role: f.path for f in bundle.inputs.files}
+                        if "source_selection" not in roles or bundle.inputs.snapshot_id != record.render_snapshot_id:
+                            raise ValueError("GT audit requires a sealed source selection")
+                        items = ContentLoader.load_json(render_root / roles["prepared_source"])
             result = audit_gt_document(source_gt, coordinate_system="pdf", tolerance=plan.point_tolerance, source_items=items)
             with fitz.open(root / record.pdf.path) as pdf:
                 if result.checks.get("structure") == "checked":
